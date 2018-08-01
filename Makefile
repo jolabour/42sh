@@ -6,11 +6,11 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/07/29 10:29:09 by jolabour         ###   ########.fr        #
+#    Updated: 2018/08/01 17:13:27 by jolabour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME 		= minishell
+NAME 		= 42sh
 
 #
 # Dirs
@@ -26,7 +26,7 @@ VPATH		= $(SRCS_DIR)
 # Sources
 #
 
-SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c stdin.c
+SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c stdin.c move_arrows.c
 #
 # Build
 #
@@ -34,7 +34,7 @@ SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c stdin.c
 CC 		= gcc
 OBJS		= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
 CFLAGS		= -Wall -Werror -Wextra $(addprefix -I, $(INC_DIRS))
-LFLAGS		= -L$(LIB_DIR) -lft
+LFLAGS		= -L$(LIB_DIR) -lft -ltermcap
 LIB		= libft.a
 COMP		= $(CC) $(CFLAGS) -o $@ -c $<
 LINK		= $(CC) $(CFLAGS) $(LFLAGS) -o $@ $(filter-out $(LIB_DIR)/$(LIB), $^)

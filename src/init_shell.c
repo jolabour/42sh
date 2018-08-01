@@ -6,11 +6,36 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:21:16 by jolabour          #+#    #+#             */
-/*   Updated: 2018/07/29 07:31:33 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/01 20:47:19 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
+#include <unistd.h>
+#include <curses.h>
+#include <term.h>
+
+void		get_term(t_42sh *sh)
+{
+	//if (tgetent(NULL, ft_getenv(sh->env, "TERM=", 5)) == -1)
+	if (tgetent(NULL, getenv("TERM")) == -1)
+	{
+		ft_putendl("Set term or a valide term.");
+		exit(0);
+	}
+	if (tcgetattr(0, &sh->term) == -1)
+	{
+		ft_putendl("tcgetattr: Error.");
+		exit(0);
+	}
+	sh->term.c_lflag &= ~(ICANON);
+	sh->term.c_lflag &= ~(ECHO);
+	if (tcsetattr(0, TCSANOW, &sh->term) == -1)
+	{
+		ft_putendl("tcsetattr: Error.");
+		exit(0);
+	}
+}
 
 void		init_shell(t_42sh *sh, char **env)
 {
@@ -31,4 +56,5 @@ void		init_shell(t_42sh *sh, char **env)
 			print_error_and_exit(_ENOMEM);
 	}
 	list_to_tab(sh->env, sh->copy_env);
+	get_term(sh);
 }

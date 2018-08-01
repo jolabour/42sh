@@ -1,30 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   move_arrows.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/07/29 04:21:23 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/01 13:47:04 by jolabour         ###   ########.fr       */
+/*   Created: 2018/08/01 17:07:05 by jolabour          #+#    #+#             */
+/*   Updated: 2018/08/01 20:22:36 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-int			main(int argc, char **argv, char **env)
+int		putchar_custom(int c)
 {
-	t_42sh	sh;
-
-	argc = 1;
-	argv = NULL;
-	init_shell(&sh, env);
-	if (!(env[0]))
-		exit(0);
-	while (42)
-	{
-		process(&sh);
-		//free_all(&sh);
-	}
+	write(0, &c, 1);
 	return (0);
+}
+
+void		move_to_right(t_42sh *sh)
+{
+	if (sh->line_pos < (int)ft_strlen(sh->input))
+	{
+		tputs(tgoto(tgetstr("nd", NULL), 1, 0), 1, putchar_custom);
+		sh->line_pos++;
+	}
+}
+
+
+void		move_to_left(t_42sh *sh)
+{
+	if (sh->line_pos > 0)
+	{
+		tputs(tgoto(tgetstr("le", NULL), 1, 0), 1, putchar_custom);
+		sh->line_pos--;
+	}
 }

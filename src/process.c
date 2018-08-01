@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2018/07/29 10:28:21 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/01 21:02:51 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void			process(t_42sh *sh)
 {
 	prompt(sh->env);
-	get_line(sh->input);
+	get_line(sh);
+	ft_putstr(sh->input);
 	return ;
 }

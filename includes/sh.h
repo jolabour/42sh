@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/07/29 10:28:45 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/01 20:47:37 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ typedef struct		s_env
 	struct s_env	*next;
 }					t_env;
 
+typedef struct termios	t_term;
+
 typedef struct		s_42sh
 {
 	char			input[256];
@@ -57,6 +59,9 @@ typedef struct		s_42sh
 	char			**bin_dirs;
 	char			**copy_env;
 	t_env			*env;
+	t_term			term;
+	int				line_pos;
+	int				len_line;
 }					t_42sh;
 
 /*
@@ -74,6 +79,13 @@ int					ft_set_errno(int n);
  */
 
 void			process(t_42sh *sh);
+
+/*
+** move_arrows
+*/
+
+void			move_to_right(t_42sh *sh);
+void			move_to_left(t_42sh *sh);
 
 /*
 ** prompt
@@ -101,12 +113,13 @@ char			*ft_getenv(t_env *list, const char *name, size_t len);
 ** stdin
 */
 
-void			get_line(char *line);
+void			get_line(t_42sh *sh);
 
 /*
 ** init_shell
 */
 
+void			get_term(t_42sh *sh);
 void			init_shell(t_42sh *sh, char **env);
 
 #endif
