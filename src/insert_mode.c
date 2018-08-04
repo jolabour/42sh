@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process.c                                          :+:      :+:    :+:   */
+/*   insert_mode.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/04 03:38:46 by jolabour         ###   ########.fr       */
+/*   Created: 2018/08/04 03:56:06 by jolabour          #+#    #+#             */
+/*   Updated: 2018/08/04 04:03:49 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void			process(t_42sh *sh)
+void		insert_mode_on(void)
 {
-	prompt(sh->env);
-	if (get_line(sh) != 1)
-		return ;
-	return ;
+	tputs(tgetstr("im", NULL), 1, putchar_custom);
+}
+
+void		insert_mode_off(void)
+{
+	tputs(tgetstr("ei", NULL), 1, putchar_custom);
 }

@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:21:16 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/01 20:47:19 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/04 04:02:08 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,19 @@ void		get_term(t_42sh *sh)
 		ft_putendl("tcgetattr: Error.");
 		exit(0);
 	}
+	/*if (tgetflag("os") != 1)
+	{
+		ft_putendl("ah");
+	}*/
 	sh->term.c_lflag &= ~(ICANON);
 	sh->term.c_lflag &= ~(ECHO);
+	sh->term.c_lflag &= ~(ISIG);
 	if (tcsetattr(0, TCSANOW, &sh->term) == -1)
 	{
 		ft_putendl("tcsetattr: Error.");
 		exit(0);
 	}
+	insert_mode_on();
 }
 
 void		init_shell(t_42sh *sh, char **env)

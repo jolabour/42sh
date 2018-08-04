@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/01 20:47:37 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/04 06:04:08 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,19 @@
 # include <curses.h>
 # include <pwd.h>
 # include <termios.h>
+
+# define RIGHT_KEY (input[0] == 27 && input[2] == 'C')
+# define LEFT_KEY (input[0] == 27 && input[2] == 'D')
+# define HOME (input[0] == 27 && input[2] == 'H')
+# define END (input[0] == 27 && input[2] == 'F')
+# define CTRL_C (input[0] == 3)
+# define CTRL_D (input[0] == 4)
+# define DEL (input[0] == 127)
+# define UP_KEY (input[0] == 27 && input[2] == 'A')
+# define DOWN_KEY (input[0] == 27 && input[2] == 'B')
+# define TAB (input[0] == 9)
+//# define OPT_B (input[0] == 186)
+//# define OPT_F (input[0] == 196)
 
 typedef enum		e_errno_val
 {
@@ -75,6 +88,21 @@ void				print_error_first(int error_code);
 int					ft_set_errno(int n);
 
 /*
+** insert_mode
+*/
+
+void				insert_mode_on(void);
+void				insert_mode_off(void);
+
+/*
+** manip_input
+*/
+
+void				add_char(char *input, t_42sh *sh);
+void				delete_char(t_42sh *sh);
+void				delete_input(t_42sh *sh);
+
+/*
  ** process
  */
 
@@ -84,8 +112,11 @@ void			process(t_42sh *sh);
 ** move_arrows
 */
 
+int				putchar_custom(int c);
 void			move_to_right(t_42sh *sh);
 void			move_to_left(t_42sh *sh);
+void			move_to_start(t_42sh *sh);
+void			move_to_end(t_42sh *sh);
 
 /*
 ** prompt
@@ -113,7 +144,7 @@ char			*ft_getenv(t_env *list, const char *name, size_t len);
 ** stdin
 */
 
-void			get_line(t_42sh *sh);
+int				get_line(t_42sh *sh);
 
 /*
 ** init_shell
