@@ -6,14 +6,14 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/04 06:03:17 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/06 00:36:28 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 #include <stdio.h>
 
-int			check_input(char *input, t_42sh *sh)
+int			check_input(unsigned char *input, t_42sh *sh)
 {
 	if (UP_KEY)
 		return (1);
@@ -21,16 +21,16 @@ int			check_input(char *input, t_42sh *sh)
 		return (1);
 	else if (TAB)
 		return (1);
-	/*else if (OPT_B)
+	else if (OPT_B)
 	{
-		ft_putendl("aled");
+		move_to_begin_word(sh);
 		return (1);
 	}
 	else if (OPT_F)
 	{
-		ft_putendl("zizou");
+		move_to_end_word(sh);
 		return (1);
-	}*/
+	}
 	else if (RIGHT_KEY)
 	{
 		move_to_right(sh);
@@ -69,14 +69,14 @@ int			check_input(char *input, t_42sh *sh)
 int					get_line(t_42sh *sh)
 {
 	int				i;
-	char	buf[9];
+	unsigned char	buf[7];
 
 	ft_bzero(sh->input, 256);
 	sh->line_pos = 0;
 	sh->len_line = 0;
 	while (42)
 	{
-		if ((i = read(0, buf, 3)) > 0)
+		if ((i = read(0, buf, 6)) > 0)
 		{
 			buf[i] = '\0';
 			if (buf[0] == '\n')
@@ -89,7 +89,7 @@ int					get_line(t_42sh *sh)
 			{
 				if (i == -1)
 					return (0);
-				ft_putstr_fd(buf, 0);
+				printf("%s", (char *)buf);
 				add_char(buf, sh);
 			}
 		}

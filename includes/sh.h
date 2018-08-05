@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/04 06:04:08 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/06 00:30:20 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@
 # define UP_KEY (input[0] == 27 && input[2] == 'A')
 # define DOWN_KEY (input[0] == 27 && input[2] == 'B')
 # define TAB (input[0] == 9)
-//# define OPT_B (input[0] == 186)
-//# define OPT_F (input[0] == 196)
+# define OPT_B (input[0] == 226)
+# define OPT_F (input[0] == 198)
 
 typedef enum		e_errno_val
 {
@@ -98,7 +98,7 @@ void				insert_mode_off(void);
 ** manip_input
 */
 
-void				add_char(char *input, t_42sh *sh);
+void				add_char(unsigned char *input, t_42sh *sh);
 void				delete_char(t_42sh *sh);
 void				delete_input(t_42sh *sh);
 

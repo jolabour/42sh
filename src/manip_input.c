@@ -6,13 +6,13 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/04 00:26:26 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/04 06:04:38 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/05 02:01:07 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void		add_char(char *input, t_42sh *sh)
+void		add_char(unsigned char *input, t_42sh *sh)
 {
 	char	tmp[256];
 
