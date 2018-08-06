@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   42sh.h                                             :+:      :+:    :+:   */
+/*   sh.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/06 00:30:20 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/06 05:21:00 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,17 @@
 #ifndef SH_H
 # define SH_H
 
-# include "libft.h"
 # include <sys/wait.h>
 # include <signal.h>
 # include <term.h>
 # include <curses.h>
 # include <pwd.h>
 # include <termios.h>
+# include "libft.h"
+
+/*
+** Key mappings
+*/
 
 # define RIGHT_KEY (input[0] == 27 && input[2] == 'C')
 # define LEFT_KEY (input[0] == 27 && input[2] == 'D')
@@ -34,6 +38,13 @@
 # define TAB (input[0] == 9)
 # define OPT_B (input[0] == 226)
 # define OPT_F (input[0] == 198)
+
+/*
+** Other macros
+*/
+
+# define HASHTABLE 		t_ht
+# define HASHTABLESIZE 	50	
 
 typedef enum		e_errno_val
 {
@@ -62,6 +73,12 @@ typedef struct		s_env
 	struct s_env	*next;
 }					t_env;
 
+typedef struct 		s_ht
+{
+	struct s_ht *next;
+	char 		*name;
+}					HASHTABLE;
+
 typedef struct termios	t_term;
 
 typedef struct		s_42sh
@@ -75,6 +92,7 @@ typedef struct		s_42sh
 	t_term			term;
 	int				line_pos;
 	int				len_line;
+	HASHTABLE 		*hashtable[HASHTABLESIZE];
 }					t_42sh;
 
 /*
@@ -103,54 +121,54 @@ void				delete_char(t_42sh *sh);
 void				delete_input(t_42sh *sh);
 
 /*
- ** process
- */
+** process
+*/
 
-void			process(t_42sh *sh);
+void				process(t_42sh *sh);
 
 /*
 ** move_arrows
 */
 
-int				putchar_custom(int c);
-void			move_to_right(t_42sh *sh);
-void			move_to_left(t_42sh *sh);
-void			move_to_start(t_42sh *sh);
-void			move_to_end(t_42sh *sh);
+int					putchar_custom(int c);
+void				move_to_right(t_42sh *sh);
+void				move_to_left(t_42sh *sh);
+void				move_to_start(t_42sh *sh);
+void				move_to_end(t_42sh *sh);
 
 /*
 ** prompt
 */
 
-void			prompt(t_env *list);
+void				prompt(t_env *list);
 
 /*
- ** list
- */
+** list
+*/
 
-int				len_list(t_env *env);
-void			list_to_tab(t_env *env, char **copy_env);
-t_env			*create_node(char *str);
-void			lst_push(t_env **head, t_env *new);
-t_env			*set_list(char **env);
+int					len_list(t_env *env);
+void				list_to_tab(t_env *env, char **copy_env);
+t_env				*create_node(char *str);
+void				lst_push(t_env **head, t_env *new);
+t_env				*set_list(char **env);
 
 /*
- ** getenv
- */
+** getenv
+*/
 
-char			*ft_getenv(t_env *list, const char *name, size_t len);
+char				*ft_getenv(t_env *list, const char *name, size_t len);
 
 /*
 ** stdin
 */
 
-int				get_line(t_42sh *sh);
+int					get_line(t_42sh *sh);
 
 /*
 ** init_shell
 */
 
-void			get_term(t_42sh *sh);
-void			init_shell(t_42sh *sh, char **env);
+void				get_term(t_42sh *sh);
+void				init_shell(t_42sh *sh, char **env);
 
 #endif

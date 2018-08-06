@@ -6,12 +6,12 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/06 00:36:28 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/06 05:12:09 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "sh.h"
 #include <stdio.h>
+#include "sh.h"
 
 int			check_input(unsigned char *input, t_42sh *sh)
 {
@@ -21,16 +21,16 @@ int			check_input(unsigned char *input, t_42sh *sh)
 		return (1);
 	else if (TAB)
 		return (1);
-	else if (OPT_B)
-	{
-		move_to_begin_word(sh);
-		return (1);
-	}
-	else if (OPT_F)
-	{
-		move_to_end_word(sh);
-		return (1);
-	}
+//	else if (OPT_B)
+//	{
+//		move_to_begin_word(sh);
+//		return (1);
+//	}
+//	else if (OPT_F)
+//	{
+//		move_to_end_word(sh);
+//		return (1);
+//	}
 	else if (RIGHT_KEY)
 	{
 		move_to_right(sh);

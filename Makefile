@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/08/04 03:59:45 by jolabour         ###   ########.fr        #
+#    Updated: 2018/08/06 05:09:00 by abeauvoi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,8 @@ VPATH		= $(SRCS_DIR)
 # Sources
 #
 
-SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c stdin.c move_arrows.c manip_input.c insert_mode.c
+SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c stdin.c move_arrows.c manip_input.c \
+			  insert_mode.c hashtable.c
 #
 # Build
 #
