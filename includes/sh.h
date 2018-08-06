@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/13 23:04:26 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/17 06:22:41 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@
 # include <pwd.h>
 # include <termios.h>
 # include "libft.h"
+
+/*
+** Key mappings
+*/
 
 # define RIGHT_KEY(x) ((x)[0] == 27 && (x)[2] == 'C')
 # define LEFT_KEY(x) ((x)[0] == 27 && (x)[2] == 'D')
@@ -40,6 +44,13 @@
 
 # define SET_FG_RED		"\x1b[38;5;196m"
 # define RESET_COLOR	"\x1b[0m"
+
+/*
+** Other macros
+*/
+
+# define HASHTABLE 		t_ht
+# define HASHTABLESIZE 	50	
 
 typedef enum		e_errno_val
 {
@@ -68,6 +79,12 @@ typedef struct		s_env
 	struct s_env	*next;
 }					t_env;
 
+typedef struct 		s_ht
+{
+	struct s_ht *next;
+	char 		*name;
+}					HASHTABLE;
+
 typedef struct termios	t_term;
 
 typedef struct		s_42sh
@@ -82,6 +99,7 @@ typedef struct		s_42sh
 	char			*str_to_paste;
 	int				line_pos;
 	int				len_line;
+	HASHTABLE 		*hashtable[HASHTABLESIZE];
 }					t_42sh;
 
 /*****************************************************************************\
@@ -143,14 +161,20 @@ void				delete_input_buf(t_42sh *sh);
 void				delete_cut(t_42sh *sh);
 
 /*
+** process
+*/
+
+void				process(t_42sh *sh);
+
+/*
 ** move_arrows
 */
 
-int				putchar_custom(int c);
-void			move_to_right(t_42sh *sh);
-void			move_to_left(t_42sh *sh);
-void			move_to_start(t_42sh *sh);
-void			move_to_end(t_42sh *sh);
+int					putchar_custom(int c);
+void				move_to_right(t_42sh *sh);
+void				move_to_left(t_42sh *sh);
+void				move_to_start(t_42sh *sh);
+void				move_to_end(t_42sh *sh);
 
 /*
 ** move_word
@@ -179,27 +203,27 @@ void			process(t_42sh *sh);
 ** prompt
 */
 
-void			prompt(t_env *list);
+void				prompt(t_env *list);
 
 /*****************************************************************************\
 |                               INIT_SHELL                                    |
 \*****************************************************************************/
 
 /*
- ** list
- */
+** list
+*/
 
-int				len_list(t_env *env);
-void			list_to_tab(t_env *env, char **copy_env);
-t_env			*create_node(char *str);
-void			lst_push(t_env **head, t_env *new);
-t_env			*set_list(char **env);
+int					len_list(t_env *env);
+void				list_to_tab(t_env *env, char **copy_env);
+t_env				*create_node(char *str);
+void				lst_push(t_env **head, t_env *new);
+t_env				*set_list(char **env);
 
 /*
- ** getenv
- */
+** getenv
+*/
 
-char			*ft_getenv(t_env *list, const char *name, size_t len);
+char				*ft_getenv(t_env *list, const char *name, size_t len);
 
 /*
 ** init_shell
@@ -207,6 +231,7 @@ char			*ft_getenv(t_env *list, const char *name, size_t len);
 
 void			get_term(t_42sh *sh);
 void			init_shell(t_42sh *sh, char **env);
+int					get_line(t_42sh *sh);
 
 /*****************************************************************************\
 |                                  ERROR                                      |
