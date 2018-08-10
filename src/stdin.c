@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/06 00:36:28 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/10 03:13:46 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,16 @@ int			check_input(unsigned char *input, t_42sh *sh)
 		move_to_right(sh);
 		return (1);
 	}
+	/*else if (PAGE_UP)
+	{
+		move_up(sh);
+		return (1);
+	}*/
+	else if (PAGE_DOWN)
+	{
+		move_down(sh);
+		return (1);
+	}
 	else if (LEFT_KEY)
 	{
 		move_to_left(sh);
@@ -52,7 +62,10 @@ int			check_input(unsigned char *input, t_42sh *sh)
 		return (1);
 	}
 	else if (CTRL_D)
-		exit(EXIT_SUCCESS);
+	{
+		insert_mode_off();
+		exit(0);
+	}
 	else if (CTRL_C)
 	{
 		ft_putchar('\n');
@@ -60,9 +73,17 @@ int			check_input(unsigned char *input, t_42sh *sh)
 	}
 	else if (DEL)
 	{
-		delete_input(sh);
+		delete_input_buf(sh);
 		return (1);
 	}
+	else if (OPT_C)
+	{
+		//ft_putchar('a');
+		select_mode(sh);
+		return (1);
+	}
+	else if (input[0] < 32 || input[0] > 255)
+		return (1);
 	return (0);
 }
 
@@ -71,7 +92,6 @@ int					get_line(t_42sh *sh)
 	int				i;
 	unsigned char	buf[7];
 
-	ft_bzero(sh->input, 256);
 	sh->line_pos = 0;
 	sh->len_line = 0;
 	while (42)
@@ -82,6 +102,7 @@ int					get_line(t_42sh *sh)
 			if (buf[0] == '\n')
 			{
 				ft_putchar('\n');
+				sh->input[sh->len_line] = '\0';
 				insert_mode_off();
 				return (1);
 			}
@@ -89,7 +110,7 @@ int					get_line(t_42sh *sh)
 			{
 				if (i == -1)
 					return (0);
-				printf("%s", (char *)buf);
+				ft_putstr_fd((char *)buf, 0);
 				add_char(buf, sh);
 			}
 		}
