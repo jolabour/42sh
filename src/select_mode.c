@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/10 00:54:28 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/11 02:32:35 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/11 04:24:55 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,41 @@ void				exit_select_mode(t_42sh *sh, int pos)
 		move_to_right(sh);
 	while (sh->line_pos > end_pos)
 		move_to_left(sh);
+/*	while (sh->line_pos > sh->len_line)
+		move_to_left(sh);*/
 }
 
+void				copy_select(t_42sh *sh, int pos)
+{
+	if (sh->str_to_paste != NULL)
+		ft_strdel(&sh->str_to_paste);
+	if (sh->line_pos > pos)
+		sh->str_to_paste = ft_strsub(sh->input, pos, sh->line_pos);
+	else if (sh->line_pos < pos)
+		sh->str_to_paste = ft_strsub(sh->input, sh->line_pos, pos - sh->line_pos);
+	else
+		return ;
+}
+
+void				cut_select(t_42sh *sh, int pos)
+{
+	int				tmp;
+
+	copy_select(sh, pos);
+	while (sh->line_pos > pos)
+		delete_input_buf(sh);
+	if (sh->line_pos < pos)
+	{
+		tmp = sh->line_pos;
+		while (sh->line_pos < pos)
+			move_to_right(sh);
+		while (tmp < pos)
+		{
+			delete_input_buf(sh);
+			tmp++;;
+		}
+	}
+}
 
 void				select_mode(t_42sh *sh)
 {
@@ -109,16 +142,23 @@ void				select_mode(t_42sh *sh)
 	{
 		if ((i = read(0, buf, 6)) > 0)
 		{
-			buf[i] = '\0';
 			if (buf[0] == 27 && buf[2] == 'C')
 				move_to_right_select(sh, pos);
 			else if (buf[0] == 27 && buf[2] == 'D')
 				move_to_left_select(sh, pos);
-			/*else if (OPT_C)
-				;*/
-			/*else if (OPT_X)
-				;
-			*/else
+			else if (buf[0] == 195)
+			{
+				copy_select(sh, pos);
+				exit_select_mode(sh, pos);
+				return ;
+			}
+			else if (buf[0] == 226)
+			{
+				cut_select(sh, pos);
+			//	exit_select_mode(sh, pos);
+				return ;
+			}
+			else
 			{
 				exit_select_mode(sh, pos);
 				return ;

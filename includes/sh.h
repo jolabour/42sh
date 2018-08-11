@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/10 03:52:41 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/11 03:57:33 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,11 @@
 # define UP_KEY (input[0] == 27 && input[2] == 'A')
 # define DOWN_KEY (input[0] == 27 && input[2] == 'B')
 # define TAB (input[0] == 9)
-# define OPT_B (input[0] == 226)
-# define OPT_F (input[0] == 198)
-# define OPT_C (input[0] == 195)
+# define OPT_B (input[0] == 226 && input[1] == 136 && input[2] == 171)
+# define OPT_F (input[0] == 198 && input[1] == 146 && input[2] == 10)
+# define OPT_C (input[0] == 0xC3)// && input[1] == 0xA7 && input[2] == 0xA)
+# define OPT_X (input[0] == 226)// && input[1] == 137 && input[2] == 136)
+# define OPT_V (input[0] == 16)//&& input[1] == 136 && input[2] == 154)
 # define PAGE_DOWN (input[0] == 27 && input[2] == '6' && input[3] == '~')
 
 typedef enum		e_errno_val
@@ -75,6 +77,7 @@ typedef struct		s_42sh
 	char			**copy_env;
 	t_env			*env;
 	t_term			term;
+	char			*str_to_paste;
 	int				line_pos;
 	int				len_line;
 }					t_42sh;
@@ -106,7 +109,7 @@ void				select_mode(t_42sh *sh);
 ** manip_input
 */
 
-void				add_char(unsigned char *input, t_42sh *sh);
+void				add_char(unsigned char input, t_42sh *sh);
 void				delete_char(t_42sh *sh);
 void				delete_input(t_42sh *sh);
 void				delete_input_buf(t_42sh *sh);

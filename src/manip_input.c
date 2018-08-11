@@ -6,26 +6,26 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/04 00:26:26 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/11 00:38:03 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/11 03:48:54 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void		add_char(unsigned char *input, t_42sh *sh)
+void		add_char(unsigned char input, t_42sh *sh)
 {
 	char	tmp[256];
 
 	if (sh->line_pos != sh->len_line)
 	{
 		ft_strcpy(tmp, &sh->input[sh->line_pos]);
-		sh->input[sh->line_pos] = input[0];
+		sh->input[sh->line_pos] = input;
 		ft_strcpy(sh->input + sh->line_pos + 1, tmp);
 		sh->input[sh->len_line + 1] = '\0';
 	}
 	else
 	{
-		sh->input[sh->len_line] = input[0];
+		sh->input[sh->len_line] = input;
 		sh->input[sh->len_line + 1] = '\0';
 	}
 	sh->line_pos++;
