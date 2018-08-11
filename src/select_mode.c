@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/10 00:54:28 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/10 04:22:53 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/11 02:32:35 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,13 @@ void				move_to_right_select(t_42sh *sh, int pos)
 {
 	if (sh->line_pos < sh->len_line)
 	{
-		tputs(tgetstr("mr", NULL), 1, putchar_custom);
-		if (pos >= 0)
+		if (pos <= sh->line_pos)
+		{
 			ft_putstr("\x1b[38;5;196m");
+			tputs(tgetstr("mr", NULL), 1, putchar_custom);
+		}
+		else
+			ft_putstr("\033[22;37m");
 		delete_input(sh);
 		ft_putchar_fd(sh->input[sh->line_pos], 0);
 		ft_putstr("\033[22;37m");
@@ -36,9 +40,13 @@ void				move_to_left_select(t_42sh *sh, int pos)
 	}
 	if (sh->line_pos > 0)
 	{
-		tputs(tgetstr("mr", NULL), 1, putchar_custom);
-		if (pos <= 0)
+		if (pos >= sh->line_pos)
+		{
 			ft_putstr("\x1b[38;5;196m");
+			tputs(tgetstr("mr", NULL), 1, putchar_custom);
+		}
+		else
+			ft_putstr("\033[22;37m");
 		delete_input(sh);
 		ft_putchar_fd(sh->input[sh->line_pos], 0);
 		sh->line_pos++;
@@ -49,6 +57,46 @@ void				move_to_left_select(t_42sh *sh, int pos)
 	}
 }
 
+void				exit_right(t_42sh *sh)
+{
+	ft_putstr("\033[22;37m");
+	delete_input(sh);
+	ft_putchar_fd(sh->input[sh->line_pos], 0);
+	sh->line_pos++;
+}
+
+void				exit_left(t_42sh *sh)
+{
+	ft_putstr("\033[22;37m");
+	delete_input(sh);
+	ft_putchar_fd(sh->input[sh->line_pos], 0);
+	sh->line_pos++;
+	move_to_left(sh);
+	move_to_left(sh);
+}
+void				exit_select_mode(t_42sh *sh, int pos)
+{
+	int			end_pos;
+
+	end_pos = sh->line_pos;
+	while (sh->line_pos > pos)
+	{
+		move_to_left_select(sh, pos);
+		if (sh->line_pos == pos)
+			exit_left(sh);
+	}
+	while (sh->line_pos < pos)
+	{
+		move_to_right_select(sh, pos);
+		if (sh->line_pos == pos && pos < sh->len_line)
+			exit_right(sh);
+	}
+	while (sh->line_pos < end_pos)
+		move_to_right(sh);
+	while (sh->line_pos > end_pos)
+		move_to_left(sh);
+}
+
 
 void				select_mode(t_42sh *sh)
 {
@@ -56,29 +104,25 @@ void				select_mode(t_42sh *sh)
 	unsigned char	buf[7];
 	int				pos;
 
-	pos = 0;
+	pos = sh->line_pos;
 	while (42)
 	{
 		if ((i = read(0, buf, 6)) > 0)
 		{
 			buf[i] = '\0';
 			if (buf[0] == 27 && buf[2] == 'C')
-			{
 				move_to_right_select(sh, pos);
-				pos++;
-			}
 			else if (buf[0] == 27 && buf[2] == 'D')
-			{
 				move_to_left_select(sh, pos);
-				pos--;
-			}
-			//move_to_left_select(sh);
 			/*else if (OPT_C)
 				;*/
 			/*else if (OPT_X)
 				;
 			*/else
+			{
+				exit_select_mode(sh, pos);
 				return ;
+			}
 		}
 	}
 }

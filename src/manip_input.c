@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/04 00:26:26 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/10 03:16:39 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/11 00:38:03 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,6 @@ void		delete_input_buf(t_42sh *sh)
 
 void		delete_input(t_42sh *sh)
 {
-	if (sh->line_pos > 0)
+	if (sh->line_pos >= 0)
 		tputs(tgetstr("dc", NULL), 1, putchar_custom);
 }
