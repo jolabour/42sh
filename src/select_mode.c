@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "sh.h"
 
 void				move_to_right_select(t_42sh *sh, int pos)
 {

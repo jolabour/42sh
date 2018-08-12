@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "sh.h"
 
 char	*ft_getenv(t_env *list, const char *name, size_t len)
 {
