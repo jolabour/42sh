@@ -6,11 +6,11 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/10 00:54:28 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/11 04:24:55 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/12 20:15:00 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "sh.h"
+#include "42sh.h"
 
 void				move_to_right_select(t_42sh *sh, int pos)
 {
@@ -106,9 +106,8 @@ void				copy_select(t_42sh *sh, int pos)
 	if (sh->line_pos > pos)
 		sh->str_to_paste = ft_strsub(sh->input, pos, sh->line_pos);
 	else if (sh->line_pos < pos)
-		sh->str_to_paste = ft_strsub(sh->input, sh->line_pos, pos - sh->line_pos);
-	else
-		return ;
+		sh->str_to_paste = ft_strsub(sh->input, sh->line_pos,
+				pos - sh->line_pos);
 }
 
 void				cut_select(t_42sh *sh, int pos)

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "sh.h"
+#include "42sh.h"
 
 void		add_char(unsigned char input, t_42sh *sh)
 {

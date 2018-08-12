@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "sh.h"
+#include "42sh.h"
 #include <unistd.h>
 #include <curses.h>
 #include <term.h>

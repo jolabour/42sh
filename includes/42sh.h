@@ -6,21 +6,21 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/11 03:57:33 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/12 20:29:58 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#ifndef SH_H
-# define SH_H
+#ifndef 42SH_H
+# define 42SH_H
 
-# include "libft.h"
 # include <sys/wait.h>
 # include <signal.h>
 # include <term.h>
 # include <curses.h>
 # include <pwd.h>
 # include <termios.h>
+# include "libft.h"
 
 # define RIGHT_KEY (input[0] == 27 && input[2] == 'C')
 # define LEFT_KEY (input[0] == 27 && input[2] == 'D')
