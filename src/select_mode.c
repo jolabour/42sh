@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/10 00:54:28 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/11 04:24:55 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/13 00:41:38 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,14 @@ void				move_to_right_select(t_42sh *sh, int pos)
 {
 	if (sh->line_pos < sh->len_line)
 	{
+		tputs(tgetstr("mr", NULL), 1, putchar_custom);
 		if (pos <= sh->line_pos)
-		{
 			ft_putstr("\x1b[38;5;196m");
-			tputs(tgetstr("mr", NULL), 1, putchar_custom);
-		}
 		else
-			ft_putstr("\033[22;37m");
+			ft_putstr("\033[0m");
 		delete_input(sh);
 		ft_putchar_fd(sh->input[sh->line_pos], 0);
-		ft_putstr("\033[22;37m");
+		ft_putstr("\033[0m");
 		tputs(tgetstr("me", NULL), 1, putchar_custom);
 		sh->line_pos++;
 	}
@@ -40,26 +38,24 @@ void				move_to_left_select(t_42sh *sh, int pos)
 	}
 	if (sh->line_pos > 0)
 	{
+		tputs(tgetstr("mr", NULL), 1, putchar_custom);
 		if (pos >= sh->line_pos)
-		{
 			ft_putstr("\x1b[38;5;196m");
-			tputs(tgetstr("mr", NULL), 1, putchar_custom);
-		}
 		else
-			ft_putstr("\033[22;37m");
+			ft_putstr("\033[0m");
 		delete_input(sh);
 		ft_putchar_fd(sh->input[sh->line_pos], 0);
 		sh->line_pos++;
 		move_to_left(sh);
 		move_to_left(sh);
-		ft_putstr("\033[22;37m");
+		ft_putstr("\033[0m");
 		tputs(tgetstr("me", NULL), 1, putchar_custom);
 	}
 }
 
 void				exit_right(t_42sh *sh)
 {
-	ft_putstr("\033[22;37m");
+	ft_putstr("\033[0m");
 	delete_input(sh);
 	ft_putchar_fd(sh->input[sh->line_pos], 0);
 	sh->line_pos++;
@@ -67,7 +63,7 @@ void				exit_right(t_42sh *sh)
 
 void				exit_left(t_42sh *sh)
 {
-	ft_putstr("\033[22;37m");
+	ft_putstr("\033[0m");
 	delete_input(sh);
 	ft_putchar_fd(sh->input[sh->line_pos], 0);
 	sh->line_pos++;
