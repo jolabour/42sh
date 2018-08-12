@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/12 21:47:35 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/08/12 21:49:55 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@
 # define OPT_X (input[0] == 226)// && input[1] == 137 && input[2] == 136)
 # define OPT_V (input[0] == 16)//&& input[1] == 136 && input[2] == 154)
 # define PAGE_DOWN (input[0] == 27 && input[2] == '6' && input[3] == '~')
-
 
 typedef enum		e_errno_val
 {
