@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/01 17:07:05 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/04 00:40:02 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/10 03:03:21 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int		putchar_custom(int c)
 
 void		move_to_right(t_42sh *sh)
 {
-	if (sh->line_pos < (int)ft_strlen(sh->input))
+	if (sh->line_pos < sh->len_line)
 	{
 		tputs(tgoto(tgetstr("nd", NULL), 1, 0), 1, putchar_custom);
 		sh->line_pos++;
