@@ -72,7 +72,7 @@ void				exit_select_mode(t_42sh *sh, int pos)
 	int			end_pos;
 
 	end_pos = sh->line_pos;
-	while (sh->line_pos > pos)
+	while (sh->line_pos >= pos)
 	{
 		move_to_left_select(sh, pos);
 		if (sh->line_pos == pos)
@@ -101,13 +101,19 @@ void				copy_select(t_42sh *sh, int pos)
 	else if (sh->line_pos < pos)
 		sh->str_to_paste = ft_strsub(sh->input, sh->line_pos,
 				pos - sh->line_pos + 1);
+	else
+		sh->str_to_paste = ft_strsub(sh->input, pos, 1);
 }
 
-void				cut_select(t_42sh *sh, int pos)
+void				del_select(t_42sh *sh, int pos)
 {
 	int				tmp;
 
-	copy_select(sh, pos);
+	if (sh->line_pos == pos && pos != sh->len_line)
+	{
+		move_to_right(sh);
+		delete_input_buf(sh);
+	}
 	if (sh->line_pos > pos && sh->line_pos < sh->len_line)
 		move_to_right(sh);
 	while (sh->line_pos > pos)
@@ -126,6 +132,12 @@ void				cut_select(t_42sh *sh, int pos)
 			tmp++;
 		}
 	}
+}
+
+void				cut_select(t_42sh *sh, int pos)
+{
+	copy_select(sh, pos);
+	del_select(sh, pos);
 }
 
 void				select_mode(t_42sh *sh)
@@ -153,7 +165,11 @@ void				select_mode(t_42sh *sh)
 			else if (OPT_X(buf))
 			{
 				cut_select(sh, pos);
-			//	exit_select_mode(sh, pos);
+				return ;
+			}
+			else if (DEL(buf))
+			{
+				del_select(sh, pos);
 				return ;
 			}
 			else
@@ -164,4 +180,3 @@ void				select_mode(t_42sh *sh)
 		}
 	}
 }
-
