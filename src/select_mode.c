@@ -6,7 +6,6 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/10 00:54:28 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/13 00:41:38 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +17,12 @@ void				move_to_right_select(t_42sh *sh, int pos)
 	{
 		tputs(tgetstr("mr", NULL), 1, putchar_custom);
 		if (pos <= sh->line_pos)
-			ft_putstr("\x1b[38;5;196m");
+			ft_putstr(SET_FG_RED);
 		else
-			ft_putstr("\033[0m");
+			ft_putstr(RESET_COLOR);
 		delete_input(sh);
 		ft_putchar_fd(sh->input[sh->line_pos], 0);
-		ft_putstr("\033[0m");
+		ft_putstr(RESET_COLOR);
 		tputs(tgetstr("me", NULL), 1, putchar_custom);
 		sh->line_pos++;
 	}
@@ -40,22 +39,21 @@ void				move_to_left_select(t_42sh *sh, int pos)
 	{
 		tputs(tgetstr("mr", NULL), 1, putchar_custom);
 		if (pos >= sh->line_pos)
-			ft_putstr("\x1b[38;5;196m");
+			ft_putstr(SET_FG_RED);
 		else
-			ft_putstr("\033[0m");
+			ft_putstr(RESET_COLOR);
 		delete_input(sh);
 		ft_putchar_fd(sh->input[sh->line_pos], 0);
 		sh->line_pos++;
 		move_to_left(sh);
 		move_to_left(sh);
-		ft_putstr("\033[0m");
+		ft_putstr(RESET_COLOR);
 		tputs(tgetstr("me", NULL), 1, putchar_custom);
 	}
 }
 
 void				exit_right(t_42sh *sh)
 {
-	ft_putstr("\033[0m");
 	delete_input(sh);
 	ft_putchar_fd(sh->input[sh->line_pos], 0);
 	sh->line_pos++;
@@ -63,7 +61,6 @@ void				exit_right(t_42sh *sh)
 
 void				exit_left(t_42sh *sh)
 {
-	ft_putstr("\033[0m");
 	delete_input(sh);
 	ft_putchar_fd(sh->input[sh->line_pos], 0);
 	sh->line_pos++;
@@ -100,11 +97,10 @@ void				copy_select(t_42sh *sh, int pos)
 	if (sh->str_to_paste != NULL)
 		ft_strdel(&sh->str_to_paste);
 	if (sh->line_pos > pos)
-		sh->str_to_paste = ft_strsub(sh->input, pos, sh->line_pos);
+		sh->str_to_paste = ft_strsub(sh->input, pos, sh->line_pos + 1);
 	else if (sh->line_pos < pos)
-		sh->str_to_paste = ft_strsub(sh->input, sh->line_pos, pos - sh->line_pos);
-	else
-		return ;
+		sh->str_to_paste = ft_strsub(sh->input, sh->line_pos,
+				pos - sh->line_pos + 1);
 }
 
 void				cut_select(t_42sh *sh, int pos)
@@ -112,6 +108,8 @@ void				cut_select(t_42sh *sh, int pos)
 	int				tmp;
 
 	copy_select(sh, pos);
+	if (sh->line_pos > pos && sh->line_pos < sh->len_line)
+		move_to_right(sh);
 	while (sh->line_pos > pos)
 		delete_input_buf(sh);
 	if (sh->line_pos < pos)
@@ -119,10 +117,13 @@ void				cut_select(t_42sh *sh, int pos)
 		tmp = sh->line_pos;
 		while (sh->line_pos < pos)
 			move_to_right(sh);
-		while (tmp < pos)
+		tputs(tgoto(tgetstr("nd", NULL), 1, 0), 1, putchar_custom);
+		sh->line_pos++;
+		sh->len_line++;
+		while (tmp <= pos)
 		{
 			delete_input_buf(sh);
-			tmp++;;
+			tmp++;
 		}
 	}
 }
@@ -138,17 +139,18 @@ void				select_mode(t_42sh *sh)
 	{
 		if ((i = read(0, buf, 6)) > 0)
 		{
-			if (buf[0] == 27 && buf[2] == 'C')
+			buf[i] = '\0';
+			if (RIGHT_KEY(buf))
 				move_to_right_select(sh, pos);
-			else if (buf[0] == 27 && buf[2] == 'D')
+			else if (LEFT_KEY(buf))
 				move_to_left_select(sh, pos);
-			else if (buf[0] == 195)
+			else if (OPT_C(buf))
 			{
 				copy_select(sh, pos);
 				exit_select_mode(sh, pos);
 				return ;
 			}
-			else if (buf[0] == 226)
+			else if (OPT_X(buf))
 			{
 				cut_select(sh, pos);
 			//	exit_select_mode(sh, pos);

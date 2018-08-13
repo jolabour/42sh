@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/04 00:26:26 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/11 03:48:54 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/13 03:08:19 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,17 @@ void		delete_char(t_42sh *sh)
 		sh->input[sh->len_line - 1] = '\0';
 	sh->line_pos--;
 	sh->len_line--;
+
+}
+
+void		delete_cut(t_42sh *sh)
+{
+	if (sh->line_pos > 0)
+	{
+		delete_char(sh);
+		tputs(tgoto(tgetstr("le", NULL), 1, 0), 1, putchar_custom);
+		tputs(tgetstr("dc", NULL), 1, putchar_custom);
+	}
 }
 
 void		delete_input_buf(t_42sh *sh)

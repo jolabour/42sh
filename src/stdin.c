@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/11 03:54:12 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/13 02:32:38 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,74 +30,74 @@ void		ft_paste(t_42sh *sh)
 
 int			check_input(unsigned char *input, t_42sh *sh)
 {
-	if (UP_KEY)
+	if (UP_KEY(input))
 		return (1);
-	else if (DOWN_KEY)
+	else if (DOWN_KEY(input))
 		return (1);
-	else if (TAB)
+	else if (TAB(input))
 		return (1);
-	else if (OPT_B)
+	else if (OPT_B(input))
 	{
 		move_to_begin_word(sh);
 		return (1);
 	}
-	else if (OPT_F)
+	else if (OPT_F(input))
 	{
 		move_to_end_word(sh);
 		return (1);
 	}
-	else if (RIGHT_KEY)
+	else if (RIGHT_KEY(input))
 	{
 		move_to_right(sh);
 		return (1);
 	}
-	/*else if (PAGE_UP)
+	/*else if (PAGE_UP(input))
 	{
 		move_up(sh);
 		return (1);
 	}*/
-	else if (PAGE_DOWN)
+	else if (PAGE_DOWN(input))
 	{
 		move_down(sh);
 		return (1);
 	}
-	else if (LEFT_KEY)
+	else if (LEFT_KEY(input))
 	{
 		move_to_left(sh);
 		return (1);
 	}
-	/*else if (HOME)
+	else if (HOME(input))
 	{
 		move_to_start(sh);
 		return (1);
-	}*/
-	else if (END)
+	}
+	else if (END(input))
 	{
 		move_to_end(sh);
 		return (1);
 	}
-	else if (CTRL_D)
+	else if (CTRL_D(input))
 	{
 		insert_mode_off();
 		exit(0);
 	}
-	else if (CTRL_C)
+	else if (CTRL_C(input))
 	{
 		ft_putchar('\n');
 		return (-1);
 	}
-	else if (DEL)
+	else if (DEL(input))
 	{
 		delete_input_buf(sh);
 		return (1);
 	}
-	else if (OPT_C)
+	else if (OPT_C(input) || OPT_X(input))
 	{
 		//ft_putchar('a');
 		select_mode(sh);
 		return (1);
 	}
-	else if (HOME)
+	else if (OPT_V(input))
 	{
 		if (sh->str_to_paste != NULL)
 			ft_paste(sh);
@@ -116,6 +116,7 @@ int					get_line(t_42sh *sh)
 	sh->str_to_paste = NULL;
 	sh->line_pos = 0;
 	sh->len_line = 0;
+	insert_mode_on();
 	while (42)
 	{
 		if ((i = read(0, buf, 6)) > 0)
@@ -129,11 +130,13 @@ int					get_line(t_42sh *sh)
 				ft_strdel(&sh->str_to_paste);
 				return (1);
 			}
+			//printf("length record:%d\n", i);
 			if ((i = check_input(buf, sh)) != 1)
 			{
 				if (i == -1)
 					return (0);
 				ft_putstr_fd((char *)buf, 0);
+				//printf("%2x, %2x, %2x\n", buf[0], buf[1], buf[2]);
 				add_char(buf[0], sh);
 			}
 		}

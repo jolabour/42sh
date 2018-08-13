@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:21:16 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/04 04:02:08 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/13 01:09:53 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void		get_term(t_42sh *sh)
 		ft_putendl("tcsetattr: Error.");
 		exit(0);
 	}
-	insert_mode_on();
 }
 
 void		init_shell(t_42sh *sh, char **env)

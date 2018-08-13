@@ -1,43 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   42sh.h                                             :+:      :+:    :+:   */
+/*   sh.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/13 00:42:37 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/13 03:01:47 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef SH_H
 # define SH_H
 
-# include "libft.h"
 # include <sys/wait.h>
 # include <signal.h>
 # include <term.h>
 # include <curses.h>
 # include <pwd.h>
 # include <termios.h>
+# include "libft.h"
 
-# define RIGHT_KEY (input[0] == 27 && input[2] == 'C')
-# define LEFT_KEY (input[0] == 27 && input[2] == 'D')
-# define HOME (input[0] == 27 && input[2] == 'H')
-# define END (input[0] == 27 && input[2] == 'F')
-# define CTRL_C (input[0] == 3)
-# define CTRL_D (input[0] == 4)
-# define DEL (input[0] == 127)
-# define UP_KEY (input[0] == 27 && input[2] == 'A')
-# define DOWN_KEY (input[0] == 27 && input[2] == 'B')
-# define TAB (input[0] == 9)
-# define OPT_B (input[0] == 226 && input[1] == 136 && input[2] == 171)
-# define OPT_F (input[0] == 198 && input[1] == 146 && input[2] == 10)
-# define OPT_C (input[0] == 0xC3)// && input[1] == 0xA7 && input[2] == 0xA)
-# define OPT_X (input[0] == 226)// && input[1] == 137 && input[2] == 136)
-# define OPT_V (input[0] == 16)//&& input[1] == 136 && input[2] == 154)
-# define PAGE_DOWN (input[0] == 27 && input[2] == '6' && input[3] == '~')
+# define RIGHT_KEY(x) ((x)[0] == 27 && (x)[2] == 'C')
+# define LEFT_KEY(x) ((x)[0] == 27 && (x)[2] == 'D')
+# define HOME(x) ((x)[0] == 27 && (x)[2] == 'H')
+# define END(x) ((x)[0] == 27 && (x)[2] == 'F')
+# define CTRL_C(x) ((x)[0] == 3)
+# define CTRL_D(x) ((x)[0] == 4)
+# define DEL(x) ((x)[0] == 127)
+# define UP_KEY(x) ((x)[0] == 27 && (x)[2] == 'A')
+# define DOWN_KEY(x) ((x)[0] == 27 && (x)[2] == 'B')
+# define TAB(x) ((x)[0] == 9)
+# define OPT_B(x) ((x)[0] == 226 && (x)[1] == 136 && (x)[2] == 171)
+# define OPT_F(x) ((x)[0] == 198 && (x)[1] == 146)
+# define OPT_C(x) ((x)[0] == 0xC3 && (x)[1] == 0xA7)
+# define OPT_X(x) ((x)[0] == 226 && (x)[1] == 137 && (x)[2] == 136)
+# define OPT_V(x) ((x)[0] == 0xE2 && (x)[1] == 136 && (x)[2] == 0x9A)
+# define PAGE_DOWN(x) ((x)[0] == 27 && (x)[2] == '6' && (x)[3] == '~')
+
+# define SET_FG_RED		"\x1b[38;5;196m"
+# define RESET_COLOR	"\x1b[0m"
 
 typedef enum		e_errno_val
 {
@@ -113,6 +115,7 @@ void				add_char(unsigned char input, t_42sh *sh);
 void				delete_char(t_42sh *sh);
 void				delete_input(t_42sh *sh);
 void				delete_input_buf(t_42sh *sh);
+void				delete_cut(t_42sh *sh);
 
 /*
  ** process

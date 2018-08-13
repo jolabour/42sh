@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/08/10 01:53:02 by jolabour         ###   ########.fr        #
+#    Updated: 2018/08/12 20:35:42 by abeauvoi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,16 +26,19 @@ VPATH		= $(SRCS_DIR)
 # Sources
 #
 
-SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c stdin.c move_arrows.c manip_input.c insert_mode.c move_word.c move_line.c select_mode.c
+SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c \
+			  stdin.c move_arrows.c manip_input.c insert_mode.c move_word.c \
+			  move_line.c select_mode.c
+
 #
 # Build
 #
 
-CC 		= gcc
+CC 			= gcc
 OBJS		= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
 CFLAGS		= -Wall -Werror -Wextra $(addprefix -I, $(INC_DIRS))
 LFLAGS		= -L$(LIB_DIR) -lft -ltermcap
-LIB		= libft.a
+LIB			= libft.a
 COMP		= $(CC) $(CFLAGS) -o $@ -c $<
 LINK		= $(CC) $(CFLAGS) $(LFLAGS) -o $@ $(filter-out $(LIB_DIR)/$(LIB), $^)
 NUMCORES 	= $(sysctl -n hw.ncpu)
@@ -72,6 +75,7 @@ fclean: clean
 	@make $(_MAKEFLAGS) $@
 	@echo "removed binary"
 
-re: fclean all
+re: fclean
+re: all
 
 .PHONY: all clean fclean re

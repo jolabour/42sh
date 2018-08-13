@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 08:56:10 by jolabour          #+#    #+#             */
-/*   Updated: 2018/07/29 09:00:04 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/12 20:27:49 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void		prompt(t_env *list)
 			if (home[len_home - 1] == '/')
 				--len_home;
 		}
-		if (home && ft_strncmp(pwd, home, (home ? len_home : 0)) == 0)
+		if (home && ft_strncmp(pwd, home, len_home) == 0)
 		{
 			pwd += len_home;
 			ft_strcat(buf, "~");
