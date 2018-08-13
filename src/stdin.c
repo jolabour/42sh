@@ -6,14 +6,14 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/13 02:32:38 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/13 23:00:12 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 #include <stdio.h>
 
-void		ft_paste(t_42sh *sh)
+static void		ft_paste(t_42sh *sh)
 {
 	int		len;
 	int		i;
@@ -28,7 +28,7 @@ void		ft_paste(t_42sh *sh)
 	}
 }
 
-int			check_input(unsigned char *input, t_42sh *sh)
+static int			check_input(unsigned char *input, t_42sh *sh)
 {
 	if (UP_KEY(input))
 		return (1);

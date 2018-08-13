@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/13 03:01:47 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/13 23:04:26 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,15 +84,46 @@ typedef struct		s_42sh
 	int				len_line;
 }					t_42sh;
 
+/*****************************************************************************\
+|                               SELECT_MODE                                   |
+\*****************************************************************************/
+
 /*
-** errno
+** select_mode
 */
 
-void				init_error_tab(void);
-void				print_error(int error_code);
-void				print_error_and_exit(int error_code);
-void				print_error_first(int error_code);
-int					ft_set_errno(int n);
+void				select_mode(t_42sh *sh);
+
+/*
+** move_select_mode
+*/
+
+void				move_to_right_select(t_42sh *sh, int pos);
+void				move_to_left_select(t_42sh *sh, int pos);
+
+/*
+** exit_select_mode
+*/
+
+void				exit_select_mode(t_42sh *sh, int pos);
+
+/*
+** action_select_mode
+*/
+
+void				copy_select(t_42sh *sh, int pos);
+void				del_select(t_42sh *sh, int pos);
+void				cut_select(t_42sh *sh, int pos);
+
+/*****************************************************************************\
+|                               LINE_EDITION                                  |
+\*****************************************************************************/
+
+/*
+** stdin
+*/
+
+int				get_line(t_42sh *sh);
 
 /*
 ** insert_mode
@@ -100,12 +131,6 @@ int					ft_set_errno(int n);
 
 void				insert_mode_on(void);
 void				insert_mode_off(void);
-
-/*
-** select_mode
-*/
-
-void				select_mode(t_42sh *sh);
 
 /*
 ** manip_input
@@ -116,12 +141,6 @@ void				delete_char(t_42sh *sh);
 void				delete_input(t_42sh *sh);
 void				delete_input_buf(t_42sh *sh);
 void				delete_cut(t_42sh *sh);
-
-/*
- ** process
- */
-
-void			process(t_42sh *sh);
 
 /*
 ** move_arrows
@@ -146,11 +165,25 @@ void				move_to_end_word(t_42sh *sh);
 
 void				move_down(t_42sh *sh);
 
+/*****************************************************************************\
+|                                  PROCESS                                    |
+\*****************************************************************************/
+
+/*
+ ** process
+ */
+
+void			process(t_42sh *sh);
+
 /*
 ** prompt
 */
 
 void			prompt(t_env *list);
+
+/*****************************************************************************\
+|                               INIT_SHELL                                    |
+\*****************************************************************************/
 
 /*
  ** list
@@ -169,16 +202,24 @@ t_env			*set_list(char **env);
 char			*ft_getenv(t_env *list, const char *name, size_t len);
 
 /*
-** stdin
-*/
-
-int				get_line(t_42sh *sh);
-
-/*
 ** init_shell
 */
 
 void			get_term(t_42sh *sh);
 void			init_shell(t_42sh *sh, char **env);
+
+/*****************************************************************************\
+|                                  ERROR                                      |
+\*****************************************************************************/
+
+/*
+** errno
+*/
+
+void				init_error_tab(void);
+void				print_error(int error_code);
+void				print_error_and_exit(int error_code);
+void				print_error_first(int error_code);
+int					ft_set_errno(int n);
 
 #endif
