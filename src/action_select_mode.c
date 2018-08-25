@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 22:49:28 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/13 22:59:09 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/17 00:27:32 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ void				copy_select(t_42sh *sh, int pos)
 	if (sh->str_to_paste != NULL)
 		ft_strdel(&sh->str_to_paste);
 	if (sh->line_pos > pos)
-		sh->str_to_paste = ft_strsub(sh->input, pos, sh->line_pos + 1);
+		sh->str_to_paste = ft_strsub(sh->input, pos, sh->line_pos - pos + 1);
 	else if (sh->line_pos < pos)
 		sh->str_to_paste = ft_strsub(sh->input, sh->line_pos,
 				pos - sh->line_pos + 1);
-	else
+	else if (sh->line_pos == pos)
 		sh->str_to_paste = ft_strsub(sh->input, pos, 1);
 }
 

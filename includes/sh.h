@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/25 06:33:08 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/08/25 06:36:58 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <curses.h>
 # include <pwd.h>
 # include <termios.h>
+# include <sys/ioctl.h>
 # include "libft.h"
 
 /*
@@ -107,8 +108,10 @@ typedef struct termios	t_term;
 # define INITIAL_HASHTABLE_SIZE (1U << 11)
 typedef struct		s_42sh
 {
-	char			input[256];
+	char			input[1000];
 	char			**arg;
+	int				size_of_window;
+	int				prompt_len;
 	char			*pwd;
 	char			**bin_dirs;
 	char			**copy_env;
@@ -160,6 +163,7 @@ void				cut_select(t_42sh *sh, int pos);
 */
 
 int				get_line(t_42sh *sh);
+int				get_win_size(void);
 
 /*
 ** insert_mode
@@ -217,32 +221,12 @@ void				move_down(t_42sh *sh);
  */
 
 void			process(t_42sh *sh);
-=======
-void				prompt(t_env *list);
-
-/*
-** list
-*/
-
-int					len_list(t_env *env);
-void				list_to_tab(t_env *env, char **copy_env);
-t_env				*create_node(char *str);
-void				lst_push(t_env **head, t_env *new);
-t_env				*set_list(char **env);
-
-/*
-** getenv
-*/
-
-char				*ft_getenv(t_env *list, const char *name, size_t len);
->>>>>>> 2c45329f241ed657fdf3e434027cd6be52cc0b30
 
 /*
 ** prompt
 */
 
-<<<<<<< HEAD
-void				prompt(t_env *list);
+void			prompt(t_env *list, t_42sh *sh);
 
 /*****************************************************************************\
 |                               INIT_SHELL                                    |
@@ -263,17 +247,13 @@ t_env				*set_list(char **env);
 */
 
 char				*ft_getenv(t_env *list, const char *name, size_t len);
-=======
-int					get_line(t_42sh *sh);
->>>>>>> 2c45329f241ed657fdf3e434027cd6be52cc0b30
 
 /*
 ** init_shell
 */
 
-<<<<<<< HEAD
-void			get_term(t_42sh *sh);
-void			init_shell(t_42sh *sh, char **env);
+void				get_term(t_42sh *sh);
+void				init_shell(t_42sh *sh, char **env);
 int					get_line(t_42sh *sh);
 
 /*****************************************************************************\
@@ -289,9 +269,5 @@ void				print_error(int error_code);
 void				print_error_and_exit(int error_code);
 void				print_error_first(int error_code);
 int					ft_set_errno(int n);
-=======
-void				get_term(t_42sh *sh);
-void				init_shell(t_42sh *sh, char **env);
->>>>>>> 2c45329f241ed657fdf3e434027cd6be52cc0b30
 
 #endif
