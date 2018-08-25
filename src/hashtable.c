@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/06 05:07:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/08/25 06:32:58 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/08/25 07:53:10 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ BUCKET_CONTENT 		*ht_insert(const char *name, t_ht *ht)
 		index = hash_str(name) & (ht->capacity - 1);
 		entry->next = ht->buckets[index].first;
 		ht->buckets[index].first = entry;
+		ht->buckets[index].length++;
 	}
 	return (entry);
 }

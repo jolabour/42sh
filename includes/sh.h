@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/25 06:36:58 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/08/25 07:55:45 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,14 +98,14 @@ typedef struct		s_bucket
 
 typedef struct 		s_ht
 {
-	BUCKET		*buckets;
+# define INITIAL_HASHTABLE_SIZE (1U << 9)
+	BUCKET		buckets[INITIAL_HASHTABLE_SIZE];
 	uint16_t	used;
 	uint16_t	capacity;
 }					t_ht;
 
 typedef struct termios	t_term;
 
-# define INITIAL_HASHTABLE_SIZE (1U << 11)
 typedef struct		s_42sh
 {
 	char			input[1000];
@@ -120,7 +120,7 @@ typedef struct		s_42sh
 	char			*str_to_paste;
 	int				line_pos;
 	int				len_line;
-	t_ht			hashtable[INITIAL_HASHTABLE_SIZE];
+	t_ht			hashtable;
 }					t_42sh;
 
 /*****************************************************************************\
@@ -202,7 +202,6 @@ void				move_to_end(t_42sh *sh);
 ** move_word
 */
 
-<<<<<<< HEAD
 void				move_to_begin_word(t_42sh *sh);
 void				move_to_end_word(t_42sh *sh);
 
