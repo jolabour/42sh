@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/17 06:26:34 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/08/25 06:33:08 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include "libft.h"
 
 /*
-** Key mappings
+** Key mappings {{{
 */
 
 # define RIGHT_KEY(x) ((x)[0] == 27 && (x)[2] == 'C')
@@ -45,19 +45,11 @@
 # define SET_FG_RED		"\x1b[38;5;196m"
 # define RESET_COLOR	"\x1b[0m"
 
+
+# define HASHTABLESIZE 1000	
 /*
-** Other macros
+** }}}
 */
-
-# define HASHTABLE 		t_ht
-# define HASHTABLESIZE 	50	
-
-/*
-** Other macros
-*/
-
-# define HASHTABLE 		t_ht
-# define HASHTABLESIZE 	50	
 
 typedef enum		e_errno_val
 {
@@ -86,14 +78,33 @@ typedef struct		s_env
 	struct s_env	*next;
 }					t_env;
 
+# define BUCKET_CONTENT	t_bucket_content
+
+typedef struct		s_bucket_content
+{
+	struct s_bucket_content	*next;
+	char					*name;
+	char					*path;
+	size_t					pathlen;
+}					BUCKET_CONTENT;
+
+# define BUCKET	t_bucket
+typedef struct		s_bucket
+{
+	BUCKET_CONTENT	*first;
+	uint8_t			length;
+}					BUCKET;
+
 typedef struct 		s_ht
 {
-	struct s_ht *next;
-	char 		*name;
-}					HASHTABLE;
+	BUCKET		*buckets;
+	uint16_t	used;
+	uint16_t	capacity;
+}					t_ht;
 
 typedef struct termios	t_term;
 
+# define INITIAL_HASHTABLE_SIZE (1U << 11)
 typedef struct		s_42sh
 {
 	char			input[256];
@@ -106,7 +117,7 @@ typedef struct		s_42sh
 	char			*str_to_paste;
 	int				line_pos;
 	int				len_line;
-	HASHTABLE 		*hashtable[HASHTABLESIZE];
+	t_ht			hashtable[INITIAL_HASHTABLE_SIZE];
 }					t_42sh;
 
 /*****************************************************************************\

@@ -6,34 +6,45 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/06 05:07:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/08/17 06:25:48 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/08/25 06:32:58 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifdef DEBUG
+
+# include <stdio.h>
+# include <assert.h>
+# include <stdlib.h>
+
+#endif
 
 #include "sh.h"
 
 /*
-** Hash table implementation that handles collision
+** Bash's string hash function
 */
 
-unsigned int 	hash(const char *s)
+unsigned int		hash_str(const char *s)
 {
-	unsigned int 	hashval;
+	register unsigned int 	hash;
 
-	hashval = 0;
+	hash = 0;
 	while (*s != '\0')
 	{
-		hashval = *s + (31 * hashval);
+		hash *= 16777619;
+		hash ^= *s;
 		++s;
 	}
-	return (hashval % HASHTABLESIZE);
+	return (hash);
 }
 
-HASHTABLE 		*ht_lookup(const char *s, HASHTABLE *ht[HASHTABLESIZE])
+BUCKET_CONTENT		*ht_lookup(const char *s, t_ht *ht)
 {
-	HASHTABLE 	*entry;
+	BUCKET_CONTENT	*entry;
+	uint16_t		index;
 
-	entry = ht[hash(s)];
+	index = (hash_str(s) & (ht->capacity - 1));
+	entry = ht->buckets[index].first;
 	while (entry != NULL)
 	{
 		if (ft_strcmp(s, entry->name) == 0)
@@ -43,34 +54,37 @@ HASHTABLE 		*ht_lookup(const char *s, HASHTABLE *ht[HASHTABLESIZE])
 	return (NULL);
 }
 
-HASHTABLE 		*ht_insert(const char *name, HASHTABLE *ht[HASHTABLESIZE])
+BUCKET_CONTENT 		*ht_insert(const char *name, t_ht *ht)
 {
-	HASHTABLE 		*entry;
-	unsigned int 	hashval;
+	BUCKET_CONTENT 	*entry;
+	unsigned int 	index;
 
 	if ((entry = ht_lookup(name, ht)) == NULL)
 	{
-		entry = (HASHTABLE*)malloc(sizeof(*entry));
+		entry = (BUCKET_CONTENT*)malloc(sizeof(*entry));
 		if (entry == NULL || (entry->name = ft_strdup(name)) == NULL)
 			return (NULL);
-		hashval = hash(name);
-		entry->next = ht[hashval];
-		ht[hashval] = entry;
+		index = hash_str(name) & (ht->capacity - 1);
+		entry->next = ht->buckets[index].first;
+		ht->buckets[index].first = entry;
 	}
 	return (entry);
 }
 
-void 			ht_delete(const char *name, HASHTABLE *ht[HASHTABLESIZE])
+void				ht_delete(const char *name, t_ht *ht)
 {
-	HASHTABLE 	*entry;
-	HASHTABLE 	*tmp;
+	BUCKET_CONTENT 	*entry;
+	BUCKET_CONTENT	*tmp;
+	uint16_t		index;
 
-	entry = ht[hash(name)];
+	index = hash_str(name) & (ht->capacity - 1);
+	entry = ht->buckets[index].first;
 	if (ft_strcmp(name, entry->name) == 0)
 	{
-		tmp = entry;
+		ht->buckets[index].first = entry->next;
 		free(entry->name);
-		free(tmp);
+		free(entry->path);
+		free(entry);
 	}
 	else
 	{
@@ -78,9 +92,11 @@ void 			ht_delete(const char *name, HASHTABLE *ht[HASHTABLESIZE])
 		{
 			if (ft_strcmp(name, entry->next->name) == 0)
 			{
-				free(entry->next->name);
-				free(entry->next);
-				entry->next = NULL;
+				tmp = entry->next;
+				entry->next = entry->next->next;
+				free(tmp->name);
+				free(tmp->path);
+				free(tmp);
 			}
 			entry = entry->next;
 		}
