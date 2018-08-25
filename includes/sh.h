@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/13 23:04:26 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/17 04:31:41 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <curses.h>
 # include <pwd.h>
 # include <termios.h>
+# include <sys/ioctl.h>
 # include "libft.h"
 
 # define RIGHT_KEY(x) ((x)[0] == 27 && (x)[2] == 'C')
@@ -72,8 +73,10 @@ typedef struct termios	t_term;
 
 typedef struct		s_42sh
 {
-	char			input[256];
+	char			input[1000];
 	char			**arg;
+	int				size_of_window;
+	int				prompt_len;
 	char			*pwd;
 	char			**bin_dirs;
 	char			**copy_env;
@@ -124,6 +127,7 @@ void				cut_select(t_42sh *sh, int pos);
 */
 
 int				get_line(t_42sh *sh);
+int				get_win_size(void);
 
 /*
 ** insert_mode
@@ -179,7 +183,7 @@ void			process(t_42sh *sh);
 ** prompt
 */
 
-void			prompt(t_env *list);
+void			prompt(t_env *list, t_42sh *sh);
 
 /*****************************************************************************\
 |                               INIT_SHELL                                    |

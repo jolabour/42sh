@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 22:46:40 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/13 22:49:23 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/08/17 01:11:45 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void				exit_select_mode(t_42sh *sh, int pos)
 	int			end_pos;
 
 	end_pos = sh->line_pos;
-	while (sh->line_pos >= pos)
+	while (sh->line_pos > pos)
 	{
 		move_to_left_select(sh, pos);
 		if (sh->line_pos == pos)
