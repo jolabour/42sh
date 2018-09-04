@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/25 04:30:08 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/25 08:01:02 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/04 20:37:50 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ void		hash_current_dir(t_ht *ht, DIR *dirp, char *path)
 	while ((de = readdir(dirp)) != NULL)
 	{
 		real_path = ft_strjoin(path, de->d_name);
-		if (de->d_type == DT_REG && access(real_path, X_OK) && (ft_strcmp(de->d_name, ".") != 0) && (ft_strcmp(de->d_name, "..") != 0))
+		if (de->d_type == DT_REG
+				&& access(real_path, X_OK)
+				&& (ft_strcmp(de->d_name, ".") != 0)
+				&& (ft_strcmp(de->d_name, "..") != 0))
 			ht_insert(de->d_name, ht);
 	}
 }
