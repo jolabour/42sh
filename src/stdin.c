@@ -6,12 +6,12 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 01:29:27 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/06 03:21:52 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "sh.h"
 #include <stdio.h>
+#include "sh.h"
 
 void		ft_paste(t_42sh *sh)
 {

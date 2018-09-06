@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/09/06 00:20:01 by jolabour         ###   ########.fr        #
+#    Updated: 2018/09/06 03:23:38 by jolabour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,11 +35,11 @@ SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c \
 # Build
 #
 
-CC 			= gcc
+CC 		= gcc
 OBJS		= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
 CFLAGS		= -Wall -Werror -Wextra $(addprefix -I, $(INC_DIRS))
 LFLAGS		= -L$(LIB_DIR) -lft -ltermcap
-LIB			= libft.a
+LIB		= libft.a
 COMP		= $(CC) $(CFLAGS) -o $@ -c $<
 LINK		= $(CC) $(CFLAGS) $(LFLAGS) -o $@ $(filter-out $(LIB_DIR)/$(LIB), $^)
 NUMCORES 	= $(sysctl -n hw.ncpu)
@@ -51,7 +51,7 @@ _MAKEFLAGS	= -j$(echo $(NUMCORES)+1| bc) -l$(NUMCORES) -C $(LIB_DIR)
 
 all: $(LIB_DIR)/$(LIB) $(NAME)
 
-debug: CFLAGS += -g3 -fsanitize=address
+debug: CFLAGS += -g3
 debug: re
 
 $(LIB_DIR)/$(LIB):
