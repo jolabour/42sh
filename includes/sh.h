@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 03:22:59 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/06 07:29:24 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,6 @@
 # define SET_FG_RED		"\x1b[38;5;196m"
 # define RESET_COLOR	"\x1b[0m"
 
-
-# define HASHTABLESIZE 1000	
 /*
 ** }}}
 */
@@ -106,7 +104,8 @@ typedef struct termios	t_term;
 typedef struct		s_42sh
 {
 	char			input[1000];
-	char			**arg;
+	char			**tokens;
+	char			*valide_path;
 	int				size_of_window;
 	int				prompt_len;
 	char			*pwd;
@@ -241,6 +240,16 @@ void			process(t_42sh *sh);
 
 void			prompt(t_env *list, t_42sh *sh);
 
+/*
+** hash_table
+*/
+
+BUCKET_CONTENT	*ht_lookup(const char *s, t_ht *ht);
+BUCKET_CONTENT	*ht_insert(const char *path, const char *name, t_ht *ht);
+void			ht_delete(const char *name, t_ht *ht);
+void			init_hashtable(t_42sh *sh);
+void			print_hashtable(t_ht ht);
+
 /*****************************************************************************\
 |                               INIT_SHELL                                    |
 \*****************************************************************************/
@@ -250,7 +259,7 @@ void			prompt(t_env *list, t_42sh *sh);
 */
 
 int					len_list(t_env *env);
-void				list_to_tab(t_env *env, char **copy_env);
+char				**list_to_tab(t_env *env, char **copy_env);
 t_env				*create_node(char *str);
 void				lst_push(t_env **head, t_env *new);
 t_env				*set_list(char **env);
@@ -269,9 +278,9 @@ void				get_term(t_42sh *sh);
 void				init_shell(t_42sh *sh, char **env);
 int					get_line(t_42sh *sh);
 
-/*****************************************************************************\
-|                                  ERROR                                      |
-\*****************************************************************************/
+/*
+**  ERROR
+*/
 
 /*
 ** errno
@@ -282,5 +291,13 @@ void				print_error(int error_code);
 void				print_error_and_exit(int error_code);
 void				print_error_first(int error_code);
 int					ft_set_errno(int n);
+
+/*
+** Utils
+*/
+
+char				*ft_joinpath(const char *path, const char *name);
+
+void				print_env_array(char **env);
 
 #endif

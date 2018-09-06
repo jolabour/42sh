@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/04 00:26:26 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 01:21:36 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/06 04:07:30 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ void		delete_char(t_42sh *sh)
 	{
 		ft_strcpy(tmp, &sh->input[sh->line_pos]);
 		ft_strcpy(sh->input + sh->line_pos - 1, tmp);
-		sh->input[sh->len_line - sh->prompt_len - 1] = '\0';
+		sh->input[sh->len_line - 1] = '\0';
 	}
 	else
-		sh->input[sh->len_line - sh->prompt_len - 1] = '\0';
+		sh->input[sh->len_line - 1] = '\0';
 	sh->len_line--;
 
 }

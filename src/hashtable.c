@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/06 05:07:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/08/25 07:53:10 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/06 07:23:18 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,18 @@ BUCKET_CONTENT		*ht_lookup(const char *s, t_ht *ht)
 	BUCKET_CONTENT	*entry;
 	uint16_t		index;
 
-	index = (hash_str(s) & (ht->capacity - 1));
+	index = (hash_str(s) & (INITIAL_HASHTABLE_SIZE - 1));
 	entry = ht->buckets[index].first;
 	while (entry != NULL)
 	{
 		if (ft_strcmp(s, entry->name) == 0)
-			return (entry);
+			break ;
 		entry = entry->next;
 	}
-	return (NULL);
+	return (entry);
 }
 
-BUCKET_CONTENT 		*ht_insert(const char *name, t_ht *ht)
+BUCKET_CONTENT 		*ht_insert(const char *path, const char *name, t_ht *ht)
 {
 	BUCKET_CONTENT 	*entry;
 	unsigned int 	index;
@@ -62,9 +62,11 @@ BUCKET_CONTENT 		*ht_insert(const char *name, t_ht *ht)
 	if ((entry = ht_lookup(name, ht)) == NULL)
 	{
 		entry = (BUCKET_CONTENT*)malloc(sizeof(*entry));
-		if (entry == NULL || (entry->name = ft_strdup(name)) == NULL)
+		if (entry == NULL
+				|| (entry->name = ft_strdup(name)) == NULL
+				|| (entry->path = ft_strdup(path)) == NULL)
 			return (NULL);
-		index = hash_str(name) & (ht->capacity - 1);
+		index = hash_str(name) & (INITIAL_HASHTABLE_SIZE - 1);
 		entry->next = ht->buckets[index].first;
 		ht->buckets[index].first = entry;
 		ht->buckets[index].length++;
