@@ -3,3 +3,4 @@ libft/
 compile_commands.json
 .vscode
 obj/
+a.out.dSYM/
