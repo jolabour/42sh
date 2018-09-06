@@ -11,7 +11,7 @@
 
 #include "sh.h"
 
-void				select_mode(t_42sh *sh)
+/*void				select_mode(t_42sh *sh)
 {
 	int				i;
 	unsigned char	buf[7];
@@ -50,4 +50,4 @@ void				select_mode(t_42sh *sh)
 			}
 		}
 	}
-}
+}*/

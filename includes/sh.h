@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/17 04:31:41 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/06 00:34:36 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,20 @@
 # include <sys/ioctl.h>
 # include "libft.h"
 
-# define RIGHT_KEY(x) ((x)[0] == 27 && (x)[2] == 'C')
-# define LEFT_KEY(x) ((x)[0] == 27 && (x)[2] == 'D')
-# define HOME(x) ((x)[0] == 27 && (x)[2] == 'H')
-# define END(x) ((x)[0] == 27 && (x)[2] == 'F')
-# define CTRL_C(x) ((x)[0] == 3)
-# define CTRL_D(x) ((x)[0] == 4)
-# define DEL(x) ((x)[0] == 127)
+# define NB_INPUT 9
+# define RIGHT_KEY 4414235
+# define LEFT_KEY 4479771
+# define HOME 4741915
+# define END 4610843
+# define CTRL_C 3
+# define CTRL_D 4
+# define DEL 127
 # define UP_KEY(x) ((x)[0] == 27 && (x)[2] == 'A')
 # define DOWN_KEY(x) ((x)[0] == 27 && (x)[2] == 'B')
 # define TAB(x) ((x)[0] == 9)
-# define OPT_B(x) ((x)[0] == 226 && (x)[1] == 136 && (x)[2] == 171)
-# define OPT_F(x) ((x)[0] == 198 && (x)[1] == 146)
-# define OPT_C(x) ((x)[0] == 0xC3 && (x)[1] == 0xA7)
+# define OPT_B 11241698
+# define OPT_F 37574
+# define OPT_C(x) 
 # define OPT_X(x) ((x)[0] == 226 && (x)[1] == 137 && (x)[2] == 136)
 # define OPT_V(x) ((x)[0] == 0xE2 && (x)[1] == 136 && (x)[2] == 0x9A)
 # define PAGE_DOWN(x) ((x)[0] == 27 && (x)[2] == '6' && (x)[3] == '~')
@@ -87,6 +88,8 @@ typedef struct		s_42sh
 	int				len_line;
 }					t_42sh;
 
+typedef				void(*t_ak)(t_42sh *sh);
+
 /*****************************************************************************\
 |                               SELECT_MODE                                   |
 \*****************************************************************************/
@@ -128,6 +131,21 @@ void				cut_select(t_42sh *sh, int pos);
 
 int				get_line(t_42sh *sh);
 int				get_win_size(void);
+void			ft_paste(t_42sh *sh);
+
+/*
+** check_input
+*/
+
+int				check_input(t_42sh *sh, long buf);
+
+/*
+** control_action
+*/
+
+void			ctrlc_action(t_42sh *sh);
+void			ctrld_action(t_42sh *sh);
+void			paste(t_42sh *sh);
 
 /*
 ** insert_mode
@@ -140,7 +158,7 @@ void				insert_mode_off(void);
 ** manip_input
 */
 
-void				add_char(unsigned char input, t_42sh *sh);
+void				add_char(long input, t_42sh *sh);
 void				delete_char(t_42sh *sh);
 void				delete_input(t_42sh *sh);
 void				delete_input_buf(t_42sh *sh);

@@ -1,23 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process.c                                          :+:      :+:    :+:   */
+/*   control_action.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 01:33:50 by jolabour         ###   ########.fr       */
+/*   Created: 2018/09/04 00:09:06 by jolabour          #+#    #+#             */
+/*   Updated: 2018/09/06 01:36:02 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void			process(t_42sh *sh)
+void			ctrlc_action(t_42sh *sh)
 {
-	prompt(sh->env, sh);
-	get_line(sh);
-	ft_putstr(sh->input);
-	/*ft_putnbr(sh->size_of_window);
-	ft_putnbr(sh->line_pos + sh->prompt_len);
-	ft_putnbr(sh->len_line);*/
+	ft_putchar('\n');
+	sh->input[0] = '\0';
+}
+
+void			ctrld_action(t_42sh *sh)
+{
+	(void)sh;
+	insert_mode_off();
+	exit(0);
+}
+
+void			paste(t_42sh *sh)
+{
+	if (sh->str_to_paste != NULL)
+		ft_paste(sh);
 }

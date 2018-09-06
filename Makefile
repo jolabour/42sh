@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/08/13 23:05:13 by jolabour         ###   ########.fr        #
+#    Updated: 2018/09/06 00:20:01 by jolabour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ VPATH		= $(SRCS_DIR)
 SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c \
 			  stdin.c move_arrows.c manip_input.c insert_mode.c move_word.c \
 			  move_line.c select_mode.c move_select_mode.c exit_select_mode.c \
-			  action_select_mode.c
+			  action_select_mode.c control_action.c keymap.c
 
 #
 # Build

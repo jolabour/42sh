@@ -6,14 +6,14 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/13 23:00:12 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/06 01:29:27 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 #include <stdio.h>
 
-static void		ft_paste(t_42sh *sh)
+void		ft_paste(t_42sh *sh)
 {
 	int		len;
 	int		i;
@@ -28,7 +28,7 @@ static void		ft_paste(t_42sh *sh)
 	}
 }
 
-static int			check_input(unsigned char *input, t_42sh *sh)
+/*static int			check_input_aled(unsigned char *input, t_42sh *sh)
 {
 	if (UP_KEY(input))
 		return (1);
@@ -51,11 +51,11 @@ static int			check_input(unsigned char *input, t_42sh *sh)
 		move_to_right(sh);
 		return (1);
 	}
-	/*else if (PAGE_UP(input))
+	else if (PAGE_UP(input))
 	{
 		move_up(sh);
 		return (1);
-	}*/
+	}
 	else if (PAGE_DOWN(input))
 	{
 		move_down(sh);
@@ -107,37 +107,36 @@ static int			check_input(unsigned char *input, t_42sh *sh)
 		return (1);
 	return (0);
 }
-
+*/
 int					get_line(t_42sh *sh)
 {
 	int				i;
-	unsigned char	buf[7];
+	long			buf;
 
 	sh->str_to_paste = NULL;
 	sh->line_pos = 0;
 	sh->len_line = 0;
 	insert_mode_on();
+	sh->input[0] = '\0';
 	while (42)
 	{
-		if ((i = read(0, buf, 6)) > 0)
+		buf = 0;
+		if ((i = read(0, &buf, 3)) > 0)
 		{
-			buf[i] = '\0';
-			if (buf[0] == '\n')
+			if (buf == '\n')
 			{
 				ft_putchar('\n');
-				sh->input[sh->len_line] = '\0';
 				insert_mode_off();
 				ft_strdel(&sh->str_to_paste);
 				return (1);
 			}
-			//printf("length record:%d\n", i);
-			if ((i = check_input(buf, sh)) != 1)
+					//printf("length record:%d\n", i);
+			if ((i = check_input(sh, buf)) != 1)
 			{
 				if (i == -1)
 					return (0);
-				ft_putstr_fd((char *)buf, 0);
-				//printf("%2x, %2x, %2x\n", buf[0], buf[1], buf[2]);
-				add_char(buf[0], sh);
+				ft_putchar_fd(buf, 0);
+				add_char(buf, sh);
 			}
 		}
 	}
