@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/25 04:30:08 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/04 20:37:50 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/09/06 01:42:10 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void		hash_current_dir(t_ht *ht, DIR *dirp, char *path)
 				&& (ft_strcmp(de->d_name, ".") != 0)
 				&& (ft_strcmp(de->d_name, "..") != 0))
 			ht_insert(de->d_name, ht);
+		free(real_path);
 	}
 }
 
@@ -54,9 +55,9 @@ void		get_binary(t_42sh *sh)
 
 void		print_hashtable(t_ht ht)
 {
-	int		i;
+	int				i;
 	BUCKET_CONTENT	*bucket;
-	int		used;
+	int				used;
 
 	i = 0;
 	used = 0;
@@ -76,18 +77,4 @@ void		print_hashtable(t_ht ht)
 		++i;
 	}
 	printf("buckets used: %d\n", used);
-}
-
-int			main(int argc, char **argv, char **env)
-{
-	t_42sh	sh;
-
-	ft_memset(&sh, 0, sizeof(sh));
-	sh.hashtable.capacity = INITIAL_HASHTABLE_SIZE;
-	argc = 1;
-	argv = NULL;
-	init_shell(&sh, env);
-	get_binary(&sh);
-	print_hashtable(sh.hashtable);
-	return (0);
 }
