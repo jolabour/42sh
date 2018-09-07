@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_binary.c                                       :+:      :+:    :+:   */
+/*   init_hashtable.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/25 04:30:08 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 07:22:21 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/08 00:40:21 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,10 @@ void		init_hashtable(t_42sh *sh)
 	while ((path = sh->bin_dirs[i++]) != NULL)
 	{
 		if ((dirp = opendir(path)) == NULL)
+		{
+			// print_error;
 			continue ;
+		}
 		hash_current_dir(&sh->hashtable, dirp, path);
 		if (closedir(dirp) == -1)
 			return ;

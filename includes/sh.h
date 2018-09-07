@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 07:29:24 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/08 00:52:43 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,14 @@
 
 # define SET_FG_RED		"\x1b[38;5;196m"
 # define RESET_COLOR	"\x1b[0m"
+
+# ifdef MINISHELL
+#  define PROG_NAME "minishell"
+# elif defined _21SH
+#  define PROG_NAME "21sh"
+# else
+#  define PROG_NAME "21sh"
+# endif
 
 /*
 ** }}}
@@ -287,7 +295,7 @@ int					get_line(t_42sh *sh);
 */
 
 void				init_error_tab(void);
-void				print_error(int error_code);
+void				print_error(int code, bool is_fatal);
 void				print_error_and_exit(int error_code);
 void				print_error_first(int error_code);
 int					ft_set_errno(int n);
