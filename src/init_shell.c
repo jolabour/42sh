@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:21:16 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 07:33:24 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/08 01:11:11 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,13 @@ void		init_shell(t_42sh *sh, char **env)
 	if (path)
 	{
 		if ((sh->bin_dirs = ft_strsplit(path, ':')) == NULL)
-			print_error_and_exit(_ENOMEM);
+			print_error(_ENOMEM, 1);
 	}
 	pwd = ft_getenv(sh->env, "PWD=", sizeof("PWD=") - 1);
 	if (pwd)
 	{
 		if ((sh->pwd = ft_strdup(pwd)) == NULL)
-			print_error_and_exit(_ENOMEM);
+			print_error(_ENOMEM, 1);
 	}
 	sh->copy_env = list_to_tab(sh->env, sh->copy_env);
 	init_hashtable(sh);

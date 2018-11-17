@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 07:34:03 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/08 02:54:17 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	*check_access(t_42sh *sh)
 	if (access(sh->tokens[0], F_OK) == 0)
 	{
 		if (!(tmp2 = ft_strdup(sh->tokens[0])))
-			print_error_and_exit(_ENOMEM);
+			print_error(_ENOMEM, 1);
 		return (tmp2);
 	}
 	if (sh->bin_dirs)
@@ -47,9 +47,9 @@ char	*check_access(t_42sh *sh)
 		while (sh->bin_dirs[i])
 		{
 			if (!(tmp = ft_strjoin(sh->bin_dirs[i], "/")))
-				print_error_and_exit(_ENOMEM);
+				print_error(_ENOMEM, 1);
 			if (!(tmp2 = ft_strjoin(tmp, sh->tokens[0])))
-				print_error_and_exit(_ENOMEM);
+				print_error(_ENOMEM, 1);
 			ft_strdel(&tmp);
 			if (access(tmp2, F_OK) == 0)
 				return (tmp2);

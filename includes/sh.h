@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/08 00:52:43 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/09/08 02:54:13 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@
 # include <pwd.h>
 # include <termios.h>
 # include <sys/ioctl.h>
+# include <stdio.h>
 # include "libft.h"
+
 
 # define NB_INPUT 9
 # define RIGHT_KEY 4414235
@@ -169,7 +171,7 @@ void				cut_select(t_42sh *sh, int pos);
 */
 
 int				get_line(t_42sh *sh);
-int				get_win_size(void);
+int				get_winsize(void);
 void			ft_paste(t_42sh *sh);
 
 /*
@@ -202,6 +204,7 @@ void				delete_char(t_42sh *sh);
 void				delete_input(t_42sh *sh);
 void				delete_input_buf(t_42sh *sh);
 void				delete_cut(t_42sh *sh);
+void				delete_after_cursor(t_42sh *sh);
 
 /*
 ** process

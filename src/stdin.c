@@ -6,12 +6,20 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 04:03:47 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/12 03:15:53 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include "sh.h"
+
+int		get_winsize(void)
+{
+	struct winsize ws;
+
+	ioctl(0, TIOCGWINSZ, &ws);
+	return (ws.ws_col);
+}
 
 void		ft_paste(t_42sh *sh)
 {
@@ -112,6 +120,7 @@ int					get_line(t_42sh *sh)
 {
 	int				i;
 	long			buf;
+	int				save;
 
 	sh->str_to_paste = NULL;
 	sh->line_pos = 0;
@@ -131,13 +140,34 @@ int					get_line(t_42sh *sh)
 				ft_strdel(&sh->str_to_paste);
 				return (1);
 			}
-					//printf("length record:%d\n", i);
+			//printf("length record:%d\n", i);
 			if ((i = check_input(sh, buf)) != 1)
 			{
 				if (i == -1)
 					return (0);
-				ft_putchar_fd(buf, 0);
-				add_char(buf, sh);
+				//ft_putchar_fd(buf, 0);
+				if (i != 2)
+					add_char(buf, sh);
+				if (sh->line_pos == sh->len_line && i != 2)
+				{
+					ft_putchar_fd(buf, 0);
+					sh->line_pos++;
+				}
+				else
+				{
+					save = sh->line_pos;
+					delete_after_cursor(sh);
+					while (sh->input[sh->line_pos] != '\0')
+					{
+						ft_putchar_fd(sh->input[sh->line_pos], 0);
+						sh->line_pos++;
+						//move_to_right(sh);
+					}
+					while (sh->line_pos > save + 1)
+						move_to_left(sh);
+					if (i == 2 && save < sh->len_line)
+						move_to_left(sh);
+				}
 			}
 		}
 	}

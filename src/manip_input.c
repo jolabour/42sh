@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/04 00:26:26 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 04:07:30 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/12 02:16:42 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void		add_char(long input, t_42sh *sh)
 		sh->input[sh->len_line] = (char)input;
 		sh->input[sh->len_line + 1] = '\0';
 	}
-	sh->line_pos++;
 	sh->len_line++;
 }
 
@@ -66,6 +65,29 @@ void		delete_input_buf(t_42sh *sh)
 		move_to_left(sh);
 		tputs(tgetstr("dc", NULL), 1, putchar_custom);
 	}
+}
+
+void		delete_after_cursor(t_42sh *sh)
+{
+	while (sh->line_pos < sh->len_line)
+		move_to_right(sh);
+	while (sh->line_pos > 0)
+	{
+		if (sh->line_pos > 0)
+			move_to_left(sh);
+		delete_input(sh);
+	}
+	//ft_putnbr(sh->line_pos);
+	/*int		cursor;
+
+	cursor = sh->line_pos;
+	while (sh->line_pos < sh->len_line)
+		move_to_right(sh);
+	while (sh->line_pos > cursor)
+	{
+		move_to_left(sh);
+		delete_input(sh);
+	}*/
 }
 
 void		delete_input(t_42sh *sh)

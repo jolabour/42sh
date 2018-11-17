@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 22:25:36 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 01:35:12 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/12 03:04:52 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int					check_input(t_42sh *sh, long buf)
 			action_tab[i](sh);
 			if (i == 3)
 				return (-1);
+			if (i == 2)
+				return (2);
 			return (1);
 		}
 				i++;

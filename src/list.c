@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:28:33 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/06 07:29:05 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/09/08 01:12:23 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ char	**list_to_tab(t_env *env, char **copy_env)
 	int		i;
 
 	if (!(copy_env = malloc(sizeof(char *) * (len_list(env) + 1))))
-		print_error_and_exit(_ENOMEM);
+		print_error(_ENOMEM, 1);
 	i = 0;
 	while (env)
 	{
 		if ((copy_env[i] = ft_strdup(env->str)) == NULL)
-			print_error_and_exit(_ENOMEM);
+			print_error(_ENOMEM, 1);
 		env = env->next;
 		i++;
 	}
@@ -79,7 +79,7 @@ t_env		*set_list(char **env)
 	while (env[i])
 	{
 		if (!(new = create_node(env[i])))
-			print_error_and_exit(_ENOMEM);
+			print_error(_ENOMEM, 1);
 		lst_push(&start, new);
 		i++;
 	}
