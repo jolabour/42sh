@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/08 02:54:13 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/11/27 03:41:34 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,21 +111,28 @@ typedef struct 		s_ht
 
 typedef struct termios	t_term;
 
+typedef struct		s_stdin
+{
+	int				line_pos;
+	int				len_line;
+	char			*str_to_paste;
+	int				nb_line;
+	int				cursor_pos;
+}					t_stdin;
+
 typedef struct		s_42sh
 {
 	char			input[1000];
 	char			**tokens;
 	char			*valide_path;
-	int				size_of_window;
+	int				winsize;
 	int				prompt_len;
 	char			*pwd;
 	char			**bin_dirs;
 	char			**copy_env;
+	t_stdin			*stdin;
 	t_env			*env;
 	t_term			term;
-	char			*str_to_paste;
-	int				line_pos;
-	int				len_line;
 	t_ht			hashtable;
 }					t_42sh;
 
@@ -173,6 +180,7 @@ void				cut_select(t_42sh *sh, int pos);
 int				get_line(t_42sh *sh);
 int				get_winsize(void);
 void			ft_paste(t_42sh *sh);
+void			clean_print(t_42sh *sh);
 
 /*
 ** check_input
@@ -205,6 +213,7 @@ void				delete_input(t_42sh *sh);
 void				delete_input_buf(t_42sh *sh);
 void				delete_cut(t_42sh *sh);
 void				delete_after_cursor(t_42sh *sh);
+void				delete(void);
 
 /*
 ** process

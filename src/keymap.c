@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 22:25:36 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/12 03:04:52 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/02 17:53:20 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,22 @@ int					check_input(t_42sh *sh, long buf)
 				return (2);
 			return (1);
 		}
-				i++;
+		i++;
 	}
+	sh->winsize = get_winsize();
+	add_char(buf, sh);
+	sh->stdin->len_line++;
+	move_to_right(sh);
+	clean_print(sh);
+	/*if (sh->stdin->line_pos != sh->stdin->len_line)
+	{
+		if ((sh->stdin->len_line + sh->prompt_len - (sh->stdin->len_line - sh->stdin->line_pos)) % sh->winsize == 0)
+			sh->stdin->nb_line++;
+	}
+	else
+	{
+		if ((sh->stdin->len_line + sh->prompt_len - 1) % sh->winsize == 0)
+			sh->stdin->nb_line++;
+	}*/
 	return (0);
 }

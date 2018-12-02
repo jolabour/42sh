@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/08 02:54:17 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/11/29 15:14:14 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void			process(t_42sh *sh)
 	prompt(sh->env, sh);
 	if (get_line(sh) != 1)
 		return ;
-	if (sh->len_line == 0)
+	if (sh->stdin->len_line == 0)
 		return ;
 	sh->tokens = ft_strsplitset(sh->input, " \t");
 	if ((bucket_entry = ht_lookup(sh->tokens[0], &sh->hashtable)) != NULL)

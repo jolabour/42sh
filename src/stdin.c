@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/09/12 03:15:53 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/02 18:02:25 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,106 +27,73 @@ void		ft_paste(t_42sh *sh)
 	int		i;
 
 	i = 0;
-	len = ft_strlen(sh->str_to_paste);
-	ft_putstr_fd(sh->str_to_paste, 0);
+	len = ft_strlen(sh->stdin->str_to_paste);
+	ft_putstr_fd(sh->stdin->str_to_paste, 0);
 	while (i < len)
 	{
-		add_char(sh->str_to_paste[i], sh);
+		add_char(sh->stdin->str_to_paste[i], sh);
 		i++;
 	}
 }
 
-/*static int			check_input_aled(unsigned char *input, t_42sh *sh)
+void			ft_putlstr_fd(char *str, int fd, int len)
 {
-	if (UP_KEY(input))
-		return (1);
-	else if (DOWN_KEY(input))
-		return (1);
-	else if (TAB(input))
-		return (1);
-	else if (OPT_B(input))
-	{
-		move_to_begin_word(sh);
-		return (1);
-	}
-	else if (OPT_F(input))
-	{
-		move_to_end_word(sh);
-		return (1);
-	}
-	else if (RIGHT_KEY(input))
-	{
-		move_to_right(sh);
-		return (1);
-	}
-	else if (PAGE_UP(input))
-	{
-		move_up(sh);
-		return (1);
-	}
-	else if (PAGE_DOWN(input))
-	{
-		move_down(sh);
-		return (1);
-	}
-	else if (LEFT_KEY(input))
-	{
-		move_to_left(sh);
-		return (1);
-	}
-	else if (HOME(input))
-	{
-		move_to_start(sh);
-		return (1);
-	}
-	else if (END(input))
-	{
-		move_to_end(sh);
-		return (1);
-	}
-	else if (CTRL_D(input))
-	{
-		insert_mode_off();
-		exit(0);
-	}
-	else if (CTRL_C(input))
-	{
-		ft_putchar('\n');
-		return (-1);
-	}
-	else if (DEL(input))
-	{
-		delete_input_buf(sh);
-		return (1);
-	}
-	else if (OPT_C(input) || OPT_X(input))
-	{
-		//ft_putchar('a');
-		select_mode(sh);
-		return (1);
-	}
-	else if (OPT_V(input))
-	{
-		if (sh->str_to_paste != NULL)
-			ft_paste(sh);
-		return (1);
-	}
-	else if (input[0] < 32 || input[0] > 255)
-		return (1);
-	return (0);
-}
-*/
-int					get_line(t_42sh *sh)
-{
-	int				i;
-	long			buf;
-	int				save;
+	int			i;
 
-	sh->str_to_paste = NULL;
-	sh->line_pos = 0;
-	sh->len_line = 0;
-	insert_mode_on();
-	sh->input[0] = '\0';
+	i = 0;
+	while (str[i] && i < len)
+	{
+		ft_putchar_fd(str[i], fd);
+		i++;
+	}
+}
+
+int				get_curent_line(t_42sh *sh)
+{
+	int			pos;
+
+	sh->winsize = get_winsize();
+	pos = (sh->stdin->cursor_pos) / (sh->winsize);
+	return (pos);
+}
+
+void			clean_print(t_42sh *sh)
+{
+	int			i;
+	int			pos_line;
+
+	i = 0;
+	pos_line = get_curent_line(sh);
+	sh->stdin->nb_line = (sh->prompt_len + sh->stdin->len_line) / (sh->winsize);
+	tputs(tgoto(tgetstr("sc", NULL), 0, 0), 0, putchar_custom);
+	while (i < pos_line)
+	{
+		tputs(tgoto(tgetstr("up", NULL), 0, 0), 0, putchar_custom);
+		i++;
+	}
+	tputs(tgoto(tgetstr("ch", NULL), sh->prompt_len, sh->prompt_len), 0, putchar_custom);
+	tputs(tgetstr("cd", NULL), 0, putchar_custom);
+	ft_putstr_fd(sh->input, 0);
+	tputs(tgoto(tgetstr("rc", NULL), 0, 0), 0, putchar_custom);
+}
+
+static void		init_stdin(t_42sh *sh)
+{
+	if (!(sh->stdin = malloc(sizeof(t_stdin))))
+		print_error(_ENOMEM, 1);
+	sh->stdin->line_pos = 0;
+	sh->stdin->len_line = 0;
+	sh->stdin->str_to_paste = NULL;
+	sh->stdin->cursor_pos = sh->prompt_len;
+	sh->stdin->nb_line = 0;
+}
+
+int			get_line(t_42sh *sh)
+{
+	long	buf;
+	int		i;
+
+	init_stdin(sh);
 	while (42)
 	{
 		buf = 0;
@@ -134,40 +101,15 @@ int					get_line(t_42sh *sh)
 		{
 			if (buf == '\n')
 			{
-				ft_putchar('\n');
-				sh->input[sh->len_line] = '\0';
-				insert_mode_off();
-				ft_strdel(&sh->str_to_paste);
+				ft_putchar_fd('\n', 0);
+				sh->input[sh->stdin->len_line] = '\0';
+				ft_strdel(&sh->stdin->str_to_paste);
 				return (1);
 			}
-			//printf("length record:%d\n", i);
 			if ((i = check_input(sh, buf)) != 1)
 			{
 				if (i == -1)
 					return (0);
-				//ft_putchar_fd(buf, 0);
-				if (i != 2)
-					add_char(buf, sh);
-				if (sh->line_pos == sh->len_line && i != 2)
-				{
-					ft_putchar_fd(buf, 0);
-					sh->line_pos++;
-				}
-				else
-				{
-					save = sh->line_pos;
-					delete_after_cursor(sh);
-					while (sh->input[sh->line_pos] != '\0')
-					{
-						ft_putchar_fd(sh->input[sh->line_pos], 0);
-						sh->line_pos++;
-						//move_to_right(sh);
-					}
-					while (sh->line_pos > save + 1)
-						move_to_left(sh);
-					if (i == 2 && save < sh->len_line)
-						move_to_left(sh);
-				}
 			}
 		}
 	}

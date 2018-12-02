@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/09/06 07:24:52 by jolabour         ###   ########.fr        #
+#    Updated: 2018/11/18 01:12:21 by jolabour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,8 +28,7 @@ VPATH		= $(SRCS_DIR)
 
 SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c \
 			  stdin.c move_arrows.c manip_input.c insert_mode.c move_word.c \
-			  move_line.c select_mode.c move_select_mode.c exit_select_mode.c \
-			  action_select_mode.c control_action.c keymap.c hashtable.c \
+			  control_action.c keymap.c hashtable.c \
 			  init_hashtable.c ft_joinpath.c env.c
 
 #
@@ -38,7 +37,7 @@ SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c \
 
 CC 		= gcc
 OBJS		= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
-CFLAGS		= -Wall -Werror -Wextra $(addprefix -I, $(INC_DIRS))
+CFLAGS		= -Wall -Werror -Wextra $(addprefix -I, $(INC_DIRS)) -g3
 LFLAGS		= -L$(LIB_DIR) -lft -ltermcap
 LIB		= libft.a
 COMP		= $(CC) $(CFLAGS) -o $@ -c $<
