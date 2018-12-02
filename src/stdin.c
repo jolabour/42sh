@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/02 18:02:25 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/02 22:48:24 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,12 @@ void		ft_paste(t_42sh *sh)
 
 	i = 0;
 	len = ft_strlen(sh->stdin->str_to_paste);
-	ft_putstr_fd(sh->stdin->str_to_paste, 0);
 	while (i < len)
 	{
 		add_char(sh->stdin->str_to_paste[i], sh);
 		i++;
 	}
+	clean_print(sh);
 }
 
 void			ft_putlstr_fd(char *str, int fd, int len)
@@ -103,13 +103,15 @@ int			get_line(t_42sh *sh)
 			{
 				ft_putchar_fd('\n', 0);
 				sh->input[sh->stdin->len_line] = '\0';
-				ft_strdel(&sh->stdin->str_to_paste);
+				//ft_strdel(&sh->stdin->str_to_paste);
 				return (1);
 			}
 			if ((i = check_input(sh, buf)) != 1)
 			{
 				if (i == -1)
 					return (0);
+				if (i == 2)
+					clean_print(sh);
 			}
 		}
 	}

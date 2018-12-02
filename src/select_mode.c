@@ -11,19 +11,56 @@
 
 #include "sh.h"
 
-/*void				select_mode(t_42sh *sh)
+void				clean_print_select(t_42sh *sh)
 {
-	int				i;
-	unsigned char	buf[7];
-	int				pos;
+	int			i;
+	int			pos_line;
 
-	pos = sh->line_pos;
+	i = 0;
+	pos_line = get_curent_line(sh);
+	sh->stdin->nb_line = (sh->prompt_len + sh->stdin->len_line) / (sh->winsize);
+	tputs(tgoto(tgetstr("sc", NULL), 0, 0), 0, putchar_custom);
+	while (i < pos_line)
+	{
+		tputs(tgoto(tgetstr("up", NULL), 0, 0), 0, putchar_custom);
+		i++;
+	}
+	tputs(tgoto(tgetstr("ch", NULL), sh->prompt_len, sh->prompt_len), 0, putchar_custom);
+	tputs(tgetstr("cd", NULL), 0, putchar_custom);
+	i = 0;
+	while (sh->input[i] != '\0')
+	{
+		if ((i == sh->stdin->start_und && sh->stdin->start_und <= sh->stdin->end_und) || (i == sh->stdin->end_und && sh->stdin->end_und <= sh->stdin->start_und))
+			tputs(tgetstr("mr", NULL), 1, putchar_custom);
+		ft_putchar_fd(sh->input[i], 0);
+		if ((i == sh->stdin->start_und && sh->stdin->start_und > sh->stdin->end_und) || (i == sh->stdin->end_und && sh->stdin->end_und > sh->stdin->start_und) || (sh->stdin->start_und == sh->stdin->end_und))
+			tputs(tgetstr("me", NULL), 1, putchar_custom);
+		i++;
+	}
+	tputs(tgoto(tgetstr("rc", NULL), 0, 0), 0, putchar_custom);
+}
+
+void				select_mode(t_42sh *sh)
+{
+	long			buf;
+	int				i;
+
+	sh->stdin->save_pos = sh->stdin->line_pos;
+	sh->stdin->start_und = sh->stdin->line_pos;
+	sh->stdin->end_und = sh->stdin->line_pos;
 	while (42)
 	{
-		if ((i = read(0, buf, 6)) > 0)
+		buf = 0;
+		if ((i = read(0, &buf, 3)) > 0)
 		{
-			buf[i] = '\0';
-			if (RIGHT_KEY(buf))
+			if ((i = check_input_select(sh, buf)) != 2)
+			{
+				clean_print(sh);
+				return ;
+			}
+		}
+
+			/*if (RIGHT_KEY(buf))
 				move_to_right_select(sh, pos);
 			else if (LEFT_KEY(buf))
 				move_to_left_select(sh, pos);
@@ -48,6 +85,6 @@
 				exit_select_mode(sh, pos);
 				return ;
 			}
-		}
+		}*/
 	}
-}*/
+}

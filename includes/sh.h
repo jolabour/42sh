@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/11/27 03:41:34 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/02 22:24:42 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@
 # include "libft.h"
 
 
-# define NB_INPUT 9
+# define NB_INPUT_SELECT 7
+# define NB_INPUT 12
 # define RIGHT_KEY 4414235
 # define LEFT_KEY 4479771
 # define HOME 4741915
@@ -32,15 +33,14 @@
 # define CTRL_C 3
 # define CTRL_D 4
 # define DEL 127
-# define UP_KEY(x) ((x)[0] == 27 && (x)[2] == 'A')
-# define DOWN_KEY(x) ((x)[0] == 27 && (x)[2] == 'B')
-# define TAB(x) ((x)[0] == 9)
+# define UP_KEY 4283163
+# define DOWN_KEY 4348699
+# define TAB 9
 # define OPT_B 11241698
 # define OPT_F 37574
-# define OPT_C(x) 
-# define OPT_X(x) ((x)[0] == 226 && (x)[1] == 137 && (x)[2] == 136)
-# define OPT_V(x) ((x)[0] == 0xE2 && (x)[1] == 136 && (x)[2] == 0x9A)
-# define PAGE_DOWN(x) ((x)[0] == 27 && (x)[2] == '6' && (x)[3] == '~')
+# define OPT_C 42947
+# define OPT_X 8948194
+# define OPT_V 10127586
 
 # define SET_FG_RED		"\x1b[38;5;196m"
 # define RESET_COLOR	"\x1b[0m"
@@ -117,7 +117,11 @@ typedef struct		s_stdin
 	int				len_line;
 	char			*str_to_paste;
 	int				nb_line;
+	int				start_und;
+	int				end_und;
+	int				ctrlc;
 	int				cursor_pos;
+	int				save_pos;
 }					t_stdin;
 
 typedef struct		s_42sh
@@ -147,13 +151,20 @@ typedef				void(*t_ak)(t_42sh *sh);
 */
 
 void				select_mode(t_42sh *sh);
+void				clean_print_select(t_42sh *sh);
+
+/*
+** keymap_select
+*/
+
+int					check_input_select(t_42sh *sh, long buf);
 
 /*
 ** move_select_mode
 */
 
-void				move_to_right_select(t_42sh *sh, int pos);
-void				move_to_left_select(t_42sh *sh, int pos);
+void				move_to_right_select(t_42sh *sh);
+void				move_to_left_select(t_42sh *sh);
 
 /*
 ** exit_select_mode
@@ -165,9 +176,9 @@ void				exit_select_mode(t_42sh *sh, int pos);
 ** action_select_mode
 */
 
-void				copy_select(t_42sh *sh, int pos);
-void				del_select(t_42sh *sh, int pos);
-void				cut_select(t_42sh *sh, int pos);
+void				copy_select(t_42sh *sh);
+void				del_select(t_42sh *sh);
+void				cut_select(t_42sh *sh);
 
 /*****************************************************************************\
 |                               LINE_EDITION                                  |
@@ -181,6 +192,7 @@ int				get_line(t_42sh *sh);
 int				get_winsize(void);
 void			ft_paste(t_42sh *sh);
 void			clean_print(t_42sh *sh);
+int				get_curent_line(t_42sh *sh);
 
 /*
 ** check_input
