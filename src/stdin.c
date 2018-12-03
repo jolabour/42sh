@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/03 16:20:26 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/03 20:42:40 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void		ft_paste(t_42sh *sh)
 	int		i;
 	char	tmp[256];
 
+	if (sh->stdin->str_to_paste == NULL)
+		return ;
 	i = 0;
 	len = ft_strlen(sh->stdin->str_to_paste);
 	ft_strcpy(tmp, sh->input + sh->stdin->line_pos);
@@ -85,6 +87,7 @@ static void		init_stdin(t_42sh *sh)
 	sh->stdin->str_to_paste = NULL;
 	sh->stdin->cursor_pos = sh->prompt_len;
 	sh->stdin->nb_line = 0;
+	sh->stdin->ctrlc = 0;
 }
 
 int			get_line(t_42sh *sh)
@@ -96,18 +99,18 @@ int			get_line(t_42sh *sh)
 	while (42)
 	{
 		buf = 0;
-		if ((i = read(0, &buf, 3)) > 0)
+		if ((i = read(0, &buf, 6)) > 0)
 		{
 			if (buf == '\n')
 			{
 				ft_putchar_fd('\n', 0);
 				sh->input[sh->stdin->len_line] = '\0';
-				//ft_strdel(&sh->stdin->str_to_paste);
+				ft_strdel(&sh->stdin->str_to_paste);
 				return (1);
 			}
 			if ((i = check_input(sh, buf)) != 1)
 			{
-				if (i == -1)
+				if (i == -1 || (sh->stdin->ctrlc == 1 && i == 2))
 					return (0);
 				if (i == 2)
 					clean_print(sh);

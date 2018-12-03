@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/02 22:24:42 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/03 20:40:17 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 
 
 # define NB_INPUT_SELECT 7
-# define NB_INPUT 12
+# define NB_INPUT 14
 # define RIGHT_KEY 4414235
 # define LEFT_KEY 4479771
 # define HOME 4741915
@@ -41,7 +41,8 @@
 # define OPT_C 42947
 # define OPT_X 8948194
 # define OPT_V 10127586
-
+# define OPT_UP 1096489755
+# define OPT_DOWN 1113266971
 # define SET_FG_RED		"\x1b[38;5;196m"
 # define RESET_COLOR	"\x1b[0m"
 
@@ -255,6 +256,7 @@ void				move_to_end_word(t_42sh *sh);
 */
 
 void				move_down(t_42sh *sh);
+void				move_up(t_42sh *sh);
 
 /*****************************************************************************\
 |                                  PROCESS                                    |

@@ -55,6 +55,8 @@ void				select_mode(t_42sh *sh)
 		{
 			if ((i = check_input_select(sh, buf)) != 2)
 			{
+				if (i == -1)
+					return ;
 				clean_print(sh);
 				while (sh->stdin->line_pos > sh->stdin->len_line)
 					move_to_left(sh);

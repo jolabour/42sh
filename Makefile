@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/12/02 22:26:03 by jolabour         ###   ########.fr        #
+#    Updated: 2018/12/03 20:39:36 by jolabour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c \
 			  stdin.c move_arrows.c manip_input.c insert_mode.c move_word.c \
 			  control_action.c keymap.c hashtable.c keymap_select.c \
 			  init_hashtable.c ft_joinpath.c env.c select_mode.c \
-			  move_select_mode.c action_select_mode.c
+			  move_select_mode.c action_select_mode.c move_line.c
 
 #
 # Build
