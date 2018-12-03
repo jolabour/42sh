@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/02 22:48:13 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/03 16:08:56 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void			process(t_42sh *sh)
 	prompt(sh->env, sh);
 	if (get_line(sh) != 1)
 		return ;
-	ft_putendl(sh->stdin->str_to_paste);
+	ft_putnbr(sh->stdin->len_line);
 	if (sh->stdin->len_line == 0)
 		return ;
 	sh->tokens = ft_strsplitset(sh->input, " \t");

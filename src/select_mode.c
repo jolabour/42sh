@@ -56,35 +56,10 @@ void				select_mode(t_42sh *sh)
 			if ((i = check_input_select(sh, buf)) != 2)
 			{
 				clean_print(sh);
+				while (sh->stdin->line_pos > sh->stdin->len_line)
+					move_to_left(sh);
 				return ;
 			}
 		}
-
-			/*if (RIGHT_KEY(buf))
-				move_to_right_select(sh, pos);
-			else if (LEFT_KEY(buf))
-				move_to_left_select(sh, pos);
-			else if (OPT_C(buf))
-			{
-				copy_select(sh, pos);
-				exit_select_mode(sh, pos);
-				return ;
-			}
-			else if (OPT_X(buf))
-			{
-				cut_select(sh, pos);
-				return ;
-			}
-			else if (DEL(buf))
-			{
-				del_select(sh, pos);
-				return ;
-			}
-			else
-			{
-				exit_select_mode(sh, pos);
-				return ;
-			}
-		}*/
 	}
 }
