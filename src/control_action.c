@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 00:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/03 18:10:01 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/05 17:47:14 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void			ctrlc_action(t_42sh *sh)
 {
 	ft_putchar('\n');
-	sh->input[0] = '\0';
+	sh->stdin->input[0] = '\0';
 	sh->stdin->ctrlc = 1;
 }
 

@@ -28,11 +28,11 @@ void				clean_print_select(t_42sh *sh)
 	tputs(tgoto(tgetstr("ch", NULL), sh->prompt_len, sh->prompt_len), 0, putchar_custom);
 	tputs(tgetstr("cd", NULL), 0, putchar_custom);
 	i = 0;
-	while (sh->input[i] != '\0')
+	while (sh->stdin->input[i] != '\0')
 	{
 		if ((i == sh->stdin->start_und && sh->stdin->start_und <= sh->stdin->end_und) || (i == sh->stdin->end_und && sh->stdin->end_und <= sh->stdin->start_und))
 			tputs(tgetstr("mr", NULL), 1, putchar_custom);
-		ft_putchar_fd(sh->input[i], 0);
+		ft_putchar_fd(sh->stdin->input[i], 0);
 		if ((i == sh->stdin->start_und && sh->stdin->start_und > sh->stdin->end_und) || (i == sh->stdin->end_und && sh->stdin->end_und > sh->stdin->start_und) || (sh->stdin->start_und == sh->stdin->end_und))
 			tputs(tgetstr("me", NULL), 1, putchar_custom);
 		i++;

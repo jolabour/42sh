@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 22:25:36 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/03 20:29:59 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/05 17:49:23 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,19 @@
 const long			input_tab[NB_INPUT] = {RIGHT_KEY, LEFT_KEY, DEL, CTRL_C, CTRL_D, HOME, END, OPT_B, OPT_F, OPT_C, OPT_X, OPT_V, OPT_UP, OPT_DOWN};
 
 const t_ak			action_tab[NB_INPUT] = {move_to_right, move_to_left, delete_input_buf, ctrlc_action, ctrld_action, move_to_start, move_to_end, move_to_begin_word, move_to_end_word, select_mode, select_mode, ft_paste, move_up, move_down};
+
+void				up_input(t_42sh *sh)
+{
+	char			*tmp;
+
+	tmp = ft_strdup(sh->stdin->input);
+	ft_strdel(&sh->stdin->input);
+	sh->stdin->size_of_input = sh->stdin->size_of_input * 2;
+	if (!(sh->stdin->input = malloc(sizeof(char) * sh->stdin->size_of_input)))
+		print_error(_ENOMEM, 1);
+	ft_strcpy(sh->stdin->input, tmp);
+	ft_strdel(&tmp);
+}
 
 int					check_input(t_42sh *sh, long buf)
 {
@@ -34,6 +47,8 @@ int					check_input(t_42sh *sh, long buf)
 		}
 		i++;
 	}
+	if (sh->stdin->len_line >= sh->stdin->size_of_input - 10)
+		up_input(sh);
 	sh->winsize = get_winsize();
 	add_char(buf, sh);
 	sh->stdin->len_line++;

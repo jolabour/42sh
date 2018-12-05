@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/03 20:40:17 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/05 23:44:22 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,11 +123,43 @@ typedef struct		s_stdin
 	int				ctrlc;
 	int				cursor_pos;
 	int				save_pos;
+	int				size_of_input;
+	char			*input;
 }					t_stdin;
+
+enum				e_token
+{
+	WORD,
+	OPERATOR,
+	NEWLINE,
+};
+
+enum e_token				g_token;
+
+enum				e_operator
+{
+	NONE,
+	PIPE,
+	SEMI,
+	GREAT,
+	LESS,
+	GREATAND,
+	DLESS,
+	DGREAT,
+};
+
+enum e_operator			g_operator;
+
+typedef struct		s_lexer
+{
+	char			*str;
+	int				token_type;
+	int				operator_type;
+	struct s_lexer	*next;
+}					t_lexer;
 
 typedef struct		s_42sh
 {
-	char			input[1000];
 	char			**tokens;
 	char			*valide_path;
 	int				winsize;
@@ -135,6 +167,9 @@ typedef struct		s_42sh
 	char			*pwd;
 	char			**bin_dirs;
 	char			**copy_env;
+	int				token_nbr;
+	t_lexer			*lexer;
+	int				lex_pos;
 	t_stdin			*stdin;
 	t_env			*env;
 	t_term			term;
@@ -194,6 +229,7 @@ int				get_winsize(void);
 void			ft_paste(t_42sh *sh);
 void			clean_print(t_42sh *sh);
 int				get_curent_line(t_42sh *sh);
+void			up_input(t_42sh *sh);
 
 /*
 ** check_input
@@ -257,6 +293,22 @@ void				move_to_end_word(t_42sh *sh);
 
 void				move_down(t_42sh *sh);
 void				move_up(t_42sh *sh);
+
+
+/*****************************************************************************\
+|                                   LEXER                                     |
+\*****************************************************************************/
+
+void				get_word(t_42sh *sh);
+void				get_operator(t_42sh *sh);
+void				get_newline(t_42sh *sh);
+void				ft_lexer(t_42sh *sh);
+int					ft_is_blank(char c);
+int					ft_is_newline(char c);
+int					ft_is_operator(char c);
+void				add_token(t_42sh *sh, char *str, int token_type, int operator_type);
+void				del_lexer(t_42sh *sh);
+void				print_lexer(t_42sh *sh);
 
 /*****************************************************************************\
 |                                  PROCESS                                    |

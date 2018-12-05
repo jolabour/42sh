@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 22:49:28 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/03 16:32:06 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/05 17:47:02 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ void				copy_select(t_42sh *sh)
 	if (sh->stdin->str_to_paste != NULL)
 		ft_strdel(&sh->stdin->str_to_paste);
 	if (sh->stdin->end_und > sh->stdin->start_und)
-		sh->stdin->str_to_paste = ft_strsub(sh->input, sh->stdin->start_und, sh->stdin->end_und - sh->stdin->start_und + 1);
+		sh->stdin->str_to_paste = ft_strsub(sh->stdin->input, sh->stdin->start_und, sh->stdin->end_und - sh->stdin->start_und + 1);
 	else if (sh->stdin->end_und < sh->stdin->start_und)
-		sh->stdin->str_to_paste = ft_strsub(sh->input, sh->stdin->end_und, sh->stdin->start_und - sh->stdin->end_und + 1);
+		sh->stdin->str_to_paste = ft_strsub(sh->stdin->input, sh->stdin->end_und, sh->stdin->start_und - sh->stdin->end_und + 1);
 	else if (sh->stdin->end_und == sh->stdin->start_und)
-		sh->stdin->str_to_paste = ft_strsub(sh->input, sh->stdin->start_und, 1);
+		sh->stdin->str_to_paste = ft_strsub(sh->stdin->input, sh->stdin->start_und, 1);
 }
 
 void				del_select(t_42sh *sh)
@@ -37,13 +37,13 @@ void				del_select(t_42sh *sh)
 		sh->stdin->end_und = tmp2;
 	}
 	if ((sh->stdin->end_und - sh->stdin->start_und) == sh->stdin->len_line)
-		sh->input[0] = '\0';
+		sh->stdin->input[0] = '\0';
 	else
 	{
-		ft_strcpy(tmp, sh->input + sh->stdin->end_und + 1);
-		ft_strcpy(sh->input + sh->stdin->start_und, tmp);
+		ft_strcpy(tmp, sh->stdin->input + sh->stdin->end_und + 1);
+		ft_strcpy(sh->stdin->input + sh->stdin->start_und, tmp);
 	}
-	sh->stdin->len_line = ft_strlen(sh->input);
+	sh->stdin->len_line = ft_strlen(sh->stdin->input);
 }
 
 void				cut_select(t_42sh *sh)

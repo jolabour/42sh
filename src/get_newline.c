@@ -1,36 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   get_newline.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/07/29 04:21:23 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/05 23:59:38 by jolabour         ###   ########.fr       */
+/*   Created: 2018/12/05 21:29:01 by jolabour          #+#    #+#             */
+/*   Updated: 2018/12/05 23:49:45 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-int			main(int argc, char **argv, char **env)
+void		get_newline(t_42sh *sh)
 {
-	t_42sh	sh;
-
-	argc = 1;
-	argv = NULL;
-	init_shell(&sh, env);
-	if (!(env[0]))
-		exit(0);
-	while (42)
-	{
-		process(&sh);
-		ft_strdel(&sh.stdin->input);
-		free(sh.stdin);
-		print_lexer(&sh);
-		del_lexer(&sh);
-		free(sh.lexer);
-		//free(sh.lexer);
-		//free_all(&sh);
-	}
-	return (0);
+	add_token(sh, "\n", NEWLINE, NONE);
+	sh->token_nbr++;
+	sh->lex_pos++;
 }

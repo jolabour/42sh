@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/04 00:26:26 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/02 17:55:35 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/05 17:56:25 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,15 @@ void		add_char(long input, t_42sh *sh)
 
 	if (sh->stdin->line_pos != sh->stdin->len_line)
 	{
-		ft_strcpy(tmp, &sh->input[sh->stdin->line_pos]);
-		sh->input[sh->stdin->line_pos] = (char)input;
-		ft_strcpy(sh->input + sh->stdin->line_pos + 1, tmp);
-		sh->input[sh->stdin->len_line + 1] = '\0';
+		ft_strcpy(tmp, &sh->stdin->input[sh->stdin->line_pos]);
+		sh->stdin->input[sh->stdin->line_pos] = (char)input;
+		ft_strcpy(sh->stdin->input + sh->stdin->line_pos + 1, tmp);
+		sh->stdin->input[sh->stdin->len_line + 1] = '\0';
 	}
 	else
 	{
-		sh->input[sh->stdin->len_line] = (char)input;
-		sh->input[sh->stdin->len_line + 1] = '\0';
+		sh->stdin->input[sh->stdin->len_line] = (char)input;
+		sh->stdin->input[sh->stdin->len_line + 1] = '\0';
 	}
 }
 
@@ -36,12 +36,12 @@ void		delete_char(t_42sh *sh)
 
 	if (sh->stdin->line_pos != sh->stdin->len_line)
 	{
-		ft_strcpy(tmp, &sh->input[sh->stdin->line_pos]);
-		ft_strcpy(sh->input + sh->stdin->line_pos - 1, tmp);
-		sh->input[sh->stdin->len_line - 1] = '\0';
+		ft_strcpy(tmp, &sh->stdin->input[sh->stdin->line_pos]);
+		ft_strcpy(sh->stdin->input + sh->stdin->line_pos - 1, tmp);
+		sh->stdin->input[sh->stdin->len_line - 1] = '\0';
 	}
 	else
-		sh->input[sh->stdin->len_line - 1] = '\0';
+		sh->stdin->input[sh->stdin->len_line - 1] = '\0';
 
 }
 

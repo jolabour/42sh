@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/03 18:55:09 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/05 20:25:39 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,15 +62,15 @@ char	*check_access(t_42sh *sh)
 
 void			process(t_42sh *sh)
 {
-	BUCKET_CONTENT	*bucket_entry;
+	//BUCKET_CONTENT	*bucket_entry;
 
 	prompt(sh->env, sh);
 	if (get_line(sh) != 1)
 		return ;
-	ft_putnbr(sh->stdin->line_pos);
-	if (sh->stdin->len_line == 0)
+	if (sh->stdin->len_line == 0 || !sh->stdin->input)
 		return ;
-	sh->tokens = ft_strsplitset(sh->input, " \t");
+	ft_lexer(sh);
+	/*sh->tokens = ft_strsplitset(sh->input, " \t");
 	if ((bucket_entry = ht_lookup(sh->tokens[0], &sh->hashtable)) != NULL)
 		sh->valide_path = ft_strdup(bucket_entry->path);
 	else
@@ -86,7 +86,7 @@ void			process(t_42sh *sh)
 		return ;
 	}
 	get_fork(sh);
-	/*ft_putnbr(sh->size_of_window);
+	ft_putnbr(sh->size_of_window);
 	ft_putnbr(sh->line_pos + sh->prompt_len);
 	ft_putnbr(sh->len_line);*/
 }

@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/03 20:42:40 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/05 17:45:25 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,11 @@ void		ft_paste(t_42sh *sh)
 		return ;
 	i = 0;
 	len = ft_strlen(sh->stdin->str_to_paste);
-	ft_strcpy(tmp, sh->input + sh->stdin->line_pos);
-	ft_strcpy(sh->input + sh->stdin->line_pos, sh->stdin->str_to_paste);
-	ft_strcpy(sh->input + sh->stdin->line_pos + len, tmp);
+	if (sh->stdin->len_line + len >= sh->stdin->size_of_input - 10)
+		up_input(sh);
+	ft_strcpy(tmp, sh->stdin->input + sh->stdin->line_pos);
+	ft_strcpy(sh->stdin->input + sh->stdin->line_pos, sh->stdin->str_to_paste);
+	ft_strcpy(sh->stdin->input + sh->stdin->line_pos + len, tmp);
 	sh->stdin->len_line += len;
 }
 
@@ -74,13 +76,16 @@ void			clean_print(t_42sh *sh)
 	}
 	tputs(tgoto(tgetstr("ch", NULL), sh->prompt_len, sh->prompt_len), 0, putchar_custom);
 	tputs(tgetstr("cd", NULL), 0, putchar_custom);
-	ft_putstr_fd(sh->input, 0);
+	ft_putstr_fd(sh->stdin->input, 0);
 	tputs(tgoto(tgetstr("rc", NULL), 0, 0), 0, putchar_custom);
 }
 
 static void		init_stdin(t_42sh *sh)
 {
 	if (!(sh->stdin = malloc(sizeof(t_stdin))))
+		print_error(_ENOMEM, 1);
+	sh->stdin->size_of_input = 1000;
+	if (!(sh->stdin->input = malloc(sizeof(char) * sh->stdin->size_of_input)))
 		print_error(_ENOMEM, 1);
 	sh->stdin->line_pos = 0;
 	sh->stdin->len_line = 0;
@@ -104,7 +109,7 @@ int			get_line(t_42sh *sh)
 			if (buf == '\n')
 			{
 				ft_putchar_fd('\n', 0);
-				sh->input[sh->stdin->len_line] = '\0';
+				sh->stdin->input[sh->stdin->len_line] = '\0';
 				ft_strdel(&sh->stdin->str_to_paste);
 				return (1);
 			}
