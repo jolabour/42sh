@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/05 17:45:25 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/06 01:00:18 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ int			get_line(t_42sh *sh)
 		{
 			if (buf == '\n')
 			{
+				sh->stdin->input[sh->stdin->len_line] = '\n';
+				sh->stdin->len_line++;
 				ft_putchar_fd('\n', 0);
 				sh->stdin->input[sh->stdin->len_line] = '\0';
 				ft_strdel(&sh->stdin->str_to_paste);
