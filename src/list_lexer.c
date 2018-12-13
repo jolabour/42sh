@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 20:25:50 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/06 00:14:03 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/09 19:36:16 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,13 +65,13 @@ void		del_last(t_lexer **lexer)
 
 	tmp = *lexer;
 	prev = tmp;
-	while (tmp != NULL)
+	while (tmp->next != NULL)
 	{
 		prev = tmp;
 		tmp = tmp->next;
 	}
 	prev->next = NULL;
-	free(&tmp->str);
+	ft_strdel(&tmp->str);
 	free(tmp);
 	tmp = NULL;
 }
@@ -84,5 +84,8 @@ void		del_lexer(t_42sh *sh)
 		sh->token_nbr--;
 	}
 	if (sh->token_nbr == 0)
+	{
 		ft_strdel(&sh->lexer->str);
+		free(sh->lexer);
+	}
 }
