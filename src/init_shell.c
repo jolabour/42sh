@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:21:16 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/06 19:01:15 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/13 05:16:35 by ttresori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void		init_shell(t_42sh *sh, char **env)
 			print_error(_ENOMEM, 1);
 	}
 	sh->copy_env = list_to_tab(sh->env, sh->copy_env);
+	sh->path_history = ft_strdup(".42sh_history");
 	init_hashtable(sh);
 	get_term(sh);
 }

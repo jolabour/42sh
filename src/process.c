@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/06 18:54:36 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/13 05:16:01 by ttresori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ void			process(t_42sh *sh)
 	if (sh->stdin->len_line == 0 || !sh->stdin->input)
 		return ;
 	ft_lexer(sh);
+	add_history(sh->stdin->input, sh->path_history);
+	parser(sh);
 	/*sh->tokens = ft_strsplitset(sh->input, " \t");
 	if ((bucket_entry = ht_lookup(sh->tokens[0], &sh->hashtable)) != NULL)
 		sh->valide_path = ft_strdup(bucket_entry->path);

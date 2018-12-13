@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/13 04:18:12 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/13 05:21:42 by ttresori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <termios.h>
 # include <sys/ioctl.h>
 # include <stdio.h>
+# include <fcntl.h>
 # include "libft.h"
 
 
@@ -167,6 +168,7 @@ typedef struct		s_42sh
 	char			*pwd;
 	char			**bin_dirs;
 	char			**copy_env;
+	char			*path_history;
 	int				token_nbr;
 	t_lexer			*lexer;
 	int				lex_pos;
@@ -387,5 +389,23 @@ int					ft_set_errno(int n);
 char				*ft_joinpath(const char *path, const char *name);
 
 void				print_env_array(char **env);
+
+/***************************************************************************** \
+|                              HISTORY                                        |
+\*****************************************************************************/
+
+void				add_history(char *line, char *path_history);
+void				init_history(char	*path_history);
+void				up_history(t_42sh *sh);
+void				parser(t_42sh *sh);
+/*
+** Options
+*/
+
+void				history_p(t_42sh *sh);
+void				clean_history(char *path);
+void				print_history(char *path, int start);
+void				print_history_n(char *path);
+void				print_history_r(char *path);
 
 #endif
