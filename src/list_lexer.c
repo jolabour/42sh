@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 20:25:50 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/09 19:36:16 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/13 04:29:15 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,16 +76,17 @@ void		del_last(t_lexer **lexer)
 	tmp = NULL;
 }
 
-void		del_lexer(t_42sh *sh)
+void		del_lexer(t_lexer **lexer)
 {
-	while (sh->token_nbr > 0)
+	t_lexer *tmp;
+	t_lexer *prev;
+
+	tmp = *lexer;
+	while (tmp)
 	{
-		del_last(&sh->lexer);
-		sh->token_nbr--;
-	}
-	if (sh->token_nbr == 0)
-	{
-		ft_strdel(&sh->lexer->str);
-		free(sh->lexer);
+		free(tmp->str);
+		prev = tmp;
+		tmp = tmp->next;
+		free(prev);
 	}
 }

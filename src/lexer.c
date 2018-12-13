@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 19:38:48 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/06 00:56:47 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/13 04:27:30 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ void			ft_lexer(t_42sh *sh)
 {
 	if (!sh->stdin->input)
 		return ;
-	if (!(sh->lexer = malloc(sizeof(t_lexer))))
-		print_error(_ENOMEM, 1);
+//	if (!(sh->lexer = malloc(sizeof(t_lexer))))
+//		print_error(_ENOMEM, 1);
 	init_lexer(sh);
 	while (sh->stdin->input[sh->lex_pos] != '\0')
 	{

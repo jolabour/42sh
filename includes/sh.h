@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/09 19:21:14 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/13 04:18:12 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,7 +307,7 @@ int					ft_is_blank(char c);
 int					ft_is_newline(char c);
 int					ft_is_operator(char c);
 void				add_token(t_42sh *sh, char *str, int token_type, int operator_type);
-void				del_lexer(t_42sh *sh);
+void				del_lexer(t_lexer **lexer);
 int					get_squote(t_42sh *sh, int i);
 int					get_dquote(t_42sh *sh, int i);
 void				print_lexer(t_42sh *sh);
