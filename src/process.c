@@ -70,8 +70,8 @@ void			process(t_42sh *sh)
 	if (sh->stdin->len_line == 0 || !sh->stdin->input)
 		return ;
 	ft_lexer(sh);
-	add_history(sh->stdin->input, sh->path_history);
-	parser(sh);
+	add_history(sh, sh->stdin->input, sh->path_history);
+	//parser(sh);
 	/*sh->tokens = ft_strsplitset(sh->input, " \t");
 	if ((bucket_entry = ht_lookup(sh->tokens[0], &sh->hashtable)) != NULL)
 		sh->valide_path = ft_strdup(bucket_entry->path);

@@ -24,6 +24,8 @@ int			main(int argc, char **argv, char **env)
 		process(&sh);
 		if (argc == 2 && ft_strequ(argv[1], "--lexer"))
 			print_lexer(&sh);
+		if (argc == 2 && ft_strequ(argv[1], "--history"))
+			print_history(sh.history_mark);
 		ft_strdel(&sh.stdin->input);
 		free(sh.stdin);
 		del_lexer(&sh.lexer);
@@ -31,5 +33,6 @@ int			main(int argc, char **argv, char **env)
 		//free(sh.lexer);
 		//free_all(&sh);
 	}
+	del_history(sh.history_mark);
 	return (0);
 }

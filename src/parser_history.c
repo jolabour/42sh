@@ -15,8 +15,8 @@
 static void parser_builtin(t_42sh *sh)
 {
 	sh->lexer = sh->lexer->next;
-	if (sh->token_nbr == 2)
-		print_history(sh->path_history, 0);
+//	if (sh->token_nbr == 2)
+//		print_history(sh->path_history, 0);
     if (ft_strcmp(sh->lexer->str, "-c") == 0)
 		clean_history(sh->path_history);
 	if (ft_strcmp(sh->lexer->str, "-p") == 0)

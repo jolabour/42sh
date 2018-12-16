@@ -159,6 +159,20 @@ typedef struct		s_lexer
 	struct s_lexer	*next;
 }					t_lexer;
 
+typedef struct		s_history
+{
+	char			*str;
+	struct s_history *next;
+	struct s_history *prev;
+}					t_history;
+
+typedef struct		s_history_mark
+{
+	t_history		*begin;
+	t_history		*last;
+	int				size;
+}					t_history_mark;
+
 typedef struct		s_42sh
 {
 	char			**tokens;
@@ -173,6 +187,7 @@ typedef struct		s_42sh
 	t_lexer			*lexer;
 	int				lex_pos;
 	t_stdin			*stdin;
+	t_history_mark		*history_mark;
 	t_env			*env;
 	t_term			term;
 	t_ht			hashtable;
@@ -394,8 +409,8 @@ void				print_env_array(char **env);
 |                              HISTORY                                        |
 \*****************************************************************************/
 
-void				add_history(char *line, char *path_history);
-void				init_history(char	*path_history);
+//void				add_history(char *line, char *path_history);
+//void				init_history(char	*path_history);
 void				up_history(t_42sh *sh);
 void				parser(t_42sh *sh);
 /*
@@ -404,8 +419,12 @@ void				parser(t_42sh *sh);
 
 void				history_p(t_42sh *sh);
 void				clean_history(char *path);
-void				print_history(char *path, int start);
+//void				print_history(char *path, int start);
 void				print_history_n(char *path);
 void				print_history_r(char *path);
+void				init_history(t_42sh *sh, char *line);
+void				add_history(t_42sh *sh, char *line, char *path);
+void				print_history(t_history_mark *history_mark);
+void				del_history(t_history_mark *history);
 
 #endif

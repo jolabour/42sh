@@ -65,7 +65,7 @@ void	up_history(t_42sh *sh)
 	ft_free_split(split);
 }
 
-static int check_if_valid(char *line)
+/*static int check_if_valid(char *line)
 {
 	int i;
 
@@ -78,30 +78,117 @@ static int check_if_valid(char *line)
 	}
 	return (-1);
 }
+*/
 
-void	add_history(char *line, char *path)
+void		del_history(t_history_mark *history)
+{
+	t_history	*tmp;
+	while (history->size > 0)
+	{
+		tmp = history->begin;
+		history->begin = history->begin->next;
+		if (history->begin == NULL)
+			history->last = NULL;
+		else
+			history->begin->prev = NULL;
+		ft_strdel(&tmp->str);
+		free(tmp);
+		history->size--;
+	}
+
+
+	/*t_history *tmp;
+	t_history *prev;
+
+	tmp = *history;
+	while (tmp)
+	{
+		free(tmp->str);
+		prev = tmp;
+		tmp = tmp->next;
+		free(prev);
+	}*/
+}
+
+void		print_history(t_history_mark *history_mark)
+{
+	t_history	*tmp;
+
+	tmp = history_mark->begin;
+	while (tmp)
+	{
+		ft_putstr(tmp->str);
+		tmp = tmp->next;
+	}
+}
+
+t_history *new_history(char *line)
+{
+	t_history *new;
+
+	if (!(new = malloc(sizeof(t_history))))
+		print_error(_ENOMEM, 1);
+	new->str = ft_strdup(line);
+	new->next = NULL;
+	new->prev = NULL;
+	return (new);
+}
+
+void	add_to_list(t_42sh *sh, char *line)
+{
+	t_history *new;
+
+	new = new_history(line);
+	if (sh->history_mark->size == 0)
+	{
+		new->next = sh->history_mark->last;
+		new->prev = sh->history_mark->begin;
+		sh->history_mark->begin = new;
+		sh->history_mark->last = new;
+	}
+	else
+	{
+		new->prev = NULL;
+		new->next = sh->history_mark->begin;
+		sh->history_mark->begin->prev = new;
+		sh->history_mark->begin = new;
+	}
+		sh->history_mark->size++;
+}
+
+void	init_history(t_42sh *sh, char *path)
+{
+	char *line;
+	int fd;
+
+	if (!(sh->history_mark = malloc(sizeof(t_history_mark))))
+		print_error(_ENOMEM, 1);
+	sh->history_mark->begin = NULL;
+	sh->history_mark->last = NULL;
+	sh->history_mark->size = 0;
+	if (access(path, F_OK) == 0)
+	{
+		fd = open(path, O_RDWR);
+		while (get_next_line(fd, &line) == 1)
+			add_to_list(sh, line);
+		close(fd);
+	}
+	else
+	{
+		fd = open(path, O_CREAT);
+		close(fd);
+	}
+}
+
+void	add_history(t_42sh *sh, char *line, char *path)
 {
 	int fd;
-	int	nb_line;
-	char	*get_line;
 
-	nb_line = 0;
-	if (check_if_valid(line) == -1)
+	if (line[0] == '\n')
 		return ;
-	if (line[0] == ' ' || line[0] == '\n')
-		return ;
-	fd = open(path, O_CREAT, ~O_RDWR);
-	lseek(fd, SEEK_SET, 0);
-	while (get_next_line(fd, &get_line) == 1)
-	{
-		nb_line++;
-		free(get_line);
-	}
-	close(fd);
-	fd = open(path, O_APPEND | O_RDWR);
-	spacing_fd(nb_line, fd);
-	ft_putnbr_fd(nb_line++, fd);
-	ft_putstr_fd("  ", fd);
+	add_to_list(sh, line);
+	fd = open(path, O_CREAT | O_WRONLY);
+	lseek(fd, 0, SEEK_END);
 	ft_putstr_fd(line, fd);
 	ft_putstr_fd("\0", fd);
 	close(fd);

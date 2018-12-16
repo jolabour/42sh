@@ -18,7 +18,7 @@ void clean_history(char *path)
 //	add_history("\t0  [START]", path);
 }
 
-void	print_history(char *path, int start)
+/*void	print_history(char *path, int start)
 {
 	char *get_line;
 	int fd;
@@ -35,7 +35,7 @@ void	print_history(char *path, int start)
     }
 	close (fd);
 }
-
+*/
 void	print_history_n(char *path)
 {
 	char *get_line;

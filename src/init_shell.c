@@ -62,6 +62,8 @@ void		init_shell(t_42sh *sh, char **env)
 	}
 	sh->copy_env = list_to_tab(sh->env, sh->copy_env);
 	sh->path_history = ft_strdup(".42sh_history");
+	sh->history = NULL;
+	init_history(sh, sh->path_history);
 	init_hashtable(sh);
 	get_term(sh);
 }
