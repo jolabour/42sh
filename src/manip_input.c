@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/04 00:26:26 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/05 17:56:25 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/17 03:58:11 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ void		delete_input_buf(t_42sh *sh)
 		else
 			tputs(tgoto(tgetstr("nd", NULL), 1, 0), 1, putchar_custom);
 		*/sh->stdin->len_line--;
+		free(sh->history_mark->cur->str);
+		sh->history_mark->cur->str = ft_strdup(sh->stdin->input);
 		move_to_left(sh);
 		clean_print(sh);
 	}

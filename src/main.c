@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:21:23 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/13 04:18:24 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/17 02:03:15 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ int			main(int argc, char **argv, char **env)
 		ft_strdel(&sh.stdin->input);
 		free(sh.stdin);
 		del_lexer(&sh.lexer);
+		del_history(sh.history_mark);
 		//free(sh.lexer);
 		//free(sh.lexer);
 		//free_all(&sh);
 	}
-	del_history(sh.history_mark);
 	return (0);
 }

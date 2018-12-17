@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/13 05:21:42 by ttresori         ###   ########.fr       */
+/*   Updated: 2018/12/17 02:42:31 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 
 
 # define NB_INPUT_SELECT 7
-# define NB_INPUT 14
+# define NB_INPUT 16
 # define RIGHT_KEY 4414235
 # define LEFT_KEY 4479771
 # define HOME 4741915
@@ -170,6 +170,8 @@ typedef struct		s_history_mark
 {
 	t_history		*begin;
 	t_history		*last;
+	t_history		*cur;
+	int				pos;
 	int				size;
 }					t_history_mark;
 
@@ -426,5 +428,8 @@ void				init_history(t_42sh *sh, char *line);
 void				add_history(t_42sh *sh, char *line, char *path);
 void				print_history(t_history_mark *history_mark);
 void				del_history(t_history_mark *history);
+void				add_to_list(t_42sh *sh, char *line);
+void				up_histo(t_42sh *sh);
+void				down_histo(t_42sh *sh);
 
 #endif

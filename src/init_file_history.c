@@ -6,7 +6,7 @@
 /*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 17:03:05 by ttresori          #+#    #+#             */
-/*   Updated: 2018/12/13 01:10:56 by ttresori         ###   ########.fr       */
+/*   Updated: 2018/12/17 03:57:49 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ void	up_history(t_42sh *sh)
 void		del_history(t_history_mark *history)
 {
 	t_history	*tmp;
+
 	while (history->size > 0)
 	{
 		tmp = history->begin;
@@ -95,6 +96,7 @@ void		del_history(t_history_mark *history)
 		free(tmp);
 		history->size--;
 	}
+	free(history);
 
 
 	/*t_history *tmp;
@@ -117,7 +119,7 @@ void		print_history(t_history_mark *history_mark)
 	tmp = history_mark->begin;
 	while (tmp)
 	{
-		ft_putstr(tmp->str);
+		ft_putendl(tmp->str);
 		tmp = tmp->next;
 	}
 }
@@ -165,12 +167,17 @@ void	init_history(t_42sh *sh, char *path)
 		print_error(_ENOMEM, 1);
 	sh->history_mark->begin = NULL;
 	sh->history_mark->last = NULL;
+	sh->history_mark->cur = NULL;
 	sh->history_mark->size = 0;
+	sh->history_mark->pos = 0;
 	if (access(path, F_OK) == 0)
 	{
 		fd = open(path, O_RDWR);
 		while (get_next_line(fd, &line) == 1)
+		{
 			add_to_list(sh, line);
+			free(line);
+		}
 		close(fd);
 	}
 	else

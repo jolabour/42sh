@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/06 01:00:18 by jolabour         ###   ########.fr       */
+/*   Updated: 2018/12/17 05:50:28 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,12 +87,17 @@ static void		init_stdin(t_42sh *sh)
 	sh->stdin->size_of_input = 1000;
 	if (!(sh->stdin->input = malloc(sizeof(char) * sh->stdin->size_of_input)))
 		print_error(_ENOMEM, 1);
+	sh->stdin->input[0] = '\0';
 	sh->stdin->line_pos = 0;
 	sh->stdin->len_line = 0;
 	sh->stdin->str_to_paste = NULL;
 	sh->stdin->cursor_pos = sh->prompt_len;
 	sh->stdin->nb_line = 0;
 	sh->stdin->ctrlc = 0;
+	init_history(sh, sh->path_history);
+	add_to_list(sh, sh->stdin->input);
+	sh->history_mark->cur = sh->history_mark->begin;
+	sh->history_mark->pos = 1;
 }
 
 int			get_line(t_42sh *sh)
@@ -110,6 +115,8 @@ int			get_line(t_42sh *sh)
 			{
 				sh->stdin->input[sh->stdin->len_line] = '\n';
 				sh->stdin->len_line++;
+				while (sh->stdin->line_pos < sh->stdin->len_line)
+					move_to_right(sh);
 				ft_putchar_fd('\n', 0);
 				sh->stdin->input[sh->stdin->len_line] = '\0';
 				ft_strdel(&sh->stdin->str_to_paste);
