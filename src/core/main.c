@@ -22,7 +22,7 @@ int			main(int argc, char **argv, char **env)
 	while (42)
 	{
 		process(&sh);
-		if (argc == 2 && ft_strequ(argv[1], "--lexer"))
+		if (sh.lexer && argc == 2 && ft_strequ(argv[1], "--lexer"))
 			print_lexer(&sh);
 		if (argc == 2 && ft_strequ(argv[1], "--history"))
 			print_history(sh.history_mark);

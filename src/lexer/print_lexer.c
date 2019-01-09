@@ -31,6 +31,8 @@ void		print_lexer(t_42sh *sh)
 		ft_putstr("| ");
 		ft_putstr(operator[temp->operator_type]);
 		ft_putstr("| ");
+		ft_putnbr(temp->quote);
+		ft_putstr("| ");
 		ft_putendl(temp->str);
 		ft_putendl("_____________________________________");
 		temp = temp->next;

@@ -26,14 +26,19 @@ VPATH		= $(SRCS_DIR)
 # Sources
 #
 
-SRCS		= main.c list.c process.c getenv.c init_shell.c errno.c prompt.c \
-			  stdin.c move_arrows.c manip_input.c insert_mode.c move_word.c \
-			  control_action.c keymap.c hashtable.c keymap_select.c \
-			  init_hashtable.c ft_joinpath.c env.c select_mode.c \
-			  move_select_mode.c action_select_mode.c move_line.c get_word.c \
-			  get_operator.c lexer.c get_newline.c list_lexer.c print_lexer.c \
-              init_file_history.c parser_history.c history_opt.c \
-			  move_histo.c
+SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
+			  core/init_shell.c utils/errno.c edit_line/prompt.c \
+			  edit_line/stdin.c edit_line/move_arrows.c edit_line/manip_input.c \
+			  edit_line/insert_mode.c edit_line/move_word.c \
+			  edit_line/control_action.c edit_line/keymap.c \
+			  hashtable/hashtable.c edit_line/keymap_select.c \
+			  hashtable/init_hashtable.c utils/ft_joinpath.c utils/env.c \
+			  edit_line/select_mode.c edit_line/move_select_mode.c \
+			  edit_line/action_select_mode.c edit_line/move_line.c \
+			  lexer/get_word.c lexer/get_operator.c lexer/lexer.c \
+			  lexer/get_newline.c lexer/list_lexer.c lexer/print_lexer.c \
+			  histo/init_file_history.c histo/parser_history.c histo/history_opt.c \
+			  edit_line/move_histo.c
 #
 # Build
 #
@@ -66,6 +71,13 @@ $(NAME): $(LIB_DIR)/$(LIB) $(OBJS)
 
 $(OBJS_DIR)/%.o: %.c
 	@mkdir -p $(OBJS_DIR)
+	@mkdir -p $(OBJS_DIR)/core
+	@mkdir -p $(OBJS_DIR)/edit_line
+	@mkdir -p $(OBJS_DIR)/histo
+	@mkdir -p $(OBJS_DIR)/lexer
+	@mkdir -p $(OBJS_DIR)/hashtable
+	@mkdir -p $(OBJS_DIR)/utils
+	@mkdir -p $(OBJS_DIR)/parser
 	@$(COMP)
 
 clean:

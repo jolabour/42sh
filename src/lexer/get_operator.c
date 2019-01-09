@@ -80,7 +80,7 @@ void			get_operator(t_42sh *sh)
 		if (!(str = ft_strsub(sh->stdin->input, sh->lex_pos, 1)))
 			print_error(_ENOMEM, 1);
 	}
-	add_token(sh, str, OPERATOR, i);
+	add_token(sh, str, OPERATOR, i, 0);
 	ft_strdel(&str);
 	sh->lex_pos += len;
 	sh->token_nbr++;

@@ -12,7 +12,7 @@
 
 #include "sh.h"
 
-t_lexer		*create_token(char *str, int token_type, int operator_type)
+t_lexer		*create_token(char *str, int token_type, int operator_type, int quote)
 {
 	t_lexer	*new;
 
@@ -21,6 +21,7 @@ t_lexer		*create_token(char *str, int token_type, int operator_type)
 	new->str = ft_strdup(str);
 	new->token_type = token_type;
 	new->operator_type = operator_type;
+	new->quote = quote;
 	new->next = NULL;
 	return (new);
 }
@@ -40,13 +41,13 @@ void		lst_push_lexer(t_lexer **head, t_lexer *new)
 	}
 }
 
-void		add_token(t_42sh *sh, char *str, int token_type, int operator_type)
+void		add_token(t_42sh *sh, char *str, int token_type, int operator_type, int quote)
 {
 	t_lexer *tmp;
 	t_lexer *new;
 
 	tmp = sh->lexer;
-	if (!(new = create_token(str, token_type, operator_type)))
+	if (!(new = create_token(str, token_type, operator_type, quote)))
 		print_error(_ENOMEM, 1);
 	if (sh->token_nbr == 0)
 	{
@@ -89,4 +90,5 @@ void		del_lexer(t_lexer **lexer)
 		tmp = tmp->next;
 		free(prev);
 	}
+	*lexer = NULL;
 }

@@ -156,6 +156,7 @@ typedef struct		s_lexer
 	char			*str;
 	int				token_type;
 	int				operator_type;
+	int				quote;
 	struct s_lexer	*next;
 }					t_lexer;
 
@@ -325,10 +326,10 @@ void				ft_lexer(t_42sh *sh);
 int					ft_is_blank(char c);
 int					ft_is_newline(char c);
 int					ft_is_operator(char c);
-void				add_token(t_42sh *sh, char *str, int token_type, int operator_type);
+void				add_token(t_42sh *sh, char *str, int token_type, int operator_type, int quote);
 void				del_lexer(t_lexer **lexer);
-int					get_squote(t_42sh *sh, int i);
-int					get_dquote(t_42sh *sh, int i);
+int					get_squote(t_42sh *sh, int i, int *quote);
+int					get_dquote(t_42sh *sh, int i, int *quote);
 void				print_lexer(t_42sh *sh);
 
 /*****************************************************************************\

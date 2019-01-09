@@ -14,7 +14,7 @@
 
 void		get_newline(t_42sh *sh)
 {
-	add_token(sh, "!newline!", NEWLINE, NONE);
+	add_token(sh, "!newline!", NEWLINE, NONE, 0);
 	sh->token_nbr++;
 	sh->lex_pos++;
 }
