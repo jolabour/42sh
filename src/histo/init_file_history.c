@@ -6,7 +6,7 @@
 /*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 17:03:05 by ttresori          #+#    #+#             */
-/*   Updated: 2018/12/17 03:57:49 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/01/10 20:21:56 by ttresori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	up_history(t_42sh *sh)
 void		del_history(t_history_mark *history)
 {
 	t_history	*tmp;
-
+	
 	while (history->size > 0)
 	{
 		tmp = history->begin;
@@ -97,8 +97,6 @@ void		del_history(t_history_mark *history)
 		history->size--;
 	}
 	free(history);
-
-
 	/*t_history *tmp;
 	t_history *prev;
 
@@ -193,8 +191,9 @@ void	add_history(t_42sh *sh, char *line, char *path)
 
 	if (line[0] == '\n')
 		return ;
+	//parser(sh);
 	add_to_list(sh, line);
-	fd = open(path, O_CREAT | O_WRONLY);
+	fd = open(path, O_CREAT | O_RDWR);
 	lseek(fd, 0, SEEK_END);
 	ft_putstr_fd(line, fd);
 	ft_putstr_fd("\0", fd);

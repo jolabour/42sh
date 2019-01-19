@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/12/17 01:57:06 by jolabour         ###   ########.fr        #
+#    Updated: 2019/01/10 19:41:31 by ttresori         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,8 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  lexer/get_word.c lexer/get_operator.c lexer/lexer.c \
 			  lexer/get_newline.c lexer/list_lexer.c lexer/print_lexer.c \
 			  histo/init_file_history.c histo/parser_history.c histo/history_opt.c \
-			  edit_line/move_histo.c
+			  edit_line/move_histo.c histo/substitute_history.c \
+			  builtin/test/test.c builtin/test/test_bcdef.c
 #
 # Build
 #
@@ -78,6 +79,8 @@ $(OBJS_DIR)/%.o: %.c
 	@mkdir -p $(OBJS_DIR)/hashtable
 	@mkdir -p $(OBJS_DIR)/utils
 	@mkdir -p $(OBJS_DIR)/parser
+	@mkdir -p $(OBJS_DIR)/builtin
+	@mkdir -p $(OBJS_DIR)/builtin/test
 	@$(COMP)
 
 clean:

@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/17 05:50:28 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/01/10 20:38:56 by ttresori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,13 @@ int			get_line(t_42sh *sh)
 	int		i;
 
 	init_stdin(sh);
+	/*	if (sh->to_replace > 0)
+	{
+		sh->stdin->input = ft_strdup(sh->line_to_replace);
+        free(sh->line_to_replace);
+        sh->to_replace = 0;
+	sh->stdin = sh->stdin->next;
+} */
 	while (42)
 	{
 		buf = 0;

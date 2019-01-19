@@ -6,7 +6,7 @@
 /*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 18:26:21 by ttresori          #+#    #+#             */
-/*   Updated: 2018/12/13 05:24:02 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/01/10 19:36:17 by ttresori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 
 void clean_history(char *path)
 {
+	int fd;
+	
 	unlink(path);
-//	add_history("\t0  [START]", path);
+	fd = open(path, O_CREAT | O_RDWR);
+	close(fd);
 }
 
 /*void	print_history(char *path, int start)

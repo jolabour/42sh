@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:21:23 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/17 02:03:15 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/01/10 20:24:49 by ttresori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int			main(int argc, char **argv, char **env)
 {
 	t_42sh	sh;
-
+	
 	init_shell(&sh, env);
 	if (!(env[0]))
 		exit(0);

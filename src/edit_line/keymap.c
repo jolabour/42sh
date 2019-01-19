@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   keymap.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/09/03 22:25:36 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/17 05:42:16 by jolabour         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 # include "sh.h"
 
 const long			input_tab[NB_INPUT] = {RIGHT_KEY, LEFT_KEY, DEL, CTRL_C, CTRL_D, HOME, END, OPT_B, OPT_F, OPT_C, OPT_X, OPT_V, OPT_UP, OPT_DOWN, UP_KEY, DOWN_KEY};
