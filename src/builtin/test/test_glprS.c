@@ -26,7 +26,7 @@ void		test_p(t_42sh *sh, struct stat info)
 
 void		test_r(t_42sh *sh, struct stat info)
 {
-	if (S_IRUSR & stat.info)
+	if (S_IRUSR & info.st_mode)
 		sh->argv->error_code = 0;
 	else
 		sh->argv->error_code = 1;

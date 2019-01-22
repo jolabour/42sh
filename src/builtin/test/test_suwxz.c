@@ -35,7 +35,7 @@ void		test_x(t_42sh *sh, struct stat info)
 void		test_z(t_42sh *sh, struct stat info)
 {
 	(void)info;
-	if (argv[2])
+	if (sh->argv->argv[2])
 		sh->argv->error_code = 0;
 	else
 		sh->argv->error_code = 1;

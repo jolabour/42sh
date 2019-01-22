@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:21:16 by jolabour          #+#    #+#             */
-/*   Updated: 2019/01/10 20:30:13 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/01/19 21:52:53 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ void		init_shell(t_42sh *sh, char **env)
 	sh->line_to_replace = NULL;
 	sh->argv = NULL;
 	sh->lexer = NULL;
+	sh->argv = malloc(sizeof(t_argv));
+	sh->argv->error_code = 0;
 	init_hashtable(sh);
 	get_term(sh);
 }

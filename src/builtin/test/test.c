@@ -1,8 +1,8 @@
 #include "sh.h"
 
-const char			option_tab[5] = {'b', 'c', 'd', 'e', 'f'};//, g, L, p, r, S, s, u, w, x, z};
+const char			option_tab[OPTION_TEST] = {'b', 'c', 'd', 'e', 'f', 'g', 'L', 'p', 'r', 'S', 's', 'u', 'w', 'x', 'z'};
 
-const t_test			action_option[5] = {test_b, test_c, test_d, test_e, test_f};//, test_g, test_L, test_p, test_r, test_S, test_s, test_u, test_w, test_x, test_z};
+const t_test			action_option[OPTION_TEST] = {test_b, test_c, test_d, test_e, test_f, test_g, test_L, test_p, test_r, test_S, test_s, test_u, test_w, test_x, test_z};
 
 int			execute_test(t_42sh *sh, char c)
 {
@@ -37,6 +37,7 @@ int			check_option(t_42sh *sh)
 
 void		builtin_test(t_42sh *sh)
 {
+	sh->argv->error_code = 1;
 	if (sh->argv->size == 3)
 	{
 		if (check_option(sh) == 0)

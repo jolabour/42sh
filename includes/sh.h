@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/01/10 20:23:59 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/01/22 01:17:16 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -482,5 +482,22 @@ void				test_u(t_42sh *sh, struct stat info);
 void				test_w(t_42sh *sh, struct stat info);
 void				test_x(t_42sh *sh, struct stat info);
 void				test_z(t_42sh *sh, struct stat info);
+
+/*
+**	echo
+*/
+
+void				builtin_echo(t_42sh *sh);
+
+/***************************************************************************** \
+|                          SUBSTITUTION                                        |
+\*****************************************************************************/
+
+/*
+**	parser
+*/
+
+void				check_substitution(t_42sh *sh);
+void				get_substitute(t_42sh *sh, int nb_del, char *substitute);
 
 #endif

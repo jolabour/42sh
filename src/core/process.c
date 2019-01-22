@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/01/10 20:35:26 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/01/22 01:19:01 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,16 @@ char	*check_access(t_42sh *sh)
 	return (NULL);
 }
 
-void			check_builtin(t_42sh *sh)
+int			check_builtin(t_42sh *sh)
 {
 	if (ft_strequ(sh->argv->argv[0], "test") == 1)
 	{
 		builtin_test(sh);
+		return (1);
+	}
+	if (ft_strequ(sh->argv->argv[0], "echo") == 1)
+	{
+		builtin_echo(sh);
 		return (1);
 	}
 	return (0);
@@ -80,45 +85,20 @@ int				ft_len_argv(char **argv)
 	return (i);
 }
 
-void			substitute_error(t_42sh *sh)
-{
-	
-
-void			check_substitute(t_42sh *sh)
-{
-  sh->argv->cur_str = 0;
-  while (sh->argv->argv[sh->argv->cur_str] != NULL)
-    {
-      sh->argv->pos_str = 0;
-      while(sh->argv->argv[sh->argv->cur_str][sh->argv->pos_str])
-	{
-	  if (sh->argv->argv[sh->argv->cur_str][sh->argv->pos_str] == '$' && sh->argv->argv[sh->argv->cur_str][sh->argv->pos_str + 1] == '?')
-	 {   if (substitute_error(sh) == 0)
-			return ;
-	  }
-	  else
-	    sh->argv->pos_str++;
-	}
-	sh->argv->cur_str++;
-    }
-}
-
 void			process(t_42sh *sh)
 {
 	BUCKET_CONTENT	*bucket_entry;
-	//int j;
 
-	prompt(sh->env, sh);	
+	prompt(sh->env, sh);
 
 	if (get_line(sh) != 1)
 		return ;
-if (sh->stdin->len_line == 0 || !sh->stdin->input)
-	return ;
+	if (sh->stdin->len_line == 0 || !sh->stdin->input)
+		return ;
 	ft_lexer(sh);
 	add_history(sh, sh->stdin->input, sh->path_history);
 	if (ft_strcmp(sh->stdin->input, "exit\n") == 0)
-	reset_term(sh);
-	sh->argv = malloc(sizeof(t_argv));
+		reset_term(sh);
 	sh->argv->argv = ft_strsplitset(sh->stdin->input, " \t\n");
 	sh->argv->size = ft_len_argv(sh->argv->argv);
 	check_substitute(sh);
