@@ -1,0 +1,52 @@
+#include "sh.h"
+
+const char			*option_tab[OPTION_TEST] = {"=", "!=", "-equ", "-ne", "ge", "lt", "le"};
+
+const t_test			action_option[OPTION_TEST] = {test_b, test_c, test_d, test_e, test_f, test_g, test_L, test_p, test_r, test_S, test_s, test_u, test_w, test_x, test_z};
+
+int			check_nbr(t_42sh *sh)
+{
+	int		i;
+
+	i = 0;
+	while (sh->argv->argv[1][i])
+	{
+		if (sh->argv->argv[1][i] > '9' || sh->argv->argv[1][i] < '0')
+			return (1);
+		i++;
+	}
+	i = 0;
+	while (sh->argv->argv[3][i])
+	{
+		if (sh->argv->argv[3][i] > '9' || sh->argv->argv[3][i] < '0')
+			return (3);
+		i++;
+	}
+	return (0);
+}
+
+int			execute_other_opt(t_42sh *sh, char *str)
+{
+	int		i;
+	int		pos;
+
+	i = 0;
+	while (i < OPTION_TEST)
+	{
+		if (option_tab[i] == c)
+		{
+			if (i >= 2 && (pos = check_nbr(sh)) != 0)
+			{
+				sh->argv->error_code = 2;
+				ft_putstr("test: integer expression expected: ");
+				ft_putendl(sh->argv->argv[pos]);
+				return (2);
+			}
+			action_option[i](sh, info);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+

@@ -57,11 +57,18 @@ void		reset_term(t_42sh *sh)
 	exit(0);
 }
 
+void		init_alias_list(t_42sh *sh)
+{
+	if (!(sh->alias = (t_alias_mark*)malloc(sizeof(t_alias_mark))))
+		return ;
+	sh->alias->size = 0;
+}
+
 void		init_shell(t_42sh *sh, char **env)
 {
 	char *path;
 	char *pwd;
-
+	
 	sh->env = set_list(env);
 	if (!(sh->var_local = malloc(sizeof(t_var_loc))))
 		return ;
@@ -79,12 +86,13 @@ void		init_shell(t_42sh *sh, char **env)
 	}
 	sh->copy_env = list_to_tab(sh->env, sh->copy_env);
 	sh->path_history = ft_strdup(".42sh_history");
-	sh->to_replace = 0;
 	sh->line_to_replace = NULL;
 	sh->argv = NULL;
 	sh->lexer = NULL;
-	sh->argv = malloc(sizeof(t_argv));
+	if (!(sh->argv = malloc(sizeof(t_argv))))
+		return ;
 	sh->argv->error_code = 0;
+	init_alias_list(sh);
 	init_hashtable(sh);
 	get_term(sh);
 }

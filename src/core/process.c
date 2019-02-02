@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/01/22 01:19:01 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/01/25 02:40:03 by ttresori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	get_fork(t_42sh *sh)
 		wait(0);
 	if (father == 0)
 	{
-		if ((status = execve(sh->valide_path, sh->tokens, sh->copy_env)) == -1)
-			ft_putendl_fd(sh->tokens[0], 2);
+		if ((status = execve(sh->valide_path, sh->argv->argv, sh->copy_env)) == -1)
+			ft_putendl_fd("sh->tokens[0]", 2);
 		exit(status);
 	}
 }
@@ -72,6 +72,11 @@ int			check_builtin(t_42sh *sh)
 		builtin_echo(sh);
 		return (1);
 	}
+	if (ft_strequ(sh->argv->argv[0], "alias") == 1)
+	{
+		builtin_alias(sh);
+		return (1);
+	}
 	return (0);
 }
 
@@ -91,15 +96,20 @@ void			process(t_42sh *sh)
 
 	prompt(sh->env, sh);
 
+	//if (sh->need_get_line == true)
 	if (get_line(sh) != 1)
-		return ;
+			return ;
 	if (sh->stdin->len_line == 0 || !sh->stdin->input)
 		return ;
 	ft_lexer(sh);
-	add_history(sh, sh->stdin->input, sh->path_history);
 	if (ft_strcmp(sh->stdin->input, "exit\n") == 0)
 		reset_term(sh);
+	check_substitute_history(sh);
+	if (sh->history_mark->error_code == 0)
+		add_history(sh, sh->stdin->input, sh->path_history);
 	sh->argv->argv = ft_strsplitset(sh->stdin->input, " \t\n");
+	if (!sh->argv->argv[0])
+		return ;
 	sh->argv->size = ft_len_argv(sh->argv->argv);
 	check_substitute(sh);
 	if (check_builtin(sh) != 1)
@@ -119,5 +129,6 @@ void			process(t_42sh *sh)
 			return ;
 		}
 		get_fork(sh);
+		ft_strdel(&sh->valide_path);
 	}
 }

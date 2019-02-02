@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/01/22 01:17:16 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/01/25 02:43:08 by ttresori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,15 @@
 # include "libft.h"
 
 # define OPTION_TEST 15
-# define NB_INPUT_SELECT 7
-# define NB_INPUT 16
+# define NB_INPUT_SELECT 8
+# define NB_INPUT 18
 # define RIGHT_KEY 4414235
 # define LEFT_KEY 4479771
 # define HOME 4741915
 # define END 4610843
 # define CTRL_C 3
 # define CTRL_D 4
+# define CTRL_R 18
 # define DEL 127
 # define UP_KEY 4283163
 # define DOWN_KEY 4348699
@@ -174,9 +175,27 @@ typedef struct		s_history_mark
 	t_history		*begin;
 	t_history		*last;
 	t_history		*cur;
+	char 			*last_str;
+	int				error_code;
 	int				pos;
 	int				size;
 }					t_history_mark;
+
+typedef struct		s_alias
+{
+	char			*to_sub;
+	char			*sub;
+	struct	s_alias *prev;
+	struct	s_alias	*next;
+}					t_alias;
+
+typedef struct		s_alias_mark
+{
+	t_alias			*begin;
+	t_alias			*last;
+	int				size;
+
+}					t_alias_mark;
 
 typedef struct		s_var_loc
 {
@@ -204,15 +223,17 @@ typedef struct		s_42sh
 	char			**copy_env;
 	char			*path_history;
 	int				token_nbr;
+	bool			need_get_line;
 	t_lexer			*lexer;
 	int				lex_pos;
 	t_stdin			*stdin;
 	t_history_mark	*history_mark;
 	char			*line_to_replace;
-	int				to_replace;
+	int				substitute_on;
 	t_env			*env;
   	t_term			term;
-  t_reset			reset_term;
+ 	t_reset			reset_term;
+	t_alias_mark	*alias;
   	t_ht			hashtable;
 	t_var_loc		*var_local;
 }					t_42sh;
@@ -434,7 +455,12 @@ void				print_env_array(char **env);
 |                              HISTORY                                        |
 \*****************************************************************************/
 
-int			       substitute_history(t_42sh *sh);
+void 				substitute_history(t_42sh *sh, int *i);
+char 				*search_history_begin(t_42sh *sh, int nb);
+char 				*search_history_last(t_42sh *sh, int nb);
+int 				get_nb_history(t_42sh *sh, int pos, int *nb_del);
+char 				*search_history_char(t_42sh *sh, char **to_find);
+char 				*search_str_input(t_42sh *sh, int start, int *nb_del);
 
 //void				add_history(char *line, char *path_history);
 //void				init_history(char	*path_history);
@@ -457,7 +483,8 @@ void				add_to_list(t_42sh *sh, char *line);
 void				up_histo(t_42sh *sh);
 void				down_histo(t_42sh *sh);
 void				check_substitute(t_42sh *sh);
-
+void				modify_last_history(t_42sh *sh);
+void				ctrlr_action(t_42sh *sh);
 /***************************************************************************** \
 |                              BUILTIN                                        |
 \*****************************************************************************/
@@ -482,12 +509,26 @@ void				test_u(t_42sh *sh, struct stat info);
 void				test_w(t_42sh *sh, struct stat info);
 void				test_x(t_42sh *sh, struct stat info);
 void				test_z(t_42sh *sh, struct stat info);
+void				test_equal(t_42sh *sh);
+void				test_diff(t_42sh *sh);
+void				test_eq(t_42sh *sh);
+void				test_ne(t_42sh *sh);
+void				test_ge(t_42sh *sh);
+void				test_lt(t_42sh *sh);
+void				test_le(t_42sh *sh);
+int					execute_other_opt(t_42sh *sh, char *str);
+
 
 /*
 **	echo
 */
 
 void				builtin_echo(t_42sh *sh);
+
+/*
+** alias
+*/
+void    builtin_alias(t_42sh *sh);
 
 /***************************************************************************** \
 |                          SUBSTITUTION                                        |
@@ -497,7 +538,13 @@ void				builtin_echo(t_42sh *sh);
 **	parser
 */
 
-void				check_substitution(t_42sh *sh);
-void				get_substitute(t_42sh *sh, int nb_del, char *substitute);
+void 				check_substitute_history(t_42sh *sh);
+void				get_substitute(t_42sh *sh, int i, char *substitute, int nb_del);
+
+/***************************************************************************** \
+|                            TABULATION                                        |
+\*****************************************************************************/
+
+void				show_suggest(t_42sh *sh);
 
 #endif

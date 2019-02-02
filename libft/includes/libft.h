@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/10 02:33:37 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/13 05:22:50 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/01/25 20:27:05 by ttresori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,16 @@
 # include <stdbool.h>
 # include <stdlib.h>
 # include "get_next_line.h"
+
+# define BLACK  "\033[1;30m"
+# define RED    "\033[1;31m"
+# define GREEN  "\033[1;32m"
+# define YELLOW "\033[1;33m"
+# define BLUE   "\033[1;34m"
+# define PURPLE "\033[1;35m"
+# define CYAN   "\033[1;36m"
+# define GREY   "\033[1;37m"
+# define NORMAL "\033[0m"
 
 typedef struct		s_list
 {
@@ -85,4 +95,16 @@ void				ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 void				ft_lstdelone(t_list **alst, void (*del)(void *, size_t));
 void				ft_lstdel(t_list **alst, void (*del)(void *, size_t));
 char				**ft_strsplitset(char const *s, char const *delims);
+void				ft_putl_blue(char *str);
+void				ft_putl_red(char *str);
+void				ft_putl_green(char *str);
+void				ft_putl_yellow(char *str);
+void				ft_putl_cyan(char *str);
+void				ft_puts_blue(char *str);
+void				ft_puts_red(char *str);
+void				ft_puts_green(char *str);
+void				ft_puts_yellow(char *str);
+void				ft_puts_cyan(char *str);
+void				*ft_realloc(void *ptr, size_t prev_size, size_t new_size);
+
 #endif

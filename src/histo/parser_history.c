@@ -27,6 +27,57 @@ static void parser_builtin(t_42sh *sh)
 		print_history(sh->history_mark);
 }
 
+void substitute_history(t_42sh *sh, int *i)
+{
+	char *substitute;
+	int nb_del;
+
+	substitute = NULL;
+	nb_del = 0;
+	if (sh->stdin->input[*i + 1] == '!')
+	{
+		substitute = ft_strdup(sh->history_mark->begin->next->str);
+		nb_del = 2;
+	}
+	else if (sh->stdin->input[*i + 1] == '-')
+		substitute = search_history_last(sh, get_nb_history(sh, *i, &nb_del));
+	else if (sh->stdin->input[*i + 1] >= '0' && sh->stdin->input[*i + 1] <= '9')
+	{
+		substitute = search_history_begin(sh, get_nb_history(sh, *i, &nb_del));
+	}
+	else if (sh->stdin->input[*i + 1] == '!')
+		substitute  = ft_strdup(sh->history_mark->begin->next->str);
+	else if (sh->stdin->input[*i + 1] >= 'a' && sh->stdin->input[*i + 1] <= 'z')
+		substitute = search_str_input(sh, *i + 1, &nb_del);
+	else
+		return;
+	if (substitute == NULL)
+	{
+		ft_putendl("aled");
+		sh->history_mark->error_code = 1;
+		// add error_return
+		return ;
+	}
+	get_substitute(sh, *i, substitute, nb_del);
+	*i += ft_strlen(substitute) - 1;
+	free(substitute);
+}
+
+void check_substitute_history(t_42sh *sh)
+{
+	int i;
+
+	if (sh->history_mark->size == 1)
+		return ;
+	i = 0;
+	while (sh->stdin->input[i])
+	{
+		if (sh->stdin->input[i] == '!')
+			substitute_history(sh, &i);
+		i++;
+	}
+}
+
 static int	is_builtin(t_42sh *sh)
 {
 	int i;
@@ -38,7 +89,7 @@ static int	is_builtin(t_42sh *sh)
 			return (0);
 		if (sh->lexer->str[0] == '!')
 		  {
-		    substitute_history(sh);
+		    check_substitute_history(sh);
 		    return (-1);
 		}
 		sh->lexer = sh->lexer->next;

@@ -6,7 +6,7 @@
 /*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 17:03:05 by ttresori          #+#    #+#             */
-/*   Updated: 2019/01/10 20:21:56 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/01/25 20:31:03 by ttresori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	up_history(t_42sh *sh)
 void		del_history(t_history_mark *history)
 {
 	t_history	*tmp;
-	
+
 	while (history->size > 0)
 	{
 		tmp = history->begin;
@@ -153,7 +153,7 @@ void	add_to_list(t_42sh *sh, char *line)
 		sh->history_mark->begin->prev = new;
 		sh->history_mark->begin = new;
 	}
-		sh->history_mark->size++;
+	sh->history_mark->size++;
 }
 
 void	init_history(t_42sh *sh, char *path)
@@ -168,6 +168,7 @@ void	init_history(t_42sh *sh, char *path)
 	sh->history_mark->cur = NULL;
 	sh->history_mark->size = 0;
 	sh->history_mark->pos = 0;
+	sh->history_mark->error_code = 0;
 	if (access(path, F_OK) == 0)
 	{
 		fd = open(path, O_RDWR);

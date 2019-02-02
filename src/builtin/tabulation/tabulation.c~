@@ -1,0 +1,31 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tabulation.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/01/25 01:21:10 by ttresori          #+#    #+#             */
+/*   Updated: 2019/01/25 02:03:29 by ttresori         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "sh.h"
+
+void	show_suggest(t_42sh *sh)
+{
+	int fd;
+	char *path;
+	
+	fd = 0;
+	path = NULL;
+	ft_putendl_fd("\nArg: ", 2);
+	ft_putendl_fd(sh->stdin->input, 2);
+	free(sh->stdin->input);
+	sh->stdin->input = ft_strdup("ls");
+	sh->stdin->len_line = 2;
+	ft_putendl_fd("\nArgModified: ", 2);
+	sh->stdin->input = ft_select();
+	ft_putendl_fd(sh->stdin->input, 2);
+	sh->need_get_line = false;
+}

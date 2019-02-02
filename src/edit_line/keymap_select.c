@@ -12,9 +12,9 @@
 
 #include "sh.h"
 
-const long			input_tab_select[NB_INPUT_SELECT] = {RIGHT_KEY, LEFT_KEY, DEL, OPT_C, OPT_X, CTRL_C, CTRL_D};
+const long			input_tab_select[NB_INPUT_SELECT] = {RIGHT_KEY, LEFT_KEY, DEL, OPT_C, OPT_X, CTRL_C, CTRL_D, CTRL_R};
 
-const t_ak			action_tab_select[NB_INPUT_SELECT] = {move_to_right_select, move_to_left_select, del_select, copy_select, cut_select, ctrlc_action, ctrld_action};
+const t_ak			action_tab_select[NB_INPUT_SELECT] = {move_to_right_select, move_to_left_select, del_select, copy_select, cut_select, ctrlc_action, ctrld_action, ctrlr_action};
 
 int					check_input_select(t_42sh *sh, long buf)
 {
