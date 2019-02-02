@@ -194,7 +194,6 @@ typedef struct		s_alias_mark
 	t_alias			*begin;
 	t_alias			*last;
 	int				size;
-
 }					t_alias_mark;
 
 typedef struct		s_var_loc

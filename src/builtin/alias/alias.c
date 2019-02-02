@@ -1,98 +1,114 @@
 #include "sh.h"
 
-static char *search_in_alias(t_42sh *sh, char *to_sub)
+void	list_alias(t_42sh *sh)
 {
-    int i;
-    t_alias *tmp;
+	t_alias	*tmp;
+	int		i;
 
-    tmp = NULL;
-    i = 0;
-    if (sh->alias->size == 0)
-        return (NULL);
-    else
-        {
-            tmp = sh->alias->begin;
-            while (tmp)
-            {
-                if (ft_strcmp(to_sub, tmp->to_sub) == 0)
-                {
-                    return (tmp->to_sub);
-                }
-                i++;
-                tmp = tmp->next;
-            }
-        }
-    return (NULL);
+	i = 0;
+	tmp = sh->alias->begin;
+	if (sh->alias->size == 0)
+		return ;
+	while (i < sh->alias->size)
+	{
+		ft_putstr(tmp->to_sub);
+		ft_putstr("='");
+		ft_putstr(tmp->sub);
+		ft_putstr("'\n");
+		tmp = tmp->next;
+		i++;
+	}
 }
 
-static int     search_alias(t_42sh *sh, char *name)
+int		print_alias(t_42sh *sh, char *str)
 {
-    t_alias *tmp;
-    int     size;
+	t_alias	*tmp;
+	int		i;
 
-    tmp = NULL;
-    size = 0;
-    tmp = sh->alias->begin;
-    size = sh->alias->size;
-    while (size > 0)
-    {
-        if (ft_strcmp(tmp->to_sub, name) == 0)
-            return (size);
-        tmp = tmp->next;
-        size--;
-    }
-    return (0);
+	i = 0;
+	tmp = sh->alias->begin;
+	if (sh->alias->size == 0)
+		return (-1);
+	while (i < sh->alias->size)
+	{
+		if (ft_strequ(tmp->to_sub, str) == 1)
+		{
+			ft_putstr(tmp->to_sub);
+			ft_putstr("='");
+			ft_putstr(tmp->sub);
+			ft_putstr("'\n");
+			return (0);
+		}
+		tmp = tmp->next;
+		i++;
+	}
+	return (-1);
 }
 
-static void    add_alias(t_42sh *sh, char *name, char *value)
+t_alias	*new_alias(char **line)
 {
-    t_alias *tmp;
-    int     size;
+	t_alias *new;
 
-    tmp = NULL;
-    tmp = sh->alias->begin;
-    size = sh->alias->size;
-    while (size > 0)
-    {
-        sh->alias->begin = sh->alias->begin->next;
-        size--;
-    }
-    sh->alias->begin->to_sub = ft_strdup(name);
-    sh->alias->begin->sub = ft_strdup(value);
-    sh->alias->size++;
+	if (!(new = malloc(sizeof(t_alias))))
+		print_error(_ENOMEM, 1);
+	new->to_sub = ft_strdup(line[0]);
+	new->sub = ft_strdup(line[1]);
+	new->next = NULL;
+	new->prev = NULL;
+	return (new);
 }
 
-void    builtin_alias(t_42sh *sh)
+void	add_to_list_alias(t_42sh *sh, char **split)
 {
-    char **split;
-    char *substitute;
+	t_alias *new;
 
-    split = NULL;
-    if (sh->argv->argv[1] == NULL)
-        return ;
-    split = ft_strsplitset(sh->argv->argv[1], "=");
-    if (split[1] == NULL)
-        {
-            if (!((substitute = search_in_alias(sh, sh->argv->argv[1]))))
-            {
-                ft_putstr("\n");
-                ft_putstr("42sh: alias: ");
-                ft_putstr(sh->argv->argv[1]);
-                ft_putendl(": not found");
-                return ;
-            }
-            else
-            {
-                free(sh->argv->argv[0]);
-                sh->argv->argv[0] = ft_strdup(substitute);
-                ft_puts_yellow(sh->argv->argv[0]);
-                free(substitute);
-                ft_free_split(split);
-            }
-        }
-    else
-    {
-        if (search_alias(sh, split[0]) == 0)
-            add_alias(sh, split[0], split[1]);
-    }
+	new = new_alias(split);
+	if (sh->alias->size == 0)
+	{
+		new->next = sh->alias->last;
+		new->prev = sh->alias->begin;
+		sh->alias->begin = new;
+		sh->alias->last = new;
+	}
+	else
+	{
+		new->prev = NULL;
+		new->next = sh->alias->begin;
+		sh->alias->begin->prev = new;
+		sh->alias->begin = new;
+	}
+	sh->alias->size++;
+}
+
+void		add_alias(t_42sh *sh)
+{
+	char	**split;
+	int		i;
+
+	i = 1;
+	while (sh->argv->argv[i])
+	{
+		split = ft_strsplitset(sh->argv->argv[i], "=\n");
+		if (split[1] == NULL)
+		{
+			if (print_alias(sh, split[0]) != 0)
+			{
+				ft_putstr("42sh: alias: ");
+				ft_putstr(split[0]);
+				ft_putendl(": not found");
+			}
+		}
+		else
+			add_to_list_alias(sh, split);
+		ft_free_split(split);
+		i++;
+	}
+}
+
+void		builtin_alias(t_42sh *sh)
+{
+	if (sh->argv->size == 1)
+		list_alias(sh);
+	else
+		add_alias(sh);
 }
