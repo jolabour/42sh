@@ -527,7 +527,9 @@ void				builtin_echo(t_42sh *sh);
 /*
 ** alias
 */
-void    builtin_alias(t_42sh *sh);
+
+void				builtin_alias(t_42sh *sh);
+void				builtin_unalias(t_42sh *sh);
 
 /***************************************************************************** \
 |                          SUBSTITUTION                                        |

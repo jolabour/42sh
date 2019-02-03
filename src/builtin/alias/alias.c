@@ -58,10 +58,35 @@ t_alias	*new_alias(char **line)
 	return (new);
 }
 
+int			check_alias(t_alias_mark **alias, char **split)
+{
+	int i;
+	t_alias *start;
+
+	i = 0;
+	start = (*alias)->begin;
+	if ((*alias)->size == 0)
+		return (-1);
+	while (i < (*alias)->size)
+	{
+		if (ft_strequ(start->to_sub, split[0]) == 1)
+		{
+			ft_strdel(&start->sub);
+			start->sub = ft_strdup(split[1]);
+			return (0);
+		}
+		start = start->next;
+		i++;
+	}
+	return (-1);
+}
+
 void	add_to_list_alias(t_42sh *sh, char **split)
 {
 	t_alias *new;
 
+	if (check_alias(&sh->alias, split) == 0)
+		return ;
 	new = new_alias(split);
 	if (sh->alias->size == 0)
 	{

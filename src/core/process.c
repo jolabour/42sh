@@ -77,6 +77,11 @@ int			check_builtin(t_42sh *sh)
 		builtin_alias(sh);
 		return (1);
 	}
+	if (ft_strequ(sh->argv->argv[0], "unalias") == 1)
+	{
+		builtin_unalias(sh);
+		return (1);
+	}
 	return (0);
 }
 

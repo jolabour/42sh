@@ -41,7 +41,7 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  edit_line/move_histo.c histo/substitute_history.c \
 			  builtin/test/test.c builtin/test/test_bcdef.c builtin/test/test_glprS.c \
 			  builtin/test/test_suwxz.c builtin/echo/echo.c substitution/parser_substitution.c \
-			  builtin/tabulation/tabulation.c builtin/alias/alias.c histo/ctrlr_action.c builtin/test/exec_other.c builtin/test/test_other.c
+			  builtin/tabulation/tabulation.c builtin/alias/alias.c histo/ctrlr_action.c builtin/test/exec_other.c builtin/test/test_other.c builtin/alias/unalias.c
 
 
 #
