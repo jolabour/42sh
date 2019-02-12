@@ -29,16 +29,16 @@ void	get_fork(t_42sh *sh)
 	}
 }
 
-char	*check_access(t_42sh *sh)
+char	*check_access(t_42sh *sh, int pos)
 {
 	int		i;
 	char	*tmp;
 	char	*tmp2;
 
 	i = 0;
-	if (access(sh->argv->argv[0], F_OK) == 0)
+	if (access(sh->argv->argv[pos], F_OK) == 0)
 	{
-		if (!(tmp2 = ft_strdup(sh->argv->argv[0])))
+		if (!(tmp2 = ft_strdup(sh->argv->argv[pos])))
 			print_error(_ENOMEM, 1);
 		return (tmp2);
 	}
@@ -48,7 +48,7 @@ char	*check_access(t_42sh *sh)
 		{
 			if (!(tmp = ft_strjoin(sh->bin_dirs[i], "/")))
 				print_error(_ENOMEM, 1);
-			if (!(tmp2 = ft_strjoin(tmp, sh->argv->argv[0])))
+			if (!(tmp2 = ft_strjoin(tmp, sh->argv->argv[pos])))
 				print_error(_ENOMEM, 1);
 			ft_strdel(&tmp);
 			if (access(tmp2, F_OK) == 0)
@@ -82,6 +82,11 @@ int			check_builtin(t_42sh *sh)
 		builtin_unalias(sh);
 		return (1);
 	}
+	if (ft_strequ(sh->argv->argv[0], "hash") == 1)
+	{
+		builtin_hash(sh);
+		return (1);
+	}
 	return (0);
 }
 
@@ -93,6 +98,26 @@ int				ft_len_argv(char **argv)
 	while (argv[i])
 		i++;
 	return (i);
+}
+
+void			substitute_alias(t_42sh *sh)
+{
+	int			i;
+	t_alias		*tmp;
+
+	i = 0;
+	tmp = sh->alias->begin;
+	while (i < sh->alias->size)
+	{
+		if (ft_strequ(tmp->to_sub, sh->argv->argv[0]) == 1)
+		{
+			ft_strdel(&sh->argv->argv[0]);
+			sh->argv->argv[0] = ft_strdup(tmp->sub);
+			return ;
+		}
+		tmp = tmp->next;
+		i++;
+	}
 }
 
 void			process(t_42sh *sh)
@@ -117,15 +142,21 @@ void			process(t_42sh *sh)
 		return ;
 	sh->argv->size = ft_len_argv(sh->argv->argv);
 	check_substitute(sh);
+	substitute_alias(sh);
 	if (check_builtin(sh) != 1)
 	{
 		if ((bucket_entry = ht_lookup(sh->argv->argv[0], &sh->hashtable)) != NULL)
 			sh->valide_path = ft_strdup(bucket_entry->path);
 		else
 		{
-			sh->valide_path = check_access(sh);
-			ft_putendl("donne un binaire gorille");
-			return ;
+			sh->valide_path = check_access(sh, 0);
+			if (sh->valide_path == NULL)
+			{
+				ft_putendl("donne un binaire gorille");
+				return ;
+			}
+			if (sh->argv->argv[0][0] != '/')
+				ht_insert(sh->valide_path, sh->argv->argv[0], &sh->hashtable);
 		}
 		if (access(sh->valide_path, X_OK) == -1)
 		{

@@ -57,24 +57,21 @@ void		print_hashtable(t_ht ht)
 {
 	uint16_t		i;
 	BUCKET_CONTENT	*bucket;
-	int				used;
 
 	i = 0;
-	used = 0;
 	while (i < INITIAL_HASHTABLE_SIZE)
 	{
 		if (ht.buckets[i].first != NULL)
 		{
-			++used;
 			bucket = ht.buckets[i].first;
-			printf("length:%hhu\n>>>>\n", ht.buckets[i].length);
 			while (bucket)
 			{
-				printf("name:%s\n", bucket->name);
+				ft_putstr(bucket->name);
+				ft_putstr("=");
+				ft_putendl(bucket->path);
 				bucket = bucket->next;
 			}
 		}
 		++i;
 	}
-	printf("buckets used: %d\n", used);
 }
