@@ -213,6 +213,7 @@ typedef struct		s_argv
 typedef struct		s_42sh
 {
 	char			**tokens;
+	char			**builtin;
 	t_argv			*argv;
 	char			*valide_path;
 	int				winsize;
@@ -452,6 +453,7 @@ int					ft_set_errno(int n);
 char				*ft_joinpath(const char *path, const char *name);
 
 void				print_env_array(char **env);
+int					check_is_builtin(t_42sh *sh, char *str);
 
 /***************************************************************************** \
 |                              HISTORY                                        |
@@ -533,6 +535,12 @@ void				builtin_echo(t_42sh *sh);
 
 void				builtin_alias(t_42sh *sh);
 void				builtin_unalias(t_42sh *sh);
+
+/*
+** type
+*/
+
+void				builtin_type(t_42sh *sh);
 
 /***************************************************************************** \
 |                          SUBSTITUTION                                        |

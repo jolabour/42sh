@@ -1,19 +1,25 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   init_shell.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/07/29 07:21:16 by jolabour          #+#    #+#             */
-/*   Updated: 2019/01/19 21:52:53 by jolabour         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "sh.h"
-#include <unistd.h>
 #include <curses.h>
 #include <term.h>
+
+void	init_builtin_tab(t_42sh *sh)
+{
+	if (!(sh->builtin = malloc(sizeof(char *) * 13)))
+		print_error(_ENOMEM, 1);
+	sh->builtin[0] = "echo";
+	sh->builtin[1] = "cd";
+	sh->builtin[2] = "type";
+	sh->builtin[3] = "alias";
+	sh->builtin[4] = "unalias";
+	sh->builtin[5] = "exit";
+	sh->builtin[6] = "test";
+	sh->builtin[7] = "fc";
+	sh->builtin[8] = "hash";
+	sh->builtin[9] = "set";
+	sh->builtin[10] = "unset";
+	sh->builtin[11] = "export";
+	sh->builtin[12] = NULL;
+}
 
 void		get_term(t_42sh *sh)
 {
@@ -86,6 +92,7 @@ void		init_shell(t_42sh *sh, char **env)
 	}
 	sh->copy_env = list_to_tab(sh->env, sh->copy_env);
 	sh->path_history = ft_strdup(".42sh_history");
+	init_builtin_tab(sh);
 	sh->line_to_replace = NULL;
 	sh->argv = NULL;
 	sh->lexer = NULL;

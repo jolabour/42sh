@@ -57,12 +57,15 @@ void		print_hashtable(t_ht ht)
 {
 	uint16_t		i;
 	BUCKET_CONTENT	*bucket;
+	int				used;
 
+	used = 0;
 	i = 0;
 	while (i < INITIAL_HASHTABLE_SIZE)
 	{
 		if (ht.buckets[i].first != NULL)
 		{
+			used++;
 			bucket = ht.buckets[i].first;
 			while (bucket)
 			{
@@ -74,4 +77,6 @@ void		print_hashtable(t_ht ht)
 		}
 		++i;
 	}
+	if (used == 0)
+		ft_putendl("hash table empty");
 }

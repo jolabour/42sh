@@ -59,7 +59,7 @@ void		check_hash_opt(t_42sh *sh)
 	}
 	while (sh->argv->argv[i])
 	{
-		if (sh->argv->argv[i][0] == '/');
+		if (sh->argv->argv[i][0] == '/' || check_is_builtin(sh, sh->argv->argv[i]) == 1);
 		else if (ht_lookup(sh->argv->argv[i], &sh->hashtable) == NULL)
 		{
 			if ((path = check_access(sh, i)) != NULL)

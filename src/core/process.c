@@ -87,6 +87,11 @@ int			check_builtin(t_42sh *sh)
 		builtin_hash(sh);
 		return (1);
 	}
+	if (ft_strequ(sh->argv->argv[0], "type") == 1)
+	{
+		builtin_type(sh);
+		return (1);
+	}
 	return (0);
 }
 
