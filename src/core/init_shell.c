@@ -76,8 +76,9 @@ void		init_shell(t_42sh *sh, char **env)
 	char *pwd;
 	
 	sh->env = set_list(env);
-	if (!(sh->var_local = malloc(sizeof(t_var_loc))))
+	if (!(sh->var = malloc(sizeof(t_var_mark))))
 		return ;
+	sh->var->size = 0;
 	path = ft_getenv(sh->env, "PATH=", sizeof("PATH=") - 1);
 	if (path)
 	{

@@ -24,6 +24,7 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include "libft.h"
+# include "histo.h"
 
 # define OPTION_TEST 15
 # define NB_INPUT_SELECT 8
@@ -163,24 +164,6 @@ typedef struct		s_lexer
 	struct s_lexer	*next;
 }					t_lexer;
 
-typedef struct		s_history
-{
-	char			*str;
-	struct s_history *next;
-	struct s_history *prev;
-}					t_history;
-
-typedef struct		s_history_mark
-{
-	t_history		*begin;
-	t_history		*last;
-	t_history		*cur;
-	char 			*last_str;
-	int				error_code;
-	int				pos;
-	int				size;
-}					t_history_mark;
-
 typedef struct		s_alias
 {
 	char			*to_sub;
@@ -196,10 +179,18 @@ typedef struct		s_alias_mark
 	int				size;
 }					t_alias_mark;
 
-typedef struct		s_var_loc
+typedef struct		s_var
 {
-	int				HISTSIZE;
-}					t_var_loc;
+	char			*to_sub;
+	char			*sub;
+	struct	s_var	*next;
+}					t_var;
+
+typedef struct		s_var_mark
+{
+	t_var			*begin;
+	int				size;
+}					t_var_mark;
 
 typedef struct		s_argv
 {
@@ -235,7 +226,7 @@ typedef struct		s_42sh
  	t_reset			reset_term;
 	t_alias_mark	*alias;
   	t_ht			hashtable;
-	t_var_loc		*var_local;
+	t_var_mark		*var;
 }					t_42sh;
 
 typedef				void(*t_ak)(t_42sh *sh);
@@ -401,8 +392,8 @@ BUCKET_CONTENT	*ht_insert(const char *path, const char *name, t_ht *ht);
 void			ht_delete(const char *name, t_ht *ht);
 void			init_hashtable(t_42sh *sh);
 void			print_hashtable(t_ht ht);
+void			get_fork(t_42sh *sh);
 void			builtin_hash(t_42sh *sh);
-
 
 /*****************************************************************************\
 |                               INIT_SHELL                                    |
@@ -454,7 +445,6 @@ char				*ft_joinpath(const char *path, const char *name);
 
 void				print_env_array(char **env);
 int					check_is_builtin(t_42sh *sh, char *str);
-
 /***************************************************************************** \
 |                              HISTORY                                        |
 \*****************************************************************************/
@@ -486,9 +476,18 @@ void				del_history(t_history_mark *history);
 void				add_to_list(t_42sh *sh, char *line);
 void				up_histo(t_42sh *sh);
 void				down_histo(t_42sh *sh);
-void				check_substitute(t_42sh *sh);
+char				*check_substitute(t_42sh *sh, char *str, int *error);
 void				modify_last_history(t_42sh *sh);
 void				ctrlr_action(t_42sh *sh);
+int					is_in_str(char *to_find, char *search, int len_check);
+void				get_new_line_ctrlr(t_42sh *sh, char *dup);
+char				*get_line_ctrlr(t_42sh *sh, char *arg, char *dup);
+void				place_curs_ctrlr(t_42sh *sh, char *arg, char *dup);
+void				print_prompt_search(t_42sh *sh, int choice, char *to_print_in, char *to_print_out, int len_del);
+void				place_curs_ctrlr_exit(t_42sh *sh, char *arg, char *dup);
+void 				back_in_history(t_42sh *sh, char *dup, char *arg);
+
+
 /***************************************************************************** \
 |                              BUILTIN                                        |
 \*****************************************************************************/
@@ -533,14 +532,20 @@ void				builtin_echo(t_42sh *sh);
 ** alias
 */
 
-void				builtin_alias(t_42sh *sh);
-void				builtin_unalias(t_42sh *sh);
+void    builtin_alias(t_42sh *sh);
+void	builtin_unalias(t_42sh *sh);
+
+/*
+** fc
+*/
+
+void				builtin_fc(t_42sh *sh);
 
 /*
 ** type
 */
 
-void				builtin_type(t_42sh *sh);
+void			builtin_type(t_42sh *sh);
 
 /***************************************************************************** \
 |                          SUBSTITUTION                                        |
@@ -558,5 +563,8 @@ void				get_substitute(t_42sh *sh, int i, char *substitute, int nb_del);
 \*****************************************************************************/
 
 void				show_suggest(t_42sh *sh);
+int					parse_test(t_42sh *sh);
+void				builtin_set(t_42sh *sh);
+void				builtin_unset(t_42sh *sh);
 
 #endif

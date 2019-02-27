@@ -92,6 +92,21 @@ int			check_builtin(t_42sh *sh)
 		builtin_type(sh);
 		return (1);
 	}
+	if (ft_strequ(sh->argv->argv[0], "fc") == 1)
+	{
+		builtin_fc(sh);
+		return (1);
+	}
+	if (ft_strequ(sh->argv->argv[0], "set") == 1)
+	{
+		builtin_set(sh);
+		return (1);
+	}
+	if (ft_strequ(sh->argv->argv[0], "unset") == 1)
+	{
+		builtin_unset(sh);
+		return (1);
+	}
 	return (0);
 }
 
@@ -131,7 +146,6 @@ void			process(t_42sh *sh)
 
 	prompt(sh->env, sh);
 
-	//if (sh->need_get_line == true)
 	if (get_line(sh) != 1)
 			return ;
 	if (sh->stdin->len_line == 0 || !sh->stdin->input)
@@ -140,13 +154,14 @@ void			process(t_42sh *sh)
 	if (ft_strcmp(sh->stdin->input, "exit\n") == 0)
 		reset_term(sh);
 	check_substitute_history(sh);
-	if (sh->history_mark->error_code == 0)
+	if (sh->history_mark->error_code == 0 && ft_strcmp(sh->stdin->input, "fc\n") != 0)
 		add_history(sh, sh->stdin->input, sh->path_history);
 	sh->argv->argv = ft_strsplitset(sh->stdin->input, " \t\n");
 	if (!sh->argv->argv[0])
 		return ;
 	sh->argv->size = ft_len_argv(sh->argv->argv);
-	check_substitute(sh);
+	 if (parse_test(sh) == 0)
+		return ;
 	substitute_alias(sh);
 	if (check_builtin(sh) != 1)
 	{
