@@ -140,12 +140,27 @@ void			substitute_alias(t_42sh *sh)
 	}
 }
 
+void			free_tab(char **str)
+{
+	int			i;
+
+	i = 0;
+	while(str[i])
+	{
+		ft_strdel(&str[i]);
+		i++;
+	}
+	free(str);
+}
+
 void			process(t_42sh *sh)
 {
 	BUCKET_CONTENT	*bucket_entry;
+	char			*path;
+	int				i;
 
+	i = 0;
 	prompt(sh->env, sh);
-
 	if (get_line(sh) != 1)
 			return ;
 	if (sh->stdin->len_line == 0 || !sh->stdin->input)
@@ -163,6 +178,20 @@ void			process(t_42sh *sh)
 	 if (parse_test(sh) == 0)
 		return ;
 	substitute_alias(sh);
+	free_tab(sh->copy_env);
+	sh->copy_env = list_to_tab(sh->env, sh->copy_env);
+	free_tab(sh->bin_dirs);
+	path = ft_getenv(sh->env, "PATH=", sizeof("PATH=") - 1);
+	if (path)
+	{
+		if ((sh->bin_dirs = ft_strsplit(path, ':')) == NULL)
+			print_error(_ENOMEM, 1);
+	}
+	while (sh->bin_dirs[i])
+	{
+		ft_putendl(sh->bin_dirs[i]);
+		i++;
+	}
 	if (check_builtin(sh) != 1)
 	{
 		if ((bucket_entry = ht_lookup(sh->argv->argv[0], &sh->hashtable)) != NULL)

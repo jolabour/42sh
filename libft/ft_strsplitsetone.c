@@ -24,8 +24,13 @@ char			**ft_strsplitsetone(char const *s, char delim)
 	i = 0;
 	if (!(split[0] = malloc(sizeof(char) * first_len(s, delim) + 1)))
 		return (NULL);
-	if (!(split[1] = malloc(sizeof(char) * (ft_strlen(s) - first_len(s, delim)))))
-		return (NULL);
+	if (ft_strlen(s) - first_len(s, delim) != 0)
+	{
+		if (!(split[1] = malloc(sizeof(char) * (ft_strlen(s) - first_len(s, delim)))))
+			return (NULL);
+	}
+	else
+		split[1] = ft_strdup("\0");
 	a = 0;
 	j = 0;
 	while (s[i])

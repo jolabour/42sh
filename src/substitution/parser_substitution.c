@@ -63,6 +63,17 @@ char			*substitute_param(t_42sh *sh, char *str, int *pos)
 				{
 					to_search = ft_strsub(str, save_pos, *pos - save_pos);
 					substitute = get_var(sh, to_search);
+					if (ft_strequ(substitute, "\0") == 1)
+					{
+						free(substitute);
+						if ((substitute = ft_getenv(sh->env, to_search, ft_strlen(to_search))) != NULL)
+						{
+							free(to_search);
+							to_search = ft_strdup(substitute + 1);
+							return (to_search);
+						}
+						substitute = ft_strdup("\0");
+					}
 					free(to_search);
 					return (substitute);
 				}
@@ -213,13 +224,45 @@ void	add_to_varlist(t_42sh *sh, char **split)
 	sh->var->size++;
 }
 
+int				check_env(t_env **env, char **split)
+{
+	t_env		*tmp;
+	int			len;
+	char		*new;
+
+	len = ft_strlen(split[0]);
+	tmp = *env;
+	while (tmp)
+	{
+		if (!ft_strncmp(split[0], tmp->str, len))
+		{
+			free(tmp->str);
+			new = ft_strjoin(split[0], "=");
+			tmp->str = ft_strjoin(new, split[1]);
+			free(new);
+			return (1);
+		}
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
 void			check_local_variable(t_42sh *sh, char *str)
 {
 	char **split;
 
 	if (check_equal(str) != 1)
 		return ;
-	split = ft_strsplitsetone(str, '=');
+	split = ft_strsplit(str, '=');
+	if (check_env(&sh->env, split) == 1)
+	{
+		if (ft_strequ(split[0],"PATH") == 1)
+			reset_hashtable(&sh->hashtable);
+		free(split[0]);
+		free(split[1]);
+		free(split);
+		return ;
+	}
 	add_to_varlist(sh, split);
 	free(split[0]);
 	free(split[1]);

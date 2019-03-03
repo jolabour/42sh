@@ -566,5 +566,6 @@ void				show_suggest(t_42sh *sh);
 int					parse_test(t_42sh *sh);
 void				builtin_set(t_42sh *sh);
 void				builtin_unset(t_42sh *sh);
+void				reset_hashtable(t_ht *ht);
 
 #endif
