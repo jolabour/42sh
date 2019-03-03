@@ -253,7 +253,7 @@ void			check_local_variable(t_42sh *sh, char *str)
 
 	if (check_equal(str) != 1)
 		return ;
-	split = ft_strsplit(str, '=');
+	split = ft_strsplitsetone(str, '=');
 	if (check_env(&sh->env, split) == 1)
 	{
 		if (ft_strequ(split[0],"PATH") == 1)

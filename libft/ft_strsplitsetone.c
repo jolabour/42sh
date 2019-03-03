@@ -1,52 +1,43 @@
 #include <stdlib.h>
 #include "libft.h"
 
-int				first_len(const char *str, char c)
+size_t				check_delim(const char *str, char c)
 {
-	int			i;
+	size_t			i;
 
 	i = 0;
-	while (str[i] && str[i] != c)
+	while (str[i])
+	{
+		if (str[i] == c)
+			return (i);
 		i++;
+	}
 	return (i);
 }
 
 char			**ft_strsplitsetone(char const *s, char delim)
 {
 	char		**split;
-	int			i;
-	int			j;
-	int			a;
+	size_t		len;
 
-	if (!(split = malloc(sizeof(char*)
-					* 3)))
+	len = check_delim(s, delim);
+	if (!(split = malloc(sizeof(char*) * 3)))
 		return (NULL);
-	i = 0;
-	if (!(split[0] = malloc(sizeof(char) * first_len(s, delim) + 1)))
-		return (NULL);
-	if (ft_strlen(s) - first_len(s, delim) != 0)
+	if (len >= ft_strlen(s))
 	{
-		if (!(split[1] = malloc(sizeof(char) * (ft_strlen(s) - first_len(s, delim)))))
-			return (NULL);
+		split[0] = ft_strsub(s, 0, len);
+		split[1] = ft_strdup("\0");
+	}
+	else if (len == 0)
+	{
+		split[0] = ft_strdup("\0");
+		split[1] = ft_strsub(s, 1, ft_strlen(s) - 1);
 	}
 	else
-		split[1] = ft_strdup("\0");
-	a = 0;
-	j = 0;
-	while (s[i])
 	{
-		if (s[i] == delim)
-		{
-			split[a][j] = '\0';
-			a++;
-			j = 0;
-			i++;
-		}
-		split[a][j] = s[i];
-		i++;
-		j++;
+		split[0] = ft_strsub(s, 0, len);
+		split[1] = ft_strdup(s + len + 1);
 	}
-	split[a][j] = '\0';
 	split[2] = NULL;
 	return (split);
 }
