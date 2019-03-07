@@ -51,7 +51,7 @@ char			*substitute_param(t_42sh *sh, char *str, int *pos)
 		else
 			return (NULL);
 	}
-	if (ft_isalpha(str[*pos]) == 1)
+	else if (ft_isalpha(str[*pos]) == 1)
 	{
 		save_pos = *pos;
 		*pos = *pos + 1;
@@ -80,6 +80,65 @@ char			*substitute_param(t_42sh *sh, char *str, int *pos)
 				return (NULL);
 			}
 			*pos = *pos + 1;
+		}
+	}
+	else if (str[*pos] == '$')
+	{
+		if (str[*pos + 1] == '}')
+		{
+			substitute = ft_itoa((int)getpid());
+			*pos = *pos + 1;
+			return (substitute);
+		}
+		else
+			return (NULL);
+	}
+	else if (str[*pos] == '0')
+	{
+		if (str[*pos + 1] == '}')
+		{
+			substitute = ft_strdup("shellotosaure 2000");
+			*pos = *pos + 1;
+			return (substitute);
+		}
+		else
+			return (NULL);
+	}
+	else if (str[*pos] == '#')
+	{
+		if (str[*pos + 1] == '}')
+		{
+			substitute = ft_itoa(0);
+			*pos = *pos + 1;
+			return (substitute);
+		}
+		else
+		{
+			*pos = *pos + 1;
+			save_pos = *pos;
+			while (str[*pos])
+			{
+				if (str[*pos] == '}')
+				{
+					to_search = ft_strsub(str, save_pos, *pos - save_pos);
+					substitute = get_var(sh, to_search);
+					if (ft_strequ(substitute, "\0") == 1)
+					{
+						free(substitute);
+						if ((substitute = ft_getenv(sh->env, to_search, ft_strlen(to_search))) != NULL)
+						{
+							free(to_search);
+							to_search = ft_strdup(substitute + 1);
+							return (ft_itoa((int)ft_strlen(to_search)));
+						}
+						substitute = ft_strdup("\0");
+					}
+					free(to_search);
+					return (ft_itoa((int)ft_strlen(substitute)));
+				}
+				*pos = *pos + 1;
+			}
+			return (NULL);
 		}
 	}
 	return (NULL);

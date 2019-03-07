@@ -31,7 +31,8 @@ int			main(int argc, char **argv, char **env)
 		free(sh.stdin);
 		del_lexer(&sh.lexer);
 		del_history(sh.history_mark);
-		ft_free_split(sh.argv->argv);
+		if (sh.argv->argv)
+			ft_free_split(sh.argv->argv);
 	}
 	free(sh.argv);
 	return (0);

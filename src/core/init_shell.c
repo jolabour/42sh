@@ -100,6 +100,7 @@ void		init_shell(t_42sh *sh, char **env)
 	if (!(sh->argv = malloc(sizeof(t_argv))))
 		return ;
 	sh->argv->error_code = 0;
+	sh->argv->argv = NULL;
 	init_alias_list(sh);
 	init_hashtable(sh);
 	get_term(sh);

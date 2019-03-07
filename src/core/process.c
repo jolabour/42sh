@@ -107,6 +107,11 @@ int			check_builtin(t_42sh *sh)
 		builtin_unset(sh);
 		return (1);
 	}
+	/*if (ft_strequ(sh->argv->argv[0], "export") == 1)
+	{
+		builtin_export(sh);
+		return (1);
+	}*/
 	return (0);
 }
 
