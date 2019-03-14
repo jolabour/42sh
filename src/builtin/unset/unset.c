@@ -34,6 +34,26 @@ int			search_var(t_var_mark *var_mark, t_var **var, char *str)
 	return (0);
 }
 
+int			search_env(t_env **env, char *str, size_t len)
+{
+	t_env	*tmp;
+	t_env	*prev;
+
+	tmp = *env;
+	prev = tmp;
+	while (tmp)
+	{
+		if (!ft_strncmp(tmp->str, str, len))
+		{
+			list_del(env, tmp, prev);
+			return (1);
+		}
+		prev = tmp;
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
 void		del_var(t_42sh *sh)
 {
 	int		i;
@@ -44,9 +64,12 @@ void		del_var(t_42sh *sh)
 	{
 		if ((j = search_var(sh->var, &sh->var->begin, sh->argv->argv[i])) == 0)
 		{
-			ft_putstr("42sh: unset: ");
-			ft_putstr(sh->argv->argv[i]);
-			ft_putstr(": not found\n");
+			if (search_env(&sh->env, sh->argv->argv[i], ft_strlen(sh->argv->argv[i])) == 0)
+			{
+				ft_putstr("42sh: unset: ");
+				ft_putstr(sh->argv->argv[i]);
+				ft_putstr(": not found\n");
+			}
 		}
 		if (j == 1)
 			sh->var->size--;

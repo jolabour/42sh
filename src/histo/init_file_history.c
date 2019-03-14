@@ -6,7 +6,7 @@
 /*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 17:03:05 by ttresori          #+#    #+#             */
-/*   Updated: 2019/01/25 20:31:03 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/03/08 00:57:01 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ void	init_history(t_42sh *sh, char *path)
 	if (access(path, F_OK) == 0)
 	{
 		fd = open(path, O_RDWR);
-		while (get_next_line(fd, &line) == 1)
+		while (get_next_line(fd, &line) != 0)
 		{
 			add_to_list(sh, line);
 			free(line);

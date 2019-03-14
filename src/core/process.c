@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/01/25 02:40:03 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/03/11 19:13:37 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,11 @@ int			check_builtin(t_42sh *sh)
 		builtin_unset(sh);
 		return (1);
 	}
-	/*if (ft_strequ(sh->argv->argv[0], "export") == 1)
+	if (ft_strequ(sh->argv->argv[0], "export") == 1)
 	{
 		builtin_export(sh);
 		return (1);
-	}*/
+	}
 	return (0);
 }
 
@@ -191,11 +191,6 @@ void			process(t_42sh *sh)
 	{
 		if ((sh->bin_dirs = ft_strsplit(path, ':')) == NULL)
 			print_error(_ENOMEM, 1);
-	}
-	while (sh->bin_dirs[i])
-	{
-		ft_putendl(sh->bin_dirs[i]);
-		i++;
 	}
 	if (check_builtin(sh) != 1)
 	{

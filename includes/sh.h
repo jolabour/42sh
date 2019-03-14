@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/01/25 02:43:08 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/03/11 20:25:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -569,5 +569,8 @@ void				builtin_unset(t_42sh *sh);
 void				reset_hashtable(t_ht *ht);
 int					check_equal(char *str);
 void				builtin_export(t_42sh *sh);
+int					search_var(t_var_mark *var_mark, t_var **var,char *str);
+int					check_env(t_env **env, char **split);
+void				list_del(t_env **env, t_env *to_del, t_env *prev);
 
 #endif

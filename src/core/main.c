@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:21:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/01/25 01:38:08 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/03/08 00:30:26 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,7 @@ int			main(int argc, char **argv, char **env)
 		free(sh.stdin);
 		del_lexer(&sh.lexer);
 		del_history(sh.history_mark);
-		if (sh.argv->argv)
-			ft_free_split(sh.argv->argv);
+		sh.argv->argv = ft_free_split(sh.argv->argv);
 	}
 	free(sh.argv);
 	return (0);

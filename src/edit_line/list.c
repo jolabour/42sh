@@ -6,11 +6,21 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:28:33 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/05 20:32:55 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/11 20:25:24 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
+
+void		list_del(t_env **env, t_env *to_del, t_env *prev)
+{
+	if (*env == to_del)
+		*env = to_del->next;
+	else
+		prev->next = to_del->next;
+	free(to_del->str);
+	free(to_del);
+}
 
 int			len_list(t_env *env)
 {

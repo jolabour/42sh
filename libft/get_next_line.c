@@ -6,22 +6,23 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/08 21:09:55 by jolabour          #+#    #+#             */
-/*   Updated: 2018/10/12 00:37:00 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/08 00:59:55 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static int		check_return(int i, char *str, char **line)
+static int		check_return(int i, char **str, char **line)
 {
 	if (i < 0)
 		return (-1);
-	if (ft_strlen(str) > 0)
+	if (ft_strlen(*str) > 0)
 	{
-		*line = ft_strdup(str);
-		ft_strdel(&str);
+		*line = ft_strdup(*str);
+		ft_strdel(str);
 		return (1);
 	}
+	ft_strdel(str);
 	*line = NULL;
 	return (0);
 }
@@ -40,7 +41,7 @@ int				get_next_line(const int fd, char **line)
 	while (!(ft_strchr(str, '\n')))
 	{
 		if ((i = read(fd, buf, BUFF_SIZE)) < 1)
-			return (check_return(i, str, line));
+			return (check_return(i, &str, line));
 		buf[i] = '\0';
 		tmp = str;
 		str = ft_strjoin(tmp, buf);

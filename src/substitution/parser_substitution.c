@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 22:54:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/01/24 04:30:10 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/03/11 19:57:17 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ char			*substitute_param(t_42sh *sh, char *str, int *pos)
 	char		*substitute;
 	char		*to_search;
 	int			save_pos;
+	char		*to_return;
 
 	if (str[*pos] == '?')
 	{
@@ -129,12 +130,16 @@ char			*substitute_param(t_42sh *sh, char *str, int *pos)
 						{
 							free(to_search);
 							to_search = ft_strdup(substitute + 1);
-							return (ft_itoa((int)ft_strlen(to_search)));
+							to_return = ft_itoa((int)ft_strlen(to_search));
+							free(to_search);
+							return (to_return);
 						}
 						substitute = ft_strdup("\0");
 					}
 					free(to_search);
-					return (ft_itoa((int)ft_strlen(substitute)));
+					to_return = ft_itoa((int)ft_strlen(substitute));
+					free(substitute);
+					return (to_return);
 				}
 				*pos = *pos + 1;
 			}
