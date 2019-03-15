@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/15 01:46:48 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/15 02:59:11 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,20 +243,20 @@ int				ft_dup_tmp_fd(int fd)
 void			ft_build_tmp_fd(int fd, t_tmpfd **begin)
 {
 	t_tmpfd		*tmp;
-	int			cloexec;
 
-	if ((cloexec = fcntl(fd, F_GETFD)) != -1)
+	if (!(tmp = (t_tmpfd *)malloc(sizeof(t_tmpfd))))
+		exit(2);
+	tmp->initial = fd;
+	if ((tmp->cloexec = fcntl(fd, F_GETFD)) != -1)
 	{
-		if (!(tmp = (t_tmpfd *)malloc(sizeof(t_tmpfd))))
-			exit(2);
-		tmp->initial = fd;
 		if ((tmp->tmp = ft_dup_tmp_fd(fd)) == -1)
 			exit(2);
-		tmp->cloexec = cloexec;
 		fcntl(tmp->tmp, F_SETFD, FD_CLOEXEC);
-		tmp->next = *begin;
-		*begin = tmp;
 	}
+	else
+		tmp->tmp = -1;
+	tmp->next = *begin;
+	*begin = tmp;
 }
 
 void			ft_reset_tmp_fd(t_tmpfd *begin)
@@ -265,10 +265,15 @@ void			ft_reset_tmp_fd(t_tmpfd *begin)
 
 	while (begin)
 	{
-		if (dup2(begin->tmp, begin->initial) == -1)
-			exit(2);
-		close(begin->tmp);
-		fcntl(begin->initial, F_SETFD, begin->cloexec);
+		if (begin->tmp == -1)
+			close(begin->initial);
+		else
+		{
+			if (dup2(begin->tmp, begin->initial) == -1)
+				exit(2);
+			close(begin->tmp);
+			fcntl(begin->initial, F_SETFD, begin->cloexec);
+		}
 		tmp = begin;
 		begin = begin->next;
 		free(tmp);

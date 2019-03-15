@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/15 01:45:41 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/15 02:01:37 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,9 @@ void			process(t_42sh *sh)
 		return ;
 	if (sh->stdin->len_line == 0 || !sh->stdin->input)
 		return ;
+	check_substitute_history(sh);
+	if (sh->history_mark->error_code == 0 && ft_strcmp(sh->stdin->input, "fc\n") != 0)
+		add_history(sh, sh->stdin->input, sh->path_history);
 	if (!(list = ft_lexer(&(sh->stdin->input))))
 		exit(2);
 	if (!(list = ft_toklist_to_node((sh->stdin->input), list)))
@@ -182,9 +185,6 @@ void			process(t_42sh *sh)
 	// ft_lexer(sh);
 	// if (ft_strcmp(sh->stdin->input, "exit\n") == 0)
 	// 	reset_term(sh);
-	// check_substitute_history(sh);
-	// if (sh->history_mark->error_code == 0 && ft_strcmp(sh->stdin->input, "fc\n") != 0)
-	// 	add_history(sh, sh->stdin->input, sh->path_history);
 	// sh->argv->argv = ft_strsplitset(sh->stdin->input, " \t\n");
 	// if (!sh->argv->argv[0])
 	// 	return ;
