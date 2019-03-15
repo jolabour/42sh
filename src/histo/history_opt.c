@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history_opt.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 18:26:21 by ttresori          #+#    #+#             */
-/*   Updated: 2019/01/10 19:36:17 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/03/14 23:41:53 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,13 +100,13 @@ void	print_history_r(char *path)
 	
 }
 
-void	history_p(t_42sh *sh)
-{
-	sh->lexer = sh->lexer->next;
-	sh->lexer = sh->lexer->next;
-	while (sh->lexer->str != NULL)
-	{
-		ft_putendl(sh->lexer->str);
-		sh->lexer = sh->lexer->next;
-	}
-}
+// void	history_p(t_42sh *sh)
+// {
+// 	sh->lexer = sh->lexer->next;
+// 	sh->lexer = sh->lexer->next;
+// 	while (sh->lexer->str != NULL)
+// 	{
+// 		ft_putendl(sh->lexer->str);
+// 		sh->lexer = sh->lexer->next;
+// 	}
+// }

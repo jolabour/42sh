@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sh.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/11 20:25:50 by marvin           ###   ########.fr       */
+/*   Updated: 2019/03/14 23:52:13 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <fcntl.h>
 # include "libft.h"
 # include "histo.h"
+# include "ft_42sh.h"
 
 # define OPTION_TEST 15
 # define NB_INPUT_SELECT 8
@@ -132,38 +133,6 @@ typedef struct		s_stdin
 	char			*input;
 }					t_stdin;
 
-enum				e_token
-{
-	WORD,
-	OPERATOR,
-	NEWLINE,
-};
-
-enum e_token				g_token;
-
-enum				e_operator
-{
-	NONE,
-	PIPE,
-	SEMI,
-	GREAT,
-	LESS,
-	GREATAND,
-	DLESS,
-	DGREAT,
-};
-
-enum e_operator			g_operator;
-
-typedef struct		s_lexer
-{
-	char			*str;
-	int				token_type;
-	int				operator_type;
-	int				quote;
-	struct s_lexer	*next;
-}					t_lexer;
-
 typedef struct		s_alias
 {
 	char			*to_sub;
@@ -194,12 +163,12 @@ typedef struct		s_var_mark
 
 typedef struct		s_argv
 {
-  char		**argv;
-  int		pos_str;
-  int		cur_str;
-  int		error_code;
-  int		size;
-}			t_argv;
+  char				**argv;
+  int				pos_str;
+  int				cur_str;
+  int				error_code;
+  int				size;
+}					t_argv;
 
 typedef struct		s_42sh
 {
@@ -215,8 +184,6 @@ typedef struct		s_42sh
 	char			*path_history;
 	int				token_nbr;
 	bool			need_get_line;
-	t_lexer			*lexer;
-	int				lex_pos;
 	t_stdin			*stdin;
 	t_history_mark	*history_mark;
 	char			*line_to_replace;
@@ -227,6 +194,7 @@ typedef struct		s_42sh
 	t_alias_mark	*alias;
   	t_ht			hashtable;
 	t_var_mark		*var;
+	t_shell			shell;
 }					t_42sh;
 
 typedef				void(*t_ak)(t_42sh *sh);
@@ -354,18 +322,18 @@ void				move_up(t_42sh *sh);
 |                                   LEXER                                     |
 \*****************************************************************************/
 
-void				get_word(t_42sh *sh);
-void				get_operator(t_42sh *sh);
-void				get_newline(t_42sh *sh);
-void				ft_lexer(t_42sh *sh);
-int					ft_is_blank(char c);
-int					ft_is_newline(char c);
-int					ft_is_operator(char c);
-void				add_token(t_42sh *sh, char *str, int token_type, int operator_type, int quote);
-void				del_lexer(t_lexer **lexer);
-int					get_squote(t_42sh *sh, int i, int *quote);
-int					get_dquote(t_42sh *sh, int i, int *quote);
-void				print_lexer(t_42sh *sh);
+// void				get_word(t_42sh *sh);
+// void				get_operator(t_42sh *sh);
+// void				get_newline(t_42sh *sh);
+// void				ft_lexer(t_42sh *sh);
+// int					ft_is_blank(char c);
+// int					ft_is_newline(char c);
+// int					ft_is_operator(char c);
+// void				add_token(t_42sh *sh, char *str, int token_type, int operator_type, int quote);
+// void				del_lexer(t_lexer **lexer);
+// int					get_squote(t_42sh *sh, int i, int *quote);
+// int					get_dquote(t_42sh *sh, int i, int *quote);
+// void				print_lexer(t_42sh *sh);
 
 /*****************************************************************************\
 |                                  PROCESS                                    |

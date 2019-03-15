@@ -23,9 +23,8 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  hashtable/init_hashtable.c utils/ft_joinpath.c utils/env.c \
 			  edit_line/select_mode.c edit_line/move_select_mode.c \
 			  edit_line/action_select_mode.c edit_line/move_line.c \
-			  lexer/get_word.c lexer/get_operator.c lexer/lexer.c \
-			  lexer/get_newline.c lexer/list_lexer.c lexer/print_lexer.c \
-			  histo/init_file_history.c histo/parser_history.c histo/history_opt.c \
+			  geff/main.c geff/ft_lexer.c geff/ft_ast.c \
+			  histo/init_file_history.c histo/parser_history.c \
 			  edit_line/move_histo.c histo/substitute_history.c \
 			  builtin/test/test.c builtin/test/test_bcdef.c builtin/test/test_glprS.c \
 			  builtin/test/test_suwxz.c builtin/echo/echo.c substitution/parser_substitution.c \
@@ -90,6 +89,7 @@ $(OBJS_DIR)/%.o: %.c
 	@mkdir -p $(OBJS_DIR)/builtin/unset
 	@mkdir -p $(OBJS_DIR)/histo/ctrlr_action
 	@mkdir -p $(OBJS_DIR)/builtin/export
+	@mkdir -p $(OBJS_DIR)/geff
 	@$(COMP)
 
 clean:

@@ -96,7 +96,6 @@ void		init_shell(t_42sh *sh, char **env)
 	init_builtin_tab(sh);
 	sh->line_to_replace = NULL;
 	sh->argv = NULL;
-	sh->lexer = NULL;
 	if (!(sh->argv = malloc(sizeof(t_argv))))
 		return ;
 	sh->argv->error_code = 0;

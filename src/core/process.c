@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/11 19:13:37 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/15 01:45:41 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,60 +160,69 @@ void			free_tab(char **str)
 
 void			process(t_42sh *sh)
 {
-	BUCKET_CONTENT	*bucket_entry;
-	char			*path;
-	int				i;
+	// BUCKET_CONTENT	*bucket_entry;
+	// char			*path;
+	// int				i;
+	void			*list;
 
-	i = 0;
+	// i = 0;
 	prompt(sh->env, sh);
 	if (get_line(sh) != 1)
-			return ;
+		return ;
 	if (sh->stdin->len_line == 0 || !sh->stdin->input)
 		return ;
-	ft_lexer(sh);
-	if (ft_strcmp(sh->stdin->input, "exit\n") == 0)
-		reset_term(sh);
-	check_substitute_history(sh);
-	if (sh->history_mark->error_code == 0 && ft_strcmp(sh->stdin->input, "fc\n") != 0)
-		add_history(sh, sh->stdin->input, sh->path_history);
-	sh->argv->argv = ft_strsplitset(sh->stdin->input, " \t\n");
-	if (!sh->argv->argv[0])
-		return ;
-	sh->argv->size = ft_len_argv(sh->argv->argv);
-	 if (parse_test(sh) == 0)
-		return ;
-	substitute_alias(sh);
-	free_tab(sh->copy_env);
-	sh->copy_env = list_to_tab(sh->env, sh->copy_env);
-	free_tab(sh->bin_dirs);
-	path = ft_getenv(sh->env, "PATH=", sizeof("PATH=") - 1);
-	if (path)
-	{
-		if ((sh->bin_dirs = ft_strsplit(path, ':')) == NULL)
-			print_error(_ENOMEM, 1);
-	}
-	if (check_builtin(sh) != 1)
-	{
-		if ((bucket_entry = ht_lookup(sh->argv->argv[0], &sh->hashtable)) != NULL)
-			sh->valide_path = ft_strdup(bucket_entry->path);
-		else
-		{
-			sh->valide_path = check_access(sh, 0);
-			if (sh->valide_path == NULL)
-			{
-				ft_putendl("donne un binaire gorille");
-				return ;
-			}
-			if (sh->argv->argv[0][0] != '/')
-				ht_insert(sh->valide_path, sh->argv->argv[0], &sh->hashtable);
-		}
-		if (access(sh->valide_path, X_OK) == -1)
-		{
-			ft_putendl("t'as pas les droits victimes");
-			ft_strdel(&sh->valide_path);
-			return ;
-		}
-		get_fork(sh);
-		ft_strdel(&sh->valide_path);
-	}
+	if (!(list = ft_lexer(&(sh->stdin->input))))
+		exit(2);
+	if (!(list = ft_toklist_to_node((sh->stdin->input), list)))
+		exit(2);
+	// free((sh->stdin->input));
+	if (!(list = ft_build_ast(list)))
+		exit(2);
+	g_exetab[((t_node *)list)->token](list, &(sh->shell));
+	// ft_lexer(sh);
+	// if (ft_strcmp(sh->stdin->input, "exit\n") == 0)
+	// 	reset_term(sh);
+	// check_substitute_history(sh);
+	// if (sh->history_mark->error_code == 0 && ft_strcmp(sh->stdin->input, "fc\n") != 0)
+	// 	add_history(sh, sh->stdin->input, sh->path_history);
+	// sh->argv->argv = ft_strsplitset(sh->stdin->input, " \t\n");
+	// if (!sh->argv->argv[0])
+	// 	return ;
+	// sh->argv->size = ft_len_argv(sh->argv->argv);
+	//  if (parse_test(sh) == 0)
+	// 	return ;
+	// substitute_alias(sh);
+	// free_tab(sh->copy_env);
+	// sh->copy_env = list_to_tab(sh->env, sh->copy_env);
+	// free_tab(sh->bin_dirs);
+	// path = ft_getenv(sh->env, "PATH=", sizeof("PATH=") - 1);
+	// if (path)
+	// {
+	// 	if ((sh->bin_dirs = ft_strsplit(path, ':')) == NULL)
+	// 		print_error(_ENOMEM, 1);
+	// }
+	// if (check_builtin(sh) != 1)
+	// {
+	// 	if ((bucket_entry = ht_lookup(sh->argv->argv[0], &sh->hashtable)) != NULL)
+	// 		sh->valide_path = ft_strdup(bucket_entry->path);
+	// 	else
+	// 	{
+	// 		sh->valide_path = check_access(sh, 0);
+	// 		if (sh->valide_path == NULL)
+	// 		{
+	// 			ft_putendl("donne un binaire gorille");
+	// 			return ;
+	// 		}
+	// 		if (sh->argv->argv[0][0] != '/')
+	// 			ht_insert(sh->valide_path, sh->argv->argv[0], &sh->hashtable);
+	// 	}
+	// 	if (access(sh->valide_path, X_OK) == -1)
+	// 	{
+	// 		ft_putendl("t'as pas les droits victimes");
+	// 		ft_strdel(&sh->valide_path);
+	// 		return ;
+	// 	}
+	// 	get_fork(sh);
+	// 	ft_strdel(&sh->valide_path);
+	// }
 }
