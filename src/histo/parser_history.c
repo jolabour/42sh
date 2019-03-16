@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:18 by ttresori          #+#    #+#             */
-/*   Updated: 2019/03/14 23:46:08 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/16 22:44:26 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void substitute_history(t_42sh *sh, int *i)
 	}
 	else if (sh->stdin->input[*i + 1] == '!')
 		substitute  = ft_strdup(sh->history_mark->begin->next->str);
-	else if (sh->stdin->input[*i + 1] >= 'a' && sh->stdin->input[*i + 1] <= 'z')
+	else if (ft_isprint(sh->stdin->input[*i + 1]) == 1)
 		substitute = search_str_input(sh, *i + 1, &nb_del);
 	else
 		return;
