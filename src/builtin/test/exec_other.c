@@ -41,9 +41,9 @@ int			execute_other_opt(t_42sh *sh, char *str)
 		{
 			if (i >= 2 && (pos = check_nbr(sh)) != 0)
 			{
-				sh->argv->error_code = 2;
-				ft_putstr("test: integer expression expected: ");
-				ft_putendl(sh->argv->argv[pos]);
+				sh->retval = 2;
+				ft_putstr_fd("test: integer expression expected: ", 2);
+				ft_putendl_fd(sh->argv->argv[pos], 2);
 				return (2);
 			}
 			action_option_other[i](sh);
@@ -51,7 +51,8 @@ int			execute_other_opt(t_42sh *sh, char *str)
 		}
 		i++;
 	}
-	ft_putstr("42sh: condition expected: ");
-	ft_putendl(sh->argv->argv[2]);
+	ft_putstr_fd("42sh: condition expected: ", 2);
+	ft_putendl_fd(sh->argv->argv[2], 2);
+	sh->retval = 2;
 	return (0);
 }

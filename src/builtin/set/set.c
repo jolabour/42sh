@@ -23,4 +23,5 @@ void	list_var(t_42sh *sh)
 void		builtin_set(t_42sh *sh)
 {
 	list_var(sh);
+	sh->retval = 0;
 }

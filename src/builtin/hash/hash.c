@@ -54,6 +54,7 @@ void		check_hash_opt(t_42sh *sh)
 			ft_putstr_fd(sh->argv->argv[1], 2);
 			ft_putstr_fd(": invalid option\n", 2);
 			ft_putstr_fd("hash: usage: hash [-r] [-a] [name ...]\n", 2);
+			sh->retval = 1;
 			return ;
 		}
 	}
@@ -69,6 +70,7 @@ void		check_hash_opt(t_42sh *sh)
 				ft_putstr_fd("42sh: hash: ", 2);
 				ft_putstr_fd(sh->argv->argv[i], 2);
 				ft_putstr_fd(": not found\n", 2);
+				sh->retval = 1;
 			}
 			ft_strdel(&path);
 		}
@@ -82,4 +84,7 @@ void		builtin_hash(t_42sh *sh)
 		print_hashtable(sh->hashtable);
 	else
 		check_hash_opt(sh);
+	if (sh->retval == 1)
+		return ;
+	sh->retval = 0;
 }

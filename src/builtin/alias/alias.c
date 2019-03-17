@@ -118,9 +118,10 @@ void		add_alias(t_42sh *sh)
 		{
 			if (print_alias(sh, split[0]) != 0)
 			{
-				ft_putstr("42sh: alias: ");
-				ft_putstr(split[0]);
-				ft_putendl(": not found");
+				ft_putstr_fd("42sh: alias: ", 2);
+				ft_putstr_fd(split[0], 2);
+				ft_putendl_fd(": not found", 2);
+				sh->retval = 1;
 			}
 		}
 		else
@@ -136,4 +137,7 @@ void		builtin_alias(t_42sh *sh)
 		list_alias(sh);
 	else
 		add_alias(sh);
+	if (sh->retval == 1)
+		return ;
+	sh->retval = 0;
 }

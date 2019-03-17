@@ -25,4 +25,5 @@ void		builtin_echo(t_42sh *sh)
 		i++;
 	}
 	ft_putchar('\n');
+	sh->retval = 0;
 }

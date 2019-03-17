@@ -51,11 +51,13 @@ void		get_type(t_42sh *sh)
 			ft_putstr(" is an alias for ");
 			ft_putendl(to_print);
 			ft_strdel(&to_print);
+			sh->retval = 0;
 		}
 		else if (check_is_builtin(sh, sh->argv->argv[i]) == 1)
 		{
 			ft_putstr(sh->argv->argv[i]);
 			ft_putendl(" is a shell builtin");
+			sh->retval = 0;
 		}
 		else if ((to_print = check_access(sh, i)) != NULL)
 		{
@@ -63,12 +65,15 @@ void		get_type(t_42sh *sh)
 			ft_putstr(" is ");
 			ft_putendl(to_print);
 			ft_strdel(&to_print);
+			sh->retval = 0;
 		}
 		else
 		{
-			ft_putstr("42sh: type: ");
-			ft_putstr(sh->argv->argv[i]);
-			ft_putendl(": not found");
+			ft_putstr_fd("42sh: type: ", 2);
+			ft_putstr_fd(sh->argv->argv[i], 2);
+			ft_putendl_fd(": not found", 2);
+			if (sh->retval != 0)
+				sh->retval = 1;
 		}
 		i++;
 	}
@@ -77,7 +82,7 @@ void		get_type(t_42sh *sh)
 void		builtin_type(t_42sh *sh)
 {
 	if (sh->argv->size == 1)
-		return ;
+		sh->retval = 0;
 	else
 		get_type(sh);
 }

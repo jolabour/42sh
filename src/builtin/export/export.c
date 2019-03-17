@@ -108,4 +108,5 @@ void			builtin_export(t_42sh *sh)
 		}
 		i++;
 	}
+	sh->retval = 0;
 }

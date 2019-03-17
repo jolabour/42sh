@@ -63,14 +63,7 @@ void		del_var(t_42sh *sh)
 	while (sh->argv->argv[i])
 	{
 		if ((j = search_var(sh->var, &sh->var->begin, sh->argv->argv[i])) == 0)
-		{
-			if (search_env(&sh->env, sh->argv->argv[i], ft_strlen(sh->argv->argv[i])) == 0)
-			{
-				ft_putstr("42sh: unset: ");
-				ft_putstr(sh->argv->argv[i]);
-				ft_putstr(": not found\n");
-			}
-		}
+			search_env(&sh->env, sh->argv->argv[i], ft_strlen(sh->argv->argv[i]));
 		if (j == 1)
 			sh->var->size--;
 		i++;
@@ -80,7 +73,11 @@ void		del_var(t_42sh *sh)
 void		builtin_unset(t_42sh *sh)
 {
 	if (sh->argv->size == 1)
-		ft_putstr("unset: usage: unset [name ...]\n");
-	else
-		del_var(sh);
+	{
+		ft_putstr_fd("unset: usage: unset [name ...]\n", 2);
+		sh->retval = 1;
+		return ;
+	}
+	del_var(sh);
+	sh->retval = 0;
 }

@@ -17,10 +17,11 @@ int			check_opt(t_42sh *sh)
 		return (1);
 	if (ft_strequ(sh->argv->argv[1], "-a") != 1)
 	{
-		ft_putstr("42sh: unalias: ");
-		ft_putstr(sh->argv->argv[1]);
-		ft_putendl(": invalid option");
-		ft_putstr("unalias: usage: unalias [-a] name [name ...]\n");
+		ft_putstr_fd("42sh: unalias: ", 2);
+		ft_putstr_fd(sh->argv->argv[1], 2);
+		ft_putendl_fd(": invalid option", 2);
+		ft_putstr_fd("unalias: usage: unalias [-a] name [name ...]\n", 2);
+		sh->retval = 1;
 		return (-1);
 	}
 	return (2);
@@ -80,9 +81,10 @@ void		del_alias(t_42sh *sh)
 	{
 		if ((j = search_alias(sh->alias, &sh->alias->begin, sh->argv->argv[i])) == 0)
 		{
-			ft_putstr("42sh: unalias: ");
-			ft_putstr(sh->argv->argv[i]);
-			ft_putstr(": not found\n");
+			ft_putstr_fd("42sh: unalias: ", 2);
+			ft_putstr_fd(sh->argv->argv[i], 2);
+			ft_putstr_fd(": not found\n", 2);
+			sh->retval = 1;
 		}
 		if (j == 1)
 			sh->alias->size--;
@@ -93,7 +95,13 @@ void		del_alias(t_42sh *sh)
 void		builtin_unalias(t_42sh *sh)
 {
 	if (sh->argv->size == 1)
-		ft_putstr("unalias: usage: unalias [-a] name [name ...]\n");
+	{
+		ft_putstr_fd("unalias: usage: unalias [-a] name [name ...]\n", 2);
+		sh->retval = 1;
+	}
 	else
 		del_alias(sh);
+	if (sh->retval == 1)
+		return ;
+	sh->retval = 0;
 }
