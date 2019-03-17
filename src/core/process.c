@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/15 02:01:37 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/17 03:28:21 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,7 @@ void			process(t_42sh *sh)
 	// free((sh->stdin->input));
 	if (!(list = ft_build_ast(list)))
 		exit(2);
-	g_exetab[((t_node *)list)->token](list, &(sh->shell));
+	g_exetab[((t_node *)list)->token](list, sh);
 	// ft_lexer(sh);
 	// if (ft_strcmp(sh->stdin->input, "exit\n") == 0)
 	// 	reset_term(sh);

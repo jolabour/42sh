@@ -6,11 +6,11 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:52:23 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/15 01:42:26 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/17 04:13:18 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_42sh.h"
+#include "sh.h"
 
 t_node			*ft_new_node(void)
 {
@@ -531,7 +531,7 @@ t_node			*ft_build_ast(t_node *list)
 			return (NULL);
 		}
 	}
-	if (begin)
-		ft_print_ast(begin, 0);
+	// if (begin)
+	// 	ft_print_ast(begin, 0);
 	return (begin);
 }

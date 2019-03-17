@@ -60,7 +60,6 @@ void		reset_term(t_42sh *sh)
 		ft_putendl("tcsetattr: Error.");
 		exit(0);
 	}
-	exit(0);
 }
 
 void		init_alias_list(t_42sh *sh)

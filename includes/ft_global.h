@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/14 17:34:28 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/17 01:20:03 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define FT_GLOBAL_H
 
-# include "ft_42sh.h"
+# include "sh.h"
 
 char					*g_tokstr[] =
 {
@@ -124,7 +124,7 @@ int						(*g_asttab[])(t_node **begin, t_node **current,
 	&ft_ast_badtoken
 };
 
-int						(*g_exetab[])(t_node *current, t_shell *shell) =
+int						(*g_exetab[])(t_node *current, t_42sh *shell) =
 {
 	ft_exe_badtoken,
 	ft_exe_badtoken,

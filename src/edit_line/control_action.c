@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   control_action.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 00:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/05 17:47:14 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/17 04:28:20 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void			ctrld_action(t_42sh *sh)
 {
 	(void)sh;
 	reset_term(sh);
+	exit(0);
 }
 
 void			paste(t_42sh *sh)

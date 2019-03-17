@@ -6,11 +6,11 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:47:25 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/14 23:30:58 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/17 04:12:53 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_42sh.h"
+#include "sh.h"
 
 t_toklist		*ft_newtoklist(void)
 {
@@ -488,6 +488,6 @@ t_toklist		*ft_lexer(char **input)
 	}
 	if (current->token == NONE)
 		free(current);
-	ft_print_toklist(*input, begin);
+	// ft_print_toklist(*input, begin);
 	return (begin);
 }

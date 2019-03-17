@@ -6,15 +6,13 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/15 02:59:11 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/17 04:47:05 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_42sh.h"
+#include "sh.h"
 
-#define VOID (void)argc;(void)argv;(void)envp
-
-int				ft_exe_badtoken(t_node *current, t_shell *shell)
+int				ft_exe_badtoken(t_node *current, t_42sh *shell)
 {
 	(void)current;
 	(void)shell;
@@ -56,7 +54,7 @@ int				ft_get_job_number(t_joblist *jobs)
 	return (max + 1);
 }
 
-t_joblist		*ft_get_job(t_node *current, t_shell *shell)
+t_joblist		*ft_get_job(t_node *current, t_42sh *shell)
 {
 	t_joblist	*job;
 
@@ -82,7 +80,34 @@ void			ft_reset_signals(void)
     signal (SIGTTOU, SIG_DFL);
 }
 
-void			ft_launch_process(t_proclist *proc, t_shell *shell,
+int				ft_exe_file(t_node *current, t_42sh *shell,
+				char *path, char **args)
+{
+	t_joblist	*job;
+	int			status;
+
+	if (!shell->forked)
+	{
+		if (!(job = ft_get_job(current, shell)))
+			exit(2);
+		job->process->path = path;
+		job->process->args = args;
+		ft_launch_job(job, shell);
+		if (!shell->pgid && shell->foreground)
+			tcsetpgrp(STDIN_FILENO, job->pgid);
+		status = ft_wait_job(job);
+		if (!shell->pgid && shell->foreground)
+			tcsetpgrp(STDIN_FILENO, shell->pid);
+		return ((shell->retval = WEXITSTATUS(job->process->status)));
+	}
+	if (current->redir
+		&& g_exetab[current->redir->token](current->redir, shell))
+		exit(1);
+	execve(path, args, shell->copy_env);
+	exit((shell->retval = 1));
+}
+
+void			ft_launch_process(t_proclist *proc, t_42sh *shell,
 				int pipefd[3], pid_t pgid)
 {
 	setpgid(getpid(), (pgid = pgid ? pgid : getpid()));
@@ -100,17 +125,11 @@ void			ft_launch_process(t_proclist *proc, t_shell *shell,
 	close(pipefd[0]);
 	shell->forked = 1;
 	if (proc->path)
-	{
-		if (proc->command->redir && g_exetab[proc->command->redir->token]
-			(proc->command->redir, shell))
-			exit(1);
-		execve(proc->path, proc->args, NULL);
-		exit(1);
-	}
+		ft_exe_file(proc->command, shell, proc->path, proc->args);
 	exit(g_exetab[proc->command->token](proc->command, shell));
 }
 
-void			ft_launch_job(t_joblist *job, t_shell *shell)
+void			ft_launch_job(t_joblist *job, t_42sh *shell)
 {
 	t_proclist	*proc;
 	int			pipefd[3];
@@ -169,11 +188,11 @@ int				ft_wait_job(t_joblist *job)
 		proc = proc->next;
 	}
 	waitpid(proc->pid, &(proc->status), WUNTRACED);
-	ft_write_status(proc->status);
+	// ft_write_status(proc->status);
 	return (proc->status);
 }
 
-int				ft_exe_pipe(t_node *current, t_shell *shell)
+int				ft_exe_pipe(t_node *current, t_42sh *shell)
 {
 	t_joblist	*job;
 	int			status;
@@ -190,7 +209,7 @@ int				ft_exe_pipe(t_node *current, t_shell *shell)
 	return (WEXITSTATUS(status));
 }
 
-int				ft_exe_and(t_node *current, t_shell *shell)
+int				ft_exe_and(t_node *current, t_42sh *shell)
 {
 	t_joblist	*job;
 	int			foreground;
@@ -208,7 +227,7 @@ int				ft_exe_and(t_node *current, t_shell *shell)
 	return (shell->retval);
 }
 
-int				ft_exe_semi(t_node *current, t_shell *shell)
+int				ft_exe_semi(t_node *current, t_42sh *shell)
 {
 	int			ret;
 
@@ -280,7 +299,7 @@ void			ft_reset_tmp_fd(t_tmpfd *begin)
 	}
 }
 
-int				ft_exe_great(t_node *current, t_shell *shell)
+int				ft_exe_great(t_node *current, t_42sh *shell)
 {
 	int			dest;
 	int			src;
@@ -305,7 +324,7 @@ int				ft_exe_great(t_node *current, t_shell *shell)
 	return (0);
 }
 
-int				ft_exe_less(t_node *current, t_shell *shell)
+int				ft_exe_less(t_node *current, t_42sh *shell)
 {
 	int			dest;
 	int			src;
@@ -326,7 +345,7 @@ int				ft_exe_less(t_node *current, t_shell *shell)
 	return (0);
 }
 
-int				ft_exe_rpar(t_node *current, t_shell *shell)
+int				ft_exe_rpar(t_node *current, t_42sh *shell)
 {
 	t_joblist	*job;
 	int			status;
@@ -349,7 +368,7 @@ int				ft_exe_rpar(t_node *current, t_shell *shell)
 	exit(g_exetab[current->right->token](current->right, shell));
 }
 
-int				ft_exe_and_if(t_node *current, t_shell *shell)
+int				ft_exe_and_if(t_node *current, t_42sh *shell)
 {
 	int			ret;
 
@@ -359,7 +378,7 @@ int				ft_exe_and_if(t_node *current, t_shell *shell)
 	return (g_exetab[current->right->token](current->right, shell));
 }
 
-int				ft_exe_or_if(t_node *current, t_shell *shell)
+int				ft_exe_or_if(t_node *current, t_42sh *shell)
 {
 	int			ret;
 
@@ -369,7 +388,7 @@ int				ft_exe_or_if(t_node *current, t_shell *shell)
 	return (g_exetab[current->right->token](current->right, shell));
 }
 
-int				ft_exe_dgreat(t_node *current, t_shell *shell)
+int				ft_exe_dgreat(t_node *current, t_42sh *shell)
 {
 	int			dest;
 	int			src;
@@ -409,7 +428,7 @@ int				ft_str_isdigit(char *str)
 	return (1);
 }
 
-int				ft_exe_lessand(t_node *current, t_shell *shell)
+int				ft_exe_lessand(t_node *current, t_42sh *shell)
 {
 	int			dest;
 	int			src;
@@ -427,7 +446,7 @@ int				ft_exe_lessand(t_node *current, t_shell *shell)
 	return (0);
 }
 
-int				ft_exe_lessanddash(t_node *current, t_shell *shell)
+int				ft_exe_lessanddash(t_node *current, t_42sh *shell)
 {
 	int			dest;
 
@@ -440,7 +459,7 @@ int				ft_exe_lessanddash(t_node *current, t_shell *shell)
 	return (0);
 }
 
-int				ft_exe_greatand(t_node *current, t_shell *shell)
+int				ft_exe_greatand(t_node *current, t_42sh *shell)
 {
 	int			dest;
 	int			src;
@@ -458,7 +477,7 @@ int				ft_exe_greatand(t_node *current, t_shell *shell)
 	return (0);
 }
 
-int				ft_exe_greatanddash(t_node *current, t_shell *shell)
+int				ft_exe_greatanddash(t_node *current, t_42sh *shell)
 {
 	int			dest;
 
@@ -471,7 +490,7 @@ int				ft_exe_greatanddash(t_node *current, t_shell *shell)
 	return (0);
 }
 
-int				ft_exe_lessgreat(t_node *current, t_shell *shell)
+int				ft_exe_lessgreat(t_node *current, t_42sh *shell)
 {
 	int			dest;
 	int			src;
@@ -496,7 +515,7 @@ int				ft_exe_lessgreat(t_node *current, t_shell *shell)
 	return (0);
 }
 
-int				ft_exe_dless(t_node *current, t_shell *shell)
+int				ft_exe_dless(t_node *current, t_42sh *shell)
 {
 	int			dest;
 	int			pipefd[2];
@@ -520,7 +539,7 @@ int				ft_exe_dless(t_node *current, t_shell *shell)
 	return (0);
 }
 
-int				ft_exe_rbrace(t_node *current, t_shell *shell)
+int				ft_exe_rbrace(t_node *current, t_42sh *shell)
 {
 	t_tmpfd		*tmp;
 	int			ret;
@@ -552,7 +571,7 @@ int				ft_exe_rbrace(t_node *current, t_shell *shell)
 // 	return (result);
 // }
 
-// int				ft_expanse_tilde(char **arg, int start, t_shell *shell)
+// int				ft_expanse_tilde(char **arg, int start, t_42sh *shell)
 // {
 // 	int			i;
 // 	char		*dir;
@@ -590,7 +609,7 @@ int				ft_exe_rbrace(t_node *current, t_shell *shell)
 // 	return (i);
 // }
 
-// int				ft_expanse_dollar_par(char **arg, int start, t_shell *shell)
+// int				ft_expanse_dollar_par(char **arg, int start, t_42sh *shell)
 // {
 // 	int			pars;
 // 	int			i;
@@ -608,7 +627,7 @@ int				ft_exe_rbrace(t_node *current, t_shell *shell)
 // 	}
 // }
 
-// int				ft_expanse_dollar(char **arg, int start, t_shell *shell,
+// int				ft_expanse_dollar(char **arg, int start, t_42sh *shell,
 // 				char quote)
 // {
 // 	if ((*arg)[start + 1] == '(')
@@ -619,7 +638,7 @@ int				ft_exe_rbrace(t_node *current, t_shell *shell)
 // 		return (ft_expanse_dollar_simple(arg, start, shell, quote));
 // }
 
-// int				ft_expanse_arg(char **arg, t_shell *shell)
+// int				ft_expanse_arg(char **arg, t_42sh *shell)
 // {
 // 	char		quote;
 // 	int			i;
@@ -651,7 +670,7 @@ int				ft_exe_rbrace(t_node *current, t_shell *shell)
 // 	return (0);
 // }
 
-char			**ft_expanse_command(t_node *current, t_shell *shell)
+char			**ft_expanse_command(t_node *current, t_42sh *shell)
 {
 	char		**args;
 	t_node		*words;
@@ -677,39 +696,56 @@ char			**ft_expanse_command(t_node *current, t_shell *shell)
 		i++;
 	}
 	args[i] = NULL;
+	shell->argv->size = i;
 	return (args);
 }
 
-int				ft_exe_command(t_node *current, t_shell *shell)
+int				ft_exe_command(t_node *current, t_42sh *shell)
 {
-	t_joblist	*job;
-	char		**args;
-	int			status;
+	BUCKET_CONTENT	*bucket_entry;
 
-	if (!(args = ft_expanse_command(current, shell)))
+	if (!(shell->argv->argv = ft_expanse_command(current, shell)))
 		exit(2);
-	if (!shell->forked)
+	free_tab(shell->copy_env);
+	shell->copy_env = list_to_tab(shell->env, shell->copy_env);
+	if (shell->bin_dirs)
 	{
-		if (!(job = ft_get_job(current, shell)))
-			exit(2);
-		job->process->path = args[0];
-		job->process->args = args;
-		ft_launch_job(job, shell);
-		if (!shell->pgid && shell->foreground)
-			tcsetpgrp(STDIN_FILENO, job->pgid);
-		status = ft_wait_job(job);
-		if (!shell->pgid && shell->foreground)
-			tcsetpgrp(STDIN_FILENO, shell->pid);
-		return ((shell->retval = WEXITSTATUS(job->process->status)));
+		free_tab(shell->bin_dirs);
+		shell->bin_dirs = NULL;
 	}
-	if (current->redir
-		&& g_exetab[current->redir->token](current->redir, shell))
-		exit(1);
-	execve(args[0], args, NULL);
-	return ((shell->retval = 1));
+	shell->valide_path = ft_getenv(shell->env, "PATH=", sizeof("PATH=") - 1);
+	if (shell->valide_path)
+	{
+		if ((shell->bin_dirs = ft_strsplit(shell->valide_path, ':')) == NULL)
+			print_error(_ENOMEM, 1);
+	}
+	if (check_builtin(shell) != 1)
+	{
+		if ((bucket_entry = ht_lookup(shell->argv->argv[0], &shell->hashtable)) != NULL)
+			shell->valide_path = ft_strdup(bucket_entry->path);
+		else
+		{
+			shell->valide_path = check_access(shell, 0);
+			if (shell->valide_path == NULL)
+			{
+				ft_putendl("donne un binaire gorille");
+				return ((shell->retval = 127));
+			}
+			if (shell->argv->argv[0][0] != '/')
+				ht_insert(shell->valide_path, shell->argv->argv[0], &shell->hashtable);
+		}
+		if (access(shell->valide_path, X_OK) == -1)
+		{
+			ft_putendl("t'as pas les droits victimes");
+			ft_strdel(&shell->valide_path);
+			return ((shell->retval = 126));
+		}
+		ft_exe_file(current, shell, shell->valide_path, shell->argv->argv);
+	}
+	return (0);
 }
 
-void			ft_init(t_shell *shell)
+void			ft_init(t_42sh *shell)
 {
 	shell->pid = getpid();
 	shell->pgid = getpgrp();
@@ -719,7 +755,7 @@ void			ft_init(t_shell *shell)
 		while (tcgetpgrp(STDIN_FILENO) != shell->pgid)
 			kill(-shell->pgid, SIGTTIN);
 		shell->pgid = 0;
-		//signal(SIGINT, SIG_IGN);
+		signal(SIGINT, SIG_IGN);
   		signal(SIGQUIT, SIG_IGN);
    		signal(SIGTSTP, SIG_IGN);
    		signal(SIGTTIN, SIG_IGN);
@@ -735,24 +771,3 @@ void			ft_init(t_shell *shell)
 	shell->retval = 0;
 	shell->tmp_fds = NULL;
 }
-
-// int				main(int argc, char **argv, char **envp)
-// {
-// 	char		*input;
-// 	void		*list;
-// 	t_shell		shell;
-
-// 	VOID;
-// 	ft_init(&shell);
-// 	if (get_next_line(0, &input) == -1)
-// 		return (1);
-// 	if (!(list = ft_lexer(&input)))
-// 		return (1);
-// 	if (!(list = ft_toklist_to_node(input, list)))
-// 		return (1);
-// 	free(input);
-// 	if (!(list = ft_build_ast(list)))
-// 		return (1);
-// 	g_exetab[((t_node *)list)->token](list, &shell);
-// 	return (0);
-// }

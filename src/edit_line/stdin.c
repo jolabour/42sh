@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   stdin.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/08 03:15:17 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/17 04:54:15 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,11 @@ void			clean_print(t_42sh *sh)
 
 static void		init_stdin(t_42sh *sh)
 {
+	// int			fl;
+
+	// fcntl(0, F_SETFL, (fl = fcntl(0, F_GETFL)) | O_NONBLOCK);
+	// while (read(0, &fl, 4) > 0);
+	// fcntl(0, F_SETFL, fl);
 	if (!(sh->stdin = malloc(sizeof(t_stdin))))
 		print_error(_ENOMEM, 1);
 	sh->stdin->size_of_input = 1000;
@@ -98,6 +103,11 @@ static void		init_stdin(t_42sh *sh)
 	add_to_list(sh, sh->stdin->input);
 	sh->history_mark->cur = sh->history_mark->begin;
 	sh->history_mark->pos = 1;
+	if (tcsetattr(0, TCSANOW, &sh->term) == -1)
+	{
+		ft_putendl("tcsetattr: Error.");
+		exit(0);
+	}
 }
 
 int			get_line(t_42sh *sh)
@@ -127,6 +137,7 @@ int			get_line(t_42sh *sh)
 				ft_putchar_fd('\n', 0);
 				sh->stdin->input[sh->stdin->len_line] = '\0';
 				ft_strdel(&sh->stdin->str_to_paste);
+				reset_term(sh);
 				return (1);
 			}
 			if ((i = check_input(sh, buf)) != 1)
