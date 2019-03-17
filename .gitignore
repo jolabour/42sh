@@ -3,3 +3,4 @@ compile_commands.json
 .vscode
 obj/
 a.out.dSYM/
+.42sh_history
