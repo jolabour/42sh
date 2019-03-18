@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/17 03:50:18 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/18 22:22:45 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -374,6 +374,12 @@ typedef struct		s_42sh
 	t_tmpfd			*tmp_fds;
 }					t_42sh;
 
+typedef struct		s_bttab
+{
+	char			*name;
+	void			(*f)(t_42sh *);
+}					t_bttab;
+
 void					ft_init(t_42sh *shell);
 
 /*
@@ -409,6 +415,7 @@ extern t_tokcond		g_tokcond[];
 extern int				(*g_asttab[])(t_node **begin, t_node **current,
 						t_node **list);
 extern int				(*g_exetab[])(t_node *current, t_42sh *shell);
+extern t_bttab			g_bttab[];
 
 typedef				void(*t_ak)(t_42sh *sh);
 typedef				void(*t_test)(t_42sh *sh, struct stat info);

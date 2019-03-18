@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:47:25 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/17 04:12:53 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/19 00:15:57 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,13 +162,13 @@ int				ft_lex_backslash(char **input, size_t *index,
 
 int				ft_lex_quote(char **input, size_t *index, t_toklist **current)
 {
-	if ((*input)[*index] == '\'' && (*input)[*index + 1] != '\n')
+	if ((*input)[*index] == '\'')
 	{
-		if ((*current)->token != NONE && (*current)->token != WORD)
+		if ((*current)->token != WORD)
 		{
-			if (!((*current)->next = ft_newtoklist()))
-				return (-1);
-			*current = (*current)->next;
+			// if (!((*current)->next = ft_newtoklist()))
+			// 	return (-1);
+			// *current = (*current)->next;
 			(*current)->start = *index;
 			(*current)->len = 0;
 		}
@@ -177,8 +177,14 @@ int				ft_lex_quote(char **input, size_t *index, t_toklist **current)
 		(*current)->len += 2;
 		while ((*input)[*index] != '\'')
 		{
-			(*current)->len++;
-			(*index)++;
+			if ((*input)[*index] == '\0'
+				&& !(*input = ft_continue_line(*input)))
+				return (-1);
+			else
+			{
+				(*current)->len++;
+				(*index)++;
+			}
 		}
 		return (0);
 	}
@@ -193,13 +199,18 @@ int				ft_lex_dquote_mode(char **input, size_t *index,
 
 	while ((*input)[*index] != '\"')
 	{
-		i = 0;
-		while (g_tokcond[i].dquote_mode == 0 ||
+		if ((*input)[*index] == '\0' && !(*input = ft_continue_line(*input)))
+			return (-1);
+		else
+		{
+			i = 0;
+			while (g_tokcond[i].dquote_mode == 0 ||
 			(ret = g_tokcond[i].cond(input, index, current)) > 0)
 			i++;
-		if (ret == -1)
-			return (-1);
-		(*index)++;
+			if (ret == -1)
+				return (-1);
+			(*index)++;
+		}
 	}
 	(*current)->len++;
 	return (0);
@@ -488,6 +499,6 @@ t_toklist		*ft_lexer(char **input)
 	}
 	if (current->token == NONE)
 		free(current);
-	// ft_print_toklist(*input, begin);
+	ft_print_toklist(*input, begin);
 	return (begin);
 }

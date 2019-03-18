@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/17 01:20:03 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/19 00:16:31 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ t_tokcond				g_tokcond[] =
 	{&ft_lex_notoperator, 0, 0},
 	{&ft_lex_newline, 0, 0},
 	{&ft_lex_backslash, 1, 1},
-	{&ft_lex_quote, 0, 1},
-	{&ft_lex_dquote, 0, 1},
+	{&ft_lex_quote, 0, 0},
+	{&ft_lex_dquote, 0, 0},
 	{&ft_lex_dollar, 1, 1},
 	{&ft_lex_bquote, 1, 1},
 	{&ft_lex_ionumber, 0, 0},
@@ -154,6 +154,21 @@ int						(*g_exetab[])(t_node *current, t_42sh *shell) =
 	ft_exe_badtoken,
 	ft_exe_rbrace,
 	ft_exe_command
+};
+
+t_bttab					g_bttab[] =
+{
+	{"test", &builtin_test},
+	{"echo", &builtin_echo},
+	{"alias", &builtin_alias},
+	{"unalias", &builtin_unalias},
+	{"hash", &builtin_hash},
+	{"type", &builtin_type},
+	{"fc", &builtin_fc},
+	{"set", &builtin_set},
+	{"unset", &builtin_unset},
+	{"export", &builtin_export},
+	{NULL, NULL}
 };
 
 #endif

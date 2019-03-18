@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/17 04:47:05 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/18 23:03:49 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -700,12 +700,40 @@ char			**ft_expanse_command(t_node *current, t_42sh *shell)
 	return (args);
 }
 
+void			(*ft_isbuiltin(char *word))(t_42sh *)
+{
+	int			i;
+
+	i = 0;
+	while (g_bttab[i].name && !ft_strequ(g_bttab[i].name, word))
+		i++;
+	return (g_bttab[i].f);
+}
+
+int				ft_exe_builtin(t_node *current, t_42sh *shell,
+				void (*f)(t_42sh *))
+{
+	t_tmpfd		*tmp;
+
+	if (current->redir
+		&& g_exetab[current->redir->token](current->redir, shell))
+		return (1);
+	tmp = shell->tmp_fds;
+	shell->tmp_fds = NULL;
+	f(shell);
+	ft_reset_tmp_fd(tmp);
+	return (shell->retval);
+}
+
 int				ft_exe_command(t_node *current, t_42sh *shell)
 {
 	BUCKET_CONTENT	*bucket_entry;
+	void			*exe;
 
 	if (!(shell->argv->argv = ft_expanse_command(current, shell)))
 		exit(2);
+	if (parse_test(shell) == 0)
+		return ((shell->retval = 1));
 	free_tab(shell->copy_env);
 	shell->copy_env = list_to_tab(shell->env, shell->copy_env);
 	if (shell->bin_dirs)
@@ -719,30 +747,29 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 		if ((shell->bin_dirs = ft_strsplit(shell->valide_path, ':')) == NULL)
 			print_error(_ENOMEM, 1);
 	}
-	if (check_builtin(shell) != 1)
+	exe = ft_isbuiltin(shell->argv->argv[0]);
+	if (exe)
+		return ((shell->retval = ft_exe_builtin(current, shell, exe)));
+	if ((bucket_entry = ht_lookup(shell->argv->argv[0], &shell->hashtable)) != NULL)
+		shell->valide_path = ft_strdup(bucket_entry->path);
+	else
 	{
-		if ((bucket_entry = ht_lookup(shell->argv->argv[0], &shell->hashtable)) != NULL)
-			shell->valide_path = ft_strdup(bucket_entry->path);
-		else
+		shell->valide_path = check_access(shell, 0);
+		if (shell->valide_path == NULL)
 		{
-			shell->valide_path = check_access(shell, 0);
-			if (shell->valide_path == NULL)
-			{
-				ft_putendl("donne un binaire gorille");
-				return ((shell->retval = 127));
-			}
-			if (shell->argv->argv[0][0] != '/')
-				ht_insert(shell->valide_path, shell->argv->argv[0], &shell->hashtable);
+			ft_putendl("donne un binaire gorille");
+			return ((shell->retval = 127));
 		}
-		if (access(shell->valide_path, X_OK) == -1)
-		{
-			ft_putendl("t'as pas les droits victimes");
-			ft_strdel(&shell->valide_path);
-			return ((shell->retval = 126));
-		}
-		ft_exe_file(current, shell, shell->valide_path, shell->argv->argv);
+		if (shell->argv->argv[0][0] != '/')
+			ht_insert(shell->valide_path, shell->argv->argv[0], &shell->hashtable);
 	}
-	return (0);
+	if (access(shell->valide_path, X_OK) == -1)
+	{
+		ft_putendl("t'as pas les droits victimes");
+		ft_strdel(&shell->valide_path);
+		return ((shell->retval = 126));
+	}
+	return (ft_exe_file(current, shell, shell->valide_path, shell->argv->argv));
 }
 
 void			ft_init(t_42sh *shell)

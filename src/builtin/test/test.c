@@ -60,13 +60,9 @@ void		builtin_test(t_42sh *sh)
 	else if (sh->argv->size == 2)
 		sh->retval = 0;
 	else if (check_option(sh) > 0)
-	{
-		ft_putnbr(sh->retval);
 		return ;
-	}
 	else if (sh->argv->size == 4)
 		execute_other_opt(sh, sh->argv->argv[2]);
 	else
 		sh->retval = 2;
-	ft_putnbr(sh->retval);
 }
