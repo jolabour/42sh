@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/17 03:28:21 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/20 04:47:59 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ char	*check_access(t_42sh *sh, int pos)
 	int		i;
 	char	*tmp;
 	char	*tmp2;
-
-	i = 0;
+ 
+ 	i = 0;
 	if (access(sh->argv->argv[pos], F_OK) == 0)
 	{
 		if (!(tmp2 = ft_strdup(sh->argv->argv[pos])))
@@ -125,8 +125,9 @@ int				ft_len_argv(char **argv)
 	return (i);
 }
 
-void			substitute_alias(t_42sh *sh)
+char			*substitute_alias(char *name, t_42sh *sh)
 {
+	char		*res;
 	int			i;
 	t_alias		*tmp;
 
@@ -134,15 +135,16 @@ void			substitute_alias(t_42sh *sh)
 	tmp = sh->alias->begin;
 	while (i < sh->alias->size)
 	{
-		if (ft_strequ(tmp->to_sub, sh->argv->argv[0]) == 1)
+		if (ft_strequ(tmp->to_sub, name) == 1)
 		{
-			ft_strdel(&sh->argv->argv[0]);
-			sh->argv->argv[0] = ft_strdup(tmp->sub);
-			return ;
+			ft_strdel(&name);
+			res = ft_strdup(tmp->sub);
+			return (res);
 		}
 		tmp = tmp->next;
 		i++;
 	}
+	return (name);
 }
 
 void			free_tab(char **str)
@@ -156,7 +158,7 @@ void			free_tab(char **str)
 		i++;
 	}
 	free(str);
-}
+}			
 
 void			process(t_42sh *sh)
 {
@@ -174,12 +176,11 @@ void			process(t_42sh *sh)
 	check_substitute_history(sh);
 	if (sh->history_mark->error_code == 0 && ft_strcmp(sh->stdin->input, "fc\n") != 0)
 		add_history(sh, sh->stdin->input, sh->path_history);
-	if (!(list = ft_lexer(&(sh->stdin->input))))
+	if (!(list = ft_lexer(&(sh->stdin->input), sh)))
 		exit(2);
 	if (!(list = ft_toklist_to_node((sh->stdin->input), list)))
 		exit(2);
-	// free((sh->stdin->input));
-	if (!(list = ft_build_ast(list)))
+	if (!(list = ft_build_ast(list, sh)))
 		exit(2);
 	g_exetab[((t_node *)list)->token](list, sh);
 	// ft_lexer(sh);

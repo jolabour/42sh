@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_substitution.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 22:54:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/11 19:57:17 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/20 04:36:41 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ char			*substitute_param(t_42sh *sh, char *str, int *pos)
 	{
 		if (str[*pos + 1] == '}')
 		{
-			substitute = ft_itoa(sh->argv->error_code);
+			substitute = ft_itoa(sh->retval);
 			*pos = *pos + 1;
 			return (substitute);
 		}

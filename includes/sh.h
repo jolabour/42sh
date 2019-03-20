@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/18 22:22:45 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/20 03:52:37 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,84 +127,6 @@ typedef struct			s_main
 }						t_main;
 
 char					*ft_strjoinfree(char *s1, char *s2, unsigned int which);
-
-
-/*
-**						lexer
-*/
-
-int						ft_lex_operator(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_notoperator(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_newline(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_backslash(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_quote(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_dquote(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_dollar(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_bquote(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_ionumber(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_newoperator(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_blank(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_sharp(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_word(char **input, size_t *index,
-						t_toklist **current);
-int						ft_lex_newword(char **input, size_t *index,
-						t_toklist **current);
-t_toklist				*ft_lexer(char **input);
-void					ft_print_toklist(char *input, t_toklist *list);
-
-/*
-**						ast
-*/
-
-int						ft_ast_word(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_newline(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_io_number(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_badtoken(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_pipe(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_separator(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_redir(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_lpar(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_rpar(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_and_or(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_heredoc(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_closefd(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_lbrace(t_node **begin, t_node **current,
-						t_node **list);
-int						ft_ast_rbrace(t_node **begin, t_node **current,
-						t_node **list);
-t_node					*ft_toklist_to_node(char *input, t_toklist *list);
-t_node					*ft_build_ast(t_node *list);
-
-typedef struct			s_tokcond
-{
-	int					(*cond)(char **, size_t *, t_toklist **);
-	int					dquote_mode;
-	int					sub_mode;
-}						t_tokcond;
 
 typedef struct			s_proclist
 {
@@ -374,6 +296,13 @@ typedef struct		s_42sh
 	t_tmpfd			*tmp_fds;
 }					t_42sh;
 
+typedef struct			s_tokcond
+{
+	int					(*cond)(char **, size_t *, t_toklist **, t_42sh *);
+	int					dquote_mode;
+	int					sub_mode;
+}						t_tokcond;
+
 typedef struct		s_bttab
 {
 	char			*name;
@@ -381,6 +310,76 @@ typedef struct		s_bttab
 }					t_bttab;
 
 void					ft_init(t_42sh *shell);
+
+/*
+**						lexer
+*/
+
+int						ft_lex_operator(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_notoperator(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_newline(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_backslash(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_quote(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_dquote(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_dollar(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_bquote(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_ionumber(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_newoperator(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_blank(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_sharp(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_word(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+int						ft_lex_newword(char **input, size_t *index,
+						t_toklist **current, t_42sh *shell);
+t_toklist				*ft_lexer(char **input, t_42sh *shell);
+void					ft_print_toklist(char *input, t_toklist *list);
+
+/*
+**						ast
+*/
+
+int						ft_ast_word(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_newline(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_io_number(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_badtoken(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_pipe(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_separator(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_redir(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_lpar(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_rpar(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_and_or(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_heredoc(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_closefd(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_lbrace(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+int						ft_ast_rbrace(t_node **begin, t_node **current,
+						t_node **list, t_42sh *shell);
+t_node					*ft_toklist_to_node(char *input, t_toklist *list);
+t_node					*ft_build_ast(t_node *list, t_42sh *shell);
 
 /*
 **						exe
@@ -413,7 +412,7 @@ extern char				*g_tokstr[];
 extern t_toktab			g_toktab[];
 extern t_tokcond		g_tokcond[];
 extern int				(*g_asttab[])(t_node **begin, t_node **current,
-						t_node **list);
+						t_node **list, t_42sh *shell);
 extern int				(*g_exetab[])(t_node *current, t_42sh *shell);
 extern t_bttab			g_bttab[];
 
@@ -760,5 +759,6 @@ void				builtin_export(t_42sh *sh);
 int					search_var(t_var_mark *var_mark, t_var **var,char *str);
 int					check_env(t_env **env, char **split);
 void				list_del(t_env **env, t_env *to_del, t_env *prev);
+char				*substitute_alias(char *name, t_42sh *sh);
 
 #endif

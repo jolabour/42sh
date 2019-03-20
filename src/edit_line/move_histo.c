@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   move_histo.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/17 01:10:46 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/16 22:47:26 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/20 04:25:41 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ void			clean_print_histo(t_42sh *sh)
 		i++;
 	}
 	tputs(tgoto(tgetstr("ch", NULL), sh->prompt_len, sh->prompt_len), 0, putchar_custom);
-	move_to_end(sh);
+	while (sh->stdin->line_pos < sh->stdin->len_line)
+		move_to_right(sh);
 	//tputs(tgetstr("cd", NULL), 0, putchar_custom);
 	//ft_putstr_fd(sh->stdin->input, 0);
 	//while (sh->stdin->line_pos > 0)

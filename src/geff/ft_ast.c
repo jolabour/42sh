@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:52:23 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/17 04:13:18 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/19 16:25:59 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,11 +74,13 @@ void			ft_ast_push_one_back_redir(t_node **from, t_node *to)
 	to->redir->right = NULL;
 }
 
-int				ft_ast_badtoken(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_badtoken(t_node **begin, t_node **current
+				, t_node **list, t_42sh *shell)
 {
 	(void)begin;
 	(void)current;
 	(void)list;
+	(void)shell;
 	return (0);
 }
 
@@ -144,8 +146,10 @@ int				ft_ast_isassignment(t_node *current, t_node *list)
 	return (0);
 }
 
-int				ft_ast_word(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_word(t_node **begin, t_node **current,
+				t_node **list, t_42sh *shell)
 {
+	(void)shell;
 	if (*current && ((*current)->token == RPAR || (*current)->token == RBRACE))
 		return (0);
 	if (ft_ast_command(begin, current) == -1)
@@ -168,19 +172,17 @@ int				ft_ast_isseparator(t_node *current)
 	return (current && (current->token == SEMI || current->token == AND));
 }
 
-int				ft_ast_continue_list(t_node **list)
+int				ft_ast_continue_list(t_node **list, t_42sh *shell)
 {
 	t_toklist	*new;
-	char		*input;
-	int			ret;
 
-	if ((ret = get_next_line(0, &input)) != 1)
-		return (ret);
-	if (!(new = ft_lexer(&input)))
+	if (get_line(shell) != 1)
 		return (-1);
-	if (!(*list = ft_toklist_to_node(input, new)))
+	if (!(new = ft_lexer(&(shell->stdin->input), shell)))
 		return (-1);
-	free(input);
+	if (!(*list = ft_toklist_to_node(shell->stdin->input, new)))
+		return (-1);
+	free(shell->stdin->input);
 	return (1);
 }
 
@@ -202,25 +204,28 @@ void			ft_ast_freeone(t_node **list)
 	free(tmp);
 }
 
-int				ft_ast_newline(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_newline(t_node **begin, t_node **current,
+				t_node **list, t_42sh *shell)
 {
+	(void)shell;
 	if (ft_ast_iscommand(*current))
 	{
 		(*list)->token = SEMI;
 		(*list)->data[0] = ';';
-		return (ft_ast_separator(begin, current, list));
+		return (ft_ast_separator(begin, current, list, shell));
 	}
 	ft_ast_freeone(list);
 	return (1);
 }
 
 int				ft_ast_io_number(t_node **begin, t_node **current,
-				t_node **list)
+				t_node **list, t_42sh *shell)
 {
 	t_node		*io_number;
 
 	(void)begin;
 	(void)current;
+	(void)shell;
 	io_number = *list;
 	*list = (*list)->right;
 	io_number->right = NULL;
@@ -228,8 +233,10 @@ int				ft_ast_io_number(t_node **begin, t_node **current,
 	return (1);
 }
 
-int				ft_ast_pipe(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_pipe(t_node **begin, t_node **current,
+				t_node **list, t_42sh *shell)
 {
+	(void)shell;
 	if (!ft_ast_iscommand(*current))
 		return (0);
 	ft_ast_insert_parent(begin, current, list);
@@ -237,8 +244,9 @@ int				ft_ast_pipe(t_node **begin, t_node **current, t_node **list)
 }
 
 int				ft_ast_separator(t_node **begin, t_node **current,
-				t_node **list)
+				t_node **list, t_42sh *shell)
 {
+	(void)shell;
 	if (!ft_ast_iscommand(*current))
 		return (0);
 	while ((*current)->parent && ((*current)->parent->token == PIPE
@@ -249,10 +257,12 @@ int				ft_ast_separator(t_node **begin, t_node **current,
 	return (1);
 }
 
-int				ft_ast_redir(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_redir(t_node **begin, t_node **current,
+				t_node **list, t_42sh *shell)
 {
 	t_node		*tmp;
 
+	(void)shell;
 	if (!ft_ast_iscommand(*current)
 		&& ft_ast_command(begin, current) == -1)
 		return (-1);
@@ -264,8 +274,10 @@ int				ft_ast_redir(t_node **begin, t_node **current, t_node **list)
 	return (1);
 }
 
-int				ft_ast_lpar(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_lpar(t_node **begin, t_node **current,
+				t_node **list, t_42sh *shell)
 {
+	(void)shell;
 	if (*current && (*current)->token == COMMAND)
 		return (0);
 	if (*current)
@@ -283,11 +295,13 @@ int				ft_ast_lpar(t_node **begin, t_node **current, t_node **list)
 	return (1);
 }
 
-int				ft_ast_rpar(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_rpar(t_node **begin, t_node **current,
+				t_node **list, t_42sh *shell)
 {
 	t_node		*tmp;
 
 	(void)begin;
+	(void)shell;
 	if (!ft_ast_iscommand(*current) && !ft_ast_isseparator(*current))
 		return (0);
 	while (*current && (*current)->token != LPAR && (*current)->token != LBRACE)
@@ -303,8 +317,10 @@ int				ft_ast_rpar(t_node **begin, t_node **current, t_node **list)
 	return (1);
 }
 
-int				ft_ast_and_or(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_and_or(t_node **begin, t_node **current,
+				t_node **list, t_42sh *shell)
 {
+	(void)shell;
 	if (!ft_ast_iscommand(*current))
 		return (0);
 	while ((*current)->parent && ((*current)->parent->token == PIPE
@@ -315,11 +331,12 @@ int				ft_ast_and_or(t_node **begin, t_node **current, t_node **list)
 	return (1);
 }
 
-int				ft_ast_readheredoc(t_node *heredoc)
+int				ft_ast_readheredoc(t_node *heredoc, t_42sh *shell)
 {
 	char		*input;
 	int			ret;
 
+	(void)shell;
 	input = NULL;
 	while (!input)
 	{
@@ -344,22 +361,25 @@ int				ft_ast_readheredoc(t_node *heredoc)
 	return (1);
 }
 
-int				ft_ast_heredoc(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_heredoc(t_node **begin, t_node **current,
+				t_node **list, t_42sh *shell)
 {
 	t_node		*tmp;
 	int			ret;
 
 	tmp = *list;
-	if ((ret = ft_ast_redir(begin, current, list)) != 1)
+	if ((ret = ft_ast_redir(begin, current, list, shell)) != 1)
 		return (ret);
 	if (!(tmp->right->right = ft_new_node())
 		|| !(tmp->right->right->data = ft_strdup("")))
 		return (-1);
-	return (ft_ast_readheredoc(tmp));
+	return (ft_ast_readheredoc(tmp, shell));
 }
 
-int				ft_ast_closefd(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_closefd(t_node **begin, t_node **current,
+				t_node **list, t_42sh *shell)
 {
+	(void)shell;
 	if (!ft_ast_iscommand(*current)
 		&& ft_ast_command(begin, current) == -1)
 		return (-1);
@@ -367,8 +387,10 @@ int				ft_ast_closefd(t_node **begin, t_node **current, t_node **list)
 	return (1);
 }
 
-int				ft_ast_lbrace(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_lbrace(t_node **begin, t_node **current,
+				t_node **list, t_42sh *shell)
 {
+	(void)shell;
 	if (*current && (*current)->token == COMMAND)
 		return (0);
 	if (*current)
@@ -386,11 +408,13 @@ int				ft_ast_lbrace(t_node **begin, t_node **current, t_node **list)
 	return (1);
 }
 
-int				ft_ast_rbrace(t_node **begin, t_node **current, t_node **list)
+int				ft_ast_rbrace(t_node **begin, t_node **current,
+				t_node **list, t_42sh *shell)
 {
 	t_node		*tmp;
 
 	(void)begin;
+	(void)shell;
 	if (!ft_ast_iscommand(*current) && !ft_ast_isseparator(*current))
 		return (0);
 	while (*current && (*current)->token != LPAR && (*current)->token != LBRACE)
@@ -508,7 +532,7 @@ void			ft_print_ast(t_node *ast, int rec)
 	}
 }
 
-t_node			*ft_build_ast(t_node *list)
+t_node			*ft_build_ast(t_node *list, t_42sh *shell)
 {
 	t_node		*begin;
 	t_node		*current;
@@ -518,10 +542,10 @@ t_node			*ft_build_ast(t_node *list)
 	current = NULL;
 	while (list)
 	{
-		ret = g_asttab[list->token](&begin, &current, &list);
+		ret = g_asttab[list->token](&begin, &current, &list, shell);
 		if (ret == 1 && !list && (ft_ast_isbreakline(current)
 			|| ft_ast_isincompound(current)))
-			ret = ft_ast_continue_list(&list);
+			ret = ft_ast_continue_list(&list, shell);
 		if (ret != 1)
 		{
 			if (ret == 0)

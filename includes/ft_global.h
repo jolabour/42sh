@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/19 00:16:31 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/20 02:33:57 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ t_tokcond				g_tokcond[] =
 };
 
 int						(*g_asttab[])(t_node **begin, t_node **current,
-						t_node **list) =
+						t_node **list, t_42sh *shell) =
 {
 	&ft_ast_badtoken,
 	&ft_ast_word,

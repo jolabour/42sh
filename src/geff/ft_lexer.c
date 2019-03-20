@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:47:25 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/19 00:15:57 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/20 02:44:41 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,17 +50,23 @@ char		*ft_strjoinfree(char *s1, char *s2, unsigned int which)
 	return (join);
 }
 
-char			*ft_continue_line(char *current)
+char			*ft_continue_line(char *current, t_42sh *shell)
 {
-	char		*next;
-
-	if (get_next_line(0, &next) == -1)
+	if (isatty(STDIN_FILENO))
+	{
+		ft_putstr("> ");
+		shell->prompt_len = 2;
+	}
+	if (get_line(shell) != 1)
 		return (NULL);
-	return (ft_strjoinfree(current, next, 3));
+	return ((shell->stdin->input = ft_strjoinfree(current,
+		shell->stdin->input, 3)));
 }
 
-int				ft_lex_newline(char **input, size_t *index, t_toklist **current)
+int				ft_lex_newline(char **input, size_t *index,
+				t_toklist **current, t_42sh *shell)
 {
+	(void)shell;
 	if ((*input)[*index] == '\n')
 	{
 		if ((*current)->token != NONE)
@@ -78,11 +84,12 @@ int				ft_lex_newline(char **input, size_t *index, t_toklist **current)
 }
 
 int				ft_lex_operator(char **input, size_t *index,
-				t_toklist **current)
+				t_toklist **current, t_42sh *shell)
 {
 	size_t		i;
 	size_t		j;
 
+	(void)shell;
 	if ((*current)->token == OPP)
 	{
 		i = 0;
@@ -105,12 +112,13 @@ int				ft_lex_operator(char **input, size_t *index,
 }
 
 int				ft_lex_notoperator(char **input, size_t *index,
-				t_toklist **current)
+				t_toklist **current, t_42sh *shell)
 {
 	size_t		i;
 	size_t		j;
 
 	(void)index;
+	(void)shell;
 	if ((*current)->token == OPP)
 	{
 		i = 0;
@@ -135,51 +143,45 @@ int				ft_lex_notoperator(char **input, size_t *index,
 }
 
 int				ft_lex_backslash(char **input, size_t *index,
-				t_toklist **current)
+				t_toklist **current, t_42sh *shell)
 {
+	(void)shell;
 	if ((*input)[*index] == '\\')
 	{
-		if ((*current)->token == WORD)
+		if ((*current)->token != WORD)
 		{
-			(*current)->len += 2;
-			(*index)++;
-			return (0);
-		}
-		if ((*current)->token != NONE)
-		{
-			if (!((*current)->next = ft_newtoklist()))
+			if (ft_lex_newword(input, index, current, shell) == -1)
 				return (-1);
-			*current = (*current)->next;
 		}
-		(*current)->token = WORD;
-		(*current)->start = *index;
-		(*current)->len = 2;
+		else
+			(*current)->len++;
+		(*current)->len++;
 		(*index)++;
 		return (0);
 	}
 	return (1);
 }
 
-int				ft_lex_quote(char **input, size_t *index, t_toklist **current)
+int				ft_lex_quote(char **input, size_t *index, t_toklist **current, t_42sh *shell)
 {
 	if ((*input)[*index] == '\'')
 	{
 		if ((*current)->token != WORD)
 		{
-			// if (!((*current)->next = ft_newtoklist()))
-			// 	return (-1);
-			// *current = (*current)->next;
-			(*current)->start = *index;
-			(*current)->len = 0;
+			if (ft_lex_newword(input, index, current, shell) == -1)
+				return (-1);
 		}
-		(*current)->token = WORD;
+		else
+			(*current)->len++;
 		(*index)++;
-		(*current)->len += 2;
+		(*current)->len++;
 		while ((*input)[*index] != '\'')
 		{
-			if ((*input)[*index] == '\0'
-				&& !(*input = ft_continue_line(*input)))
-				return (-1);
+			if ((*input)[*index] == '\0')
+			{
+				if (!(*input = ft_continue_line(*input, shell)))
+					return (-1);
+			}
 			else
 			{
 				(*current)->len++;
@@ -192,21 +194,24 @@ int				ft_lex_quote(char **input, size_t *index, t_toklist **current)
 }
 
 int				ft_lex_dquote_mode(char **input, size_t *index,
-				t_toklist **current)
+				t_toklist **current, t_42sh *shell)
 {
 	int			i;
 	int			ret;
 
 	while ((*input)[*index] != '\"')
 	{
-		if ((*input)[*index] == '\0' && !(*input = ft_continue_line(*input)))
-			return (-1);
+		if ((*input)[*index] == '\0')
+		{
+			if (!(*input = ft_continue_line(*input, shell)))
+				return (-1);
+		}
 		else
 		{
 			i = 0;
 			while (g_tokcond[i].dquote_mode == 0 ||
-			(ret = g_tokcond[i].cond(input, index, current)) > 0)
-			i++;
+				(ret = g_tokcond[i].cond(input, index, current, shell)) > 0)
+				i++;
 			if (ret == -1)
 				return (-1);
 			(*index)++;
@@ -216,25 +221,26 @@ int				ft_lex_dquote_mode(char **input, size_t *index,
 	return (0);
 }
 
-int				ft_lex_dquote(char **input, size_t *index, t_toklist **current)
+int				ft_lex_dquote(char **input, size_t *index,
+				t_toklist **current, t_42sh *shell)
 {
 	if ((*input)[*index] == '\"')
 	{
 		if ((*current)->token != WORD)
 		{
-			if (ft_lex_newword(input, index, current) == -1)
+			if (ft_lex_newword(input, index, current, shell) == -1)
 				return (-1);
 		}
 		else
 			(*current)->len++;
 		(*index)++;
-		return (ft_lex_dquote_mode(input, index, current));
+		return (ft_lex_dquote_mode(input, index, current, shell));
 	}
 	return (1);
 }
 
 int				ft_lex_dollar_brace(char **input, size_t *index,
-				t_toklist **current)
+				t_toklist **current, t_42sh *shell)
 {
 	size_t		i;
 	int			braces;
@@ -244,7 +250,8 @@ int				ft_lex_dollar_brace(char **input, size_t *index,
 	while (braces)
 	{
 		(*index)++;
-		if ((*input)[*index] == '\0' && !(*input = ft_continue_line(*input)))
+		if ((*input)[*index] == '\0'
+			&& !(*input = ft_continue_line(*input, shell)))
 			return (-1);
 		if ((*input)[*index] == '{')
 			braces++;
@@ -252,7 +259,7 @@ int				ft_lex_dollar_brace(char **input, size_t *index,
 			braces--;
 		i = 0;
 		while (g_tokcond[i].sub_mode == 0 ||
-			(ret = g_tokcond[i].cond(input, index, current)) > 0)
+			(ret = g_tokcond[i].cond(input, index, current, shell)) > 0)
 			i++;
 		if (ret == -1)
 			return (-1);
@@ -261,7 +268,7 @@ int				ft_lex_dollar_brace(char **input, size_t *index,
 }
 
 int				ft_lex_dollar_par(char **input, size_t *index,
-				t_toklist **current)
+				t_toklist **current, t_42sh *shell)
 {
 	size_t		i;
 	int			pars;
@@ -271,7 +278,8 @@ int				ft_lex_dollar_par(char **input, size_t *index,
 	while (pars)
 	{
 		(*index)++;
-		if ((*input)[*index] == '\0' && !(*input = ft_continue_line(*input)))
+		if ((*input)[*index] == '\0'
+			&& !(*input = ft_continue_line(*input, shell)))
 			return (-1);
 		if ((*input)[*index] == '(')
 			pars++;
@@ -279,7 +287,7 @@ int				ft_lex_dollar_par(char **input, size_t *index,
 			pars--;
 		i = 0;
 		while (g_tokcond[i].sub_mode == 0 ||
-			(ret = g_tokcond[i].cond(input, index, current)) > 0)
+			(ret = g_tokcond[i].cond(input, index, current, shell)) > 0)
 			i++;
 		if (ret == -1)
 			return (-1);
@@ -288,52 +296,54 @@ int				ft_lex_dollar_par(char **input, size_t *index,
 }
 
 int				ft_lex_dollar_mode(char **input, size_t *index,
-				t_toklist **current)
+				t_toklist **current, t_42sh *shell)
 {
 	if ((*input)[*index] == '{')
 	{
 		(*current)->len++;
-		return (ft_lex_dollar_brace(input, index, current));
+		return (ft_lex_dollar_brace(input, index, current, shell));
 	}
 	else if ((*input)[*index] == '(')
 	{
 		(*current)->len++;
-		return (ft_lex_dollar_par(input, index, current));
+		return (ft_lex_dollar_par(input, index, current, shell));
 	}
 	(*index)--;
 	return (0);
 }
 
-int				ft_lex_dollar(char **input, size_t *index, t_toklist **current)
+int				ft_lex_dollar(char **input, size_t *index,
+				t_toklist **current, t_42sh *shell)
 {
 	if ((*input)[*index] == '$')
 	{
 		if ((*current)->token != WORD)
 		{
-			if (ft_lex_newword(input, index, current) == -1)
+			if (ft_lex_newword(input, index, current, shell) == -1)
 				return (-1);
 		}
 		else
 			(*current)->len++;
 		(*index)++;
-		return (ft_lex_dollar_mode(input, index, current));
+		return (ft_lex_dollar_mode(input, index, current, shell));
 	}
 	return (1);
 }
 
 int				ft_lex_bquote_mode(char **input, size_t *index,
-				t_toklist **current)
+				t_toklist **current, t_42sh *shell)
 {
 	int			i;
 	int			ret;
 
 	while ((*input)[*index] != '`')
 	{
-		if ((*input)[*index] == '\0' && !(*input = ft_continue_line(*input)))
+		if ((*input)[*index] == '\0'
+			&& !(*input = ft_continue_line(*input, shell)))
 			return (-1);
 		i = 0;
 		while (g_tokcond[i].sub_mode == 0 ||
-			(ret = g_tokcond[i].cond(input, index, current)) > 0)
+			(ret = g_tokcond[i].cond(input, index, current, shell)) > 0)
 			i++;
 		if (ret == -1)
 			return (-1);
@@ -343,28 +353,30 @@ int				ft_lex_bquote_mode(char **input, size_t *index,
 	return (0);
 }
 
-int				ft_lex_bquote(char **input, size_t *index, t_toklist **current)
+int				ft_lex_bquote(char **input, size_t *index,
+				t_toklist **current, t_42sh *shell)
 {
 	if ((*input)[*index] == '`')
 	{
 		if ((*current)->token != WORD)
 		{
-			if (ft_lex_newword(input, index, current) == -1)
+			if (ft_lex_newword(input, index, current, shell) == -1)
 				return (-1);
 		}
 		else
 			(*current)->len++;
 		(*index)++;
-		return (ft_lex_bquote_mode(input, index, current));
+		return (ft_lex_bquote_mode(input, index, current, shell));
 	}
 	return (1);
 }
 
 int				ft_lex_ionumber(char **input, size_t *index,
-				t_toklist **current)
+				t_toklist **current, t_42sh *shell)
 {
 	size_t		i;
 
+	(void)shell;
 	if (((*input)[*index] == '>' || (*input)[*index] == '<')
 		&& (*current)->token == WORD && (*current)->len <= 10)
 	{
@@ -384,10 +396,11 @@ int				ft_lex_ionumber(char **input, size_t *index,
 }
 
 int				ft_lex_newoperator(char **input, size_t *index,
-				t_toklist **current)
+				t_toklist **current, t_42sh *shell)
 {
 	int			i;
 
+	(void)shell;
 	i = 0;
 	while (g_toktab[i].str && g_toktab[i].str[0] != (*input)[*index])
 		i++;
@@ -407,8 +420,9 @@ int				ft_lex_newoperator(char **input, size_t *index,
 	return (1);
 }
 
-int				ft_lex_blank(char **input, size_t *index, t_toklist **current)
+int				ft_lex_blank(char **input, size_t *index, t_toklist **current, t_42sh *shell)
 {
+	(void)shell;
 	if ((*input)[*index] == ' ' || (*input)[*index] == '\t')
 	{
 		if ((*current)->token != NONE)
@@ -422,8 +436,9 @@ int				ft_lex_blank(char **input, size_t *index, t_toklist **current)
 	return (1);
 }
 
-int				ft_lex_sharp(char **input, size_t *index, t_toklist **current)
+int				ft_lex_sharp(char **input, size_t *index, t_toklist **current, t_42sh *shell)
 {
+	(void)shell;
 	if ((*current)->token == NONE && (*input)[*index] == '#')
 	{
 		while ((*input)[*index + 1] != '\n')
@@ -433,10 +448,11 @@ int				ft_lex_sharp(char **input, size_t *index, t_toklist **current)
 	return (1);
 }
 
-int				ft_lex_word(char **input, size_t *index, t_toklist **current)
+int				ft_lex_word(char **input, size_t *index, t_toklist **current, t_42sh *shell)
 {
 	(void)input;
 	(void)index;
+	(void)shell;
 	if ((*current)->token == WORD)
 	{
 		(*current)->len++;
@@ -445,9 +461,10 @@ int				ft_lex_word(char **input, size_t *index, t_toklist **current)
 	return (1);
 }
 
-int				ft_lex_newword(char **input, size_t *index, t_toklist **current)
+int				ft_lex_newword(char **input, size_t *index, t_toklist **current, t_42sh *shell)
 {
 	(void)input;
+	(void)shell;
 	if ((*current)->token != NONE)
 	{
 		if (!((*current)->next = ft_newtoklist()))
@@ -476,7 +493,7 @@ void			ft_print_toklist(char *input, t_toklist *list)
 	}
 }
 
-t_toklist		*ft_lexer(char **input)
+t_toklist		*ft_lexer(char **input, t_42sh *shell)
 {
 	size_t		index;
 	t_toklist	*begin;
@@ -491,7 +508,7 @@ t_toklist		*ft_lexer(char **input)
 	while ((*input)[index])
 	{
 		i = 0;
-		while ((ret = g_tokcond[i].cond(input, &index, &current)) > 0)
+		while ((ret = g_tokcond[i].cond(input, &index, &current, shell)) > 0)
 			i++;
 		if (ret == -1)
 			return (NULL);
@@ -499,6 +516,6 @@ t_toklist		*ft_lexer(char **input)
 	}
 	if (current->token == NONE)
 		free(current);
-	ft_print_toklist(*input, begin);
+	// ft_print_toklist(*input, begin);
 	return (begin);
 }

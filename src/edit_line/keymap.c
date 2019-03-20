@@ -35,14 +35,17 @@ int					check_input(t_42sh *sh, long buf)
 		}
 		i++;
 	}
-	if (sh->stdin->len_line >= sh->stdin->size_of_input - 10)
-		up_input(sh);
-	sh->winsize = get_winsize();
-	add_char(buf, sh);
-	sh->stdin->len_line++;
-	free(sh->history_mark->cur->str);
-	sh->history_mark->cur->str = ft_strdup(sh->stdin->input);
-	move_to_right(sh);
-	clean_print(sh);
+	if (ft_isprint((int)buf) == 1)
+	{
+		if (sh->stdin->len_line >= sh->stdin->size_of_input - 10)
+			up_input(sh);
+		sh->winsize = get_winsize();
+		add_char(buf, sh);
+		sh->stdin->len_line++;
+		free(sh->history_mark->cur->str);
+		sh->history_mark->cur->str = ft_strdup(sh->stdin->input);
+		move_to_right(sh);
+		clean_print(sh);
+	}
 	return (0);
 }

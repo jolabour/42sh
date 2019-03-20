@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 00:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/17 04:28:20 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/20 04:35:52 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,11 @@ void			ctrlc_action(t_42sh *sh)
 void			ctrld_action(t_42sh *sh)
 {
 	(void)sh;
+	if (sh->stdin->len_line > 0)
+		return ;
 	reset_term(sh);
-	exit(0);
+	ft_putstr("exit\n");
+	exit(sh->retval);
 }
 
 void			paste(t_42sh *sh)

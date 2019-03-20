@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/18 23:03:49 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/20 06:20:26 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -732,6 +732,9 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 
 	if (!(shell->argv->argv = ft_expanse_command(current, shell)))
 		exit(2);
+	if (shell->argv->argv[0] && !(shell->argv
+		->argv[0] = substitute_alias(shell->argv->argv[0], shell)))
+		exit(2);
 	if (parse_test(shell) == 0)
 		return ((shell->retval = 1));
 	free_tab(shell->copy_env);
@@ -763,7 +766,9 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 		if (shell->argv->argv[0][0] != '/')
 			ht_insert(shell->valide_path, shell->argv->argv[0], &shell->hashtable);
 	}
-	if (access(shell->valide_path, X_OK) == -1)
+	struct stat info;
+	stat(shell->valide_path, &info);
+	if (access(shell->valide_path, X_OK) == -1 || ((S_ISREG(info.st_mode)) != 1))
 	{
 		ft_putendl("t'as pas les droits victimes");
 		ft_strdel(&shell->valide_path);

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/17 04:54:15 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/20 04:22:55 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,13 @@ void			clean_print(t_42sh *sh)
 	tputs(tgoto(tgetstr("rc", NULL), 0, 0), 0, putchar_custom);
 }
 
+int			ft_test(char *test)
+{
+	test = ft_strchr(test, ';');
+	test++;
+	return (ft_atoi(test));
+}
+
 static void		init_stdin(t_42sh *sh)
 {
 	// int			fl;
@@ -96,7 +103,6 @@ static void		init_stdin(t_42sh *sh)
 	sh->stdin->line_pos = 0;
 	sh->stdin->len_line = 0;
 	sh->stdin->str_to_paste = NULL;
-	sh->stdin->cursor_pos = sh->prompt_len;
 	sh->stdin->nb_line = 0;
 	sh->stdin->ctrlc = 0;
 	init_history(sh, sh->path_history);
@@ -108,6 +114,19 @@ static void		init_stdin(t_42sh *sh)
 		ft_putendl("tcsetattr: Error.");
 		exit(0);
 	}
+	if (isatty(STDIN_FILENO))
+	{
+		int			fl;
+		char		buf[1024];
+		fl = fcntl(STDIN_FILENO, F_GETFL);
+		fcntl(STDIN_FILENO, F_SETFL, fl | O_NONBLOCK);
+		while (read(STDIN_FILENO, buf, 1024) > 0);
+		fcntl(STDIN_FILENO, F_SETFL, fl);
+		ft_putstr("\033[6n");
+		buf[read(STDOUT_FILENO, buf, 1023)] = '\0';
+		sh->prompt_len = ft_test(buf) - 1;
+	}
+	sh->stdin->cursor_pos = sh->prompt_len;
 }
 
 int			get_line(t_42sh *sh)
