@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/20 03:52:37 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/22 07:07:29 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -632,7 +632,7 @@ char				*ft_joinpath(const char *path, const char *name);
 
 void				print_env_array(char **env);
 int					check_is_builtin(t_42sh *sh, char *str);
-/***************************************************************************** \
+/*****************************************************************************\
 |                              HISTORY                                        |
 \*****************************************************************************/
 
@@ -760,5 +760,7 @@ int					search_var(t_var_mark *var_mark, t_var **var,char *str);
 int					check_env(t_env **env, char **split);
 void				list_del(t_env **env, t_env *to_del, t_env *prev);
 char				*substitute_alias(char *name, t_42sh *sh);
+void				*ft_malloc_exit(size_t size);
+char				**ft_command_to_args(t_node *current, t_42sh *shell);
 
 #endif

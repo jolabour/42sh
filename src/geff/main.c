@@ -6,11 +6,30 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/20 06:20:26 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/22 07:23:06 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
+
+void			ft_putulglg_fd(unsigned long long nbr, int fd)
+{
+	if (nbr >= 10)
+		ft_putulglg_fd(nbr / 10, fd);
+	ft_putchar_fd(nbr % 10 + '0', fd);
+}
+
+void			*ft_malloc_exit(size_t size)
+{
+	void		*addr;
+
+	if ((addr = malloc(size)))
+		return (addr);
+	ft_putstr_fd("42sh: malloc: cannot allocate ", 2);
+	ft_putulglg_fd(size, 2);
+	ft_putstr_fd(" bytes\n", 2);
+	exit(2);
+}
 
 int				ft_exe_badtoken(t_node *current, t_42sh *shell)
 {
@@ -23,7 +42,7 @@ t_proclist		*ft_get_pipeline(t_node *current)
 {
 	t_proclist	*process;
 
-	if (!(process = (t_proclist *)malloc(sizeof(t_proclist))))
+	if (!(process = (t_proclist *)ft_malloc_exit(sizeof(t_proclist))))
 		return (NULL);
 	*process = (t_proclist){0, NULL, 0, NULL, NULL, NULL};
 	if (current->token == PIPE)
@@ -58,7 +77,7 @@ t_joblist		*ft_get_job(t_node *current, t_42sh *shell)
 {
 	t_joblist	*job;
 
-	if (!(job = (t_joblist *)malloc(sizeof(t_joblist)))
+	if (!(job = (t_joblist *)ft_malloc_exit(sizeof(t_joblist)))
 		|| !(job->process = ft_get_pipeline(current)))
 		return (NULL);
 	if (shell->pgid)
@@ -263,7 +282,7 @@ void			ft_build_tmp_fd(int fd, t_tmpfd **begin)
 {
 	t_tmpfd		*tmp;
 
-	if (!(tmp = (t_tmpfd *)malloc(sizeof(t_tmpfd))))
+	if (!(tmp = (t_tmpfd *)ft_malloc_exit(sizeof(t_tmpfd))))
 		exit(2);
 	tmp->initial = fd;
 	if ((tmp->cloexec = fcntl(fd, F_GETFD)) != -1)
@@ -562,7 +581,7 @@ int				ft_exe_rbrace(t_node *current, t_42sh *shell)
 // 	int			count;
 
 // 	count = start + ft_strlen(by) + ft_strlen(arg + start + len);
-// 	if (!(result = (char *)malloc((count + 1) * sizeof(char))))
+// 	if (!(result = (char *)ft_malloc_exit((count + 1) * sizeof(char))))
 // 		return (NULL);
 // 	ft_strncpy(result, arg, (size_t)start);
 // 	ft_strcpy(result + start, by);
@@ -684,7 +703,7 @@ char			**ft_expanse_command(t_node *current, t_42sh *shell)
 		words = words->right;
 		i++;
 	}
-	if (!(args = (char **)malloc((i + 1) * sizeof(char *))))
+	if (!(args = (char **)ft_malloc_exit((i + 1) * sizeof(char *))))
 		return (NULL);
 	i = 0;
 	words = current->right;
@@ -737,6 +756,8 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 		exit(2);
 	if (parse_test(shell) == 0)
 		return ((shell->retval = 1));
+	// if (!(shell->argv->argv = ft_command_to_args(current, shell)))
+	// 	return ((shell->retval = 1));
 	free_tab(shell->copy_env);
 	shell->copy_env = list_to_tab(shell->env, shell->copy_env);
 	if (shell->bin_dirs)
