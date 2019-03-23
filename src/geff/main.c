@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/22 07:23:06 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/23 12:10:26 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,6 @@ int				ft_exe_file(t_node *current, t_42sh *shell,
 				char *path, char **args)
 {
 	t_joblist	*job;
-	int			status;
 
 	if (!shell->forked)
 	{
@@ -114,10 +113,10 @@ int				ft_exe_file(t_node *current, t_42sh *shell,
 		ft_launch_job(job, shell);
 		if (!shell->pgid && shell->foreground)
 			tcsetpgrp(STDIN_FILENO, job->pgid);
-		status = ft_wait_job(job);
+		shell->retval = ft_manage_job(job, shell);;
 		if (!shell->pgid && shell->foreground)
 			tcsetpgrp(STDIN_FILENO, shell->pid);
-		return ((shell->retval = WEXITSTATUS(job->process->status)));
+		return (shell->retval);
 	}
 	if (current->redir
 		&& g_exetab[current->redir->token](current->redir, shell))
@@ -196,25 +195,144 @@ void			ft_write_status(int status)
 	ft_putstr("\n");
 }
 
-int				ft_wait_job(t_joblist *job)
+int				ft_get_retval(int status)
+{
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
+	if (WIFSTOPPED(status))
+		return (128 + WSTOPSIG(status));
+	return (-1);
+}
+
+int				ft_any_stopped(t_joblist *job)
+{
+	t_proclist	*proc;
+
+	proc = job->process;
+	while (proc)
+	{
+		if (WIFSTOPPED(proc->status))
+			return (1);
+		proc = proc->next;
+	}
+	return (0);
+}
+
+int				ft_any_running(t_joblist *job)
+{
+	t_proclist	*proc;
+
+	proc = job->process;
+	while (proc)
+	{
+		if (!proc->status)
+			return (1);
+		proc = proc->next;
+	}
+	return (0);
+}
+
+int				ft_wait_job(t_joblist *job, int options)
 {
 	t_proclist	*proc;
 
 	proc = job->process;
 	while (proc && proc->next)
 	{
-		waitpid(proc->pid, &(proc->status), WUNTRACED);
+		if (waitpid(proc->pid, &(proc->status), options) == 0)
+			proc->status = 0;
 		proc = proc->next;
 	}
-	waitpid(proc->pid, &(proc->status), WUNTRACED);
-	// ft_write_status(proc->status);
+	if (waitpid(proc->pid, &(proc->status), options) == 0)
+		proc->status = 0;
 	return (proc->status);
+}
+
+char			*g_sigtab[] =
+{
+	"SIGERR",
+	"SIGHUP",
+	"SIGINT",
+	"SIGQUIT",
+	"SIGILL",
+	"SIGTRAP",
+	"SIGABRT",
+	"SIGEMT",
+	"SIGFPE",
+	"SIGKILL",
+	"SIGBUS",
+	"SIGSEGV",
+	"SIGSYS",
+	"SIGPIPE",
+	"SIGALRM",
+	"SIGTERM",
+	"SIGURG",
+	"SIGSTOP",
+	"SIGTSTP",
+	"SIGCONT",
+	"SIGCHLD",
+	"SIGTTIN",
+	"SIGTTOU",
+	"SIGIO",
+	"SIGXCPU",
+	"SIGXFSZ",
+	"SIGVTALRM",
+	"SIGPROF",
+	"SIGWINCH",
+	"SIGINFO",
+	"SIGUSR1",
+	"SIGUSR2"
+};
+
+void			ft_report_status(t_joblist *job, int status)
+{
+	ft_putstr_fd("[", 2);
+	ft_putnbr_fd(job->num, 2);
+	ft_putstr_fd("]  ", 2);
+	if (WIFSTOPPED(status))
+	{
+		ft_putstr_fd("Stopped", 2);
+		if (WSTOPSIG(status) > 0 && WSTOPSIG(status) <= 31)
+		{
+			ft_putstr_fd("(", 2);
+			ft_putstr_fd(g_sigtab[WSTOPSIG(status)], 2);
+			ft_putstr_fd(")", 2);
+		}
+	}
+	else if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) > 0 && WTERMSIG(status) <= 31)
+			ft_putstr_fd(g_sigtab[WTERMSIG(status)], 2);
+	}
+	else if (WIFEXITED(status))
+		ft_putstr_fd("Done", 2);
+	else
+		ft_putstr_fd("Running", 2);
+	ft_putstr_fd("\n", 2);
+}
+
+int				ft_manage_job(t_joblist *job, t_42sh *shell)
+{
+	int			status;
+
+	status = ft_wait_job(job, WUNTRACED);
+	if (!shell->pgid)
+	{
+		if (WIFSTOPPED(status))
+			ft_report_status(job, status);
+		else if (ft_any_stopped(job))
+			ft_report_status(job, _WSTOPPED);
+		else if (WIFSIGNALED(status))
+			ft_report_status(job, status);
+	}
+	return (ft_get_retval(status));
 }
 
 int				ft_exe_pipe(t_node *current, t_42sh *shell)
 {
 	t_joblist	*job;
-	int			status;
 
 	shell->forked = 0;
 	if (!(job = ft_get_job(current, shell)))
@@ -222,10 +340,10 @@ int				ft_exe_pipe(t_node *current, t_42sh *shell)
 	ft_launch_job(job, shell);
 	if (!shell->pgid && shell->foreground)
 		tcsetpgrp(STDIN_FILENO, job->pgid);
-	status = ft_wait_job(job);
+	shell->retval = ft_manage_job(job, shell);
 	if (!shell->pgid && shell->foreground)
 		tcsetpgrp(STDIN_FILENO, shell->pid);
-	return (WEXITSTATUS(status));
+	return (shell->retval);
 }
 
 int				ft_exe_and(t_node *current, t_42sh *shell)
@@ -262,19 +380,19 @@ int				ft_exe_semi(t_node *current, t_42sh *shell)
 int				ft_dup_tmp_fd(int fd)
 {
 	int			cpy;
-	int			denied[3];
+	bool		denied[3];
 
-	denied[0] = 0;
-	denied[1] = 0;
-	denied[2] = 0;
-	while ((cpy = dup(fd)) >= 0 && cpy <= 2)
-		denied[cpy] = 1;
-	if (denied[0])
-		close(0);
-	if (denied[1])
-		close(1);
-	if (denied[2])
-		close(2);
+	denied[STDIN_FILENO] = false;
+	denied[STDOUT_FILENO] = false;
+	denied[STDERR_FILENO] = false;
+	while ((cpy = dup(fd)) >= STDIN_FILENO && cpy <= STDERR_FILENO)
+		denied[cpy] = true;
+	if (denied[STDIN_FILENO])
+		close(STDIN_FILENO);
+	if (denied[STDOUT_FILENO])
+		close(STDOUT_FILENO);
+	if (denied[STDERR_FILENO])
+		close(STDERR_FILENO);
 	return (cpy);
 }
 
@@ -376,7 +494,7 @@ int				ft_exe_rpar(t_node *current, t_42sh *shell)
 		ft_launch_job(job, shell);
 		if (!shell->pgid && shell->foreground)
 			tcsetpgrp(STDIN_FILENO, job->pgid);
-		status = ft_wait_job(job);
+		status = ft_wait_job(job, WUNTRACED);
 		if (!shell->pgid && shell->foreground)
 			tcsetpgrp(STDIN_FILENO, shell->pid);
 		return (WEXITSTATUS(status));

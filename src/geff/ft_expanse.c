@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/22 07:22:31 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/23 03:56:06 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef enum			e_txttype
 	VAR,
 	BRACE_VAR,
 	CMD_SUB,
+	CMD_SUB_BQUOTE,
 	ARTH_EXPR
 }						t_txttype;
 
@@ -238,7 +239,7 @@ int			ft_parse_bquote(char *word, size_t *index,
 	(void)dquote;
 	if (word[*index] == '`')
 	{
-		ft_add_txtlist(word, CMD_SUB, current);
+		ft_add_txtlist(word, CMD_SUB_BQUOTE, current);
 		(*current)->start = *index;
 		(*index)++;
 		while (word[*index] != '`')
@@ -307,21 +308,34 @@ t_txtlist		*ft_parse_word(char *word)
 	return (list[0]);
 }
 
+char			*g_txtstr[] =
+{
+	"TXT_NONE",
+	"TEXT",
+	"TILDE",
+	"VAR",
+	"BRACE_VAR",
+	"CMD_SUB",
+	"CMD_SUB_BQUOTE",
+	"ARTH_EXPR"
+};
+
 void			ft_print_txtlist(char *input, t_txtlist *list)
 {
 	while (list)
 	{
-		ft_putnbr(list->token);
-		ft_putstr("\n");
+		ft_putstr("[");
+		ft_putstr(g_txtstr[list->token]);
+		ft_putchar('-');
 		ft_putnbr(list->start);
-		ft_putchar('\n');
+		ft_putchar('-');
 		ft_putnbr(list->len);
-		ft_putchar('\n');
+		ft_putchar('-');
 		write(1, input + list->start, list->len);
-		ft_putchar('\n');
-		ft_putstr("----------------------------------------\n");
+		ft_putchar(']');
 		list = list->next;
 	}
+	ft_putchar('\n');
 }
 
 char			*ft_expanse_word(char *word, t_42sh *shell)

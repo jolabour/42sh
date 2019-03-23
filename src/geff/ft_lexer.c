@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:47:25 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/20 02:44:41 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/23 04:12:51 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_toklist		*ft_newtoklist(void)
 {
 	t_toklist	*new;
 
-	if (!(new = (t_toklist *)malloc(sizeof(t_toklist))))
+	if (!(new = (t_toklist *)ft_malloc_exit(sizeof(t_toklist))))
 		return (NULL);
 	ft_bzero(new, sizeof(t_toklist));
 	return (new);
@@ -34,7 +34,7 @@ char		*ft_strjoinfree(char *s1, char *s2, unsigned int which)
 	j = 0;
 	while (s2[j])
 		j++;
-	if (!(join = (char *)malloc(i + j + 1)))
+	if (!(join = (char *)ft_malloc_exit(i + j + 1)))
 		return (NULL);
 	i = -1;
 	while (s1[++i])
@@ -57,6 +57,7 @@ char			*ft_continue_line(char *current, t_42sh *shell)
 		ft_putstr("> ");
 		shell->prompt_len = 2;
 	}
+	free(shell->stdin);
 	if (get_line(shell) != 1)
 		return (NULL);
 	return ((shell->stdin->input = ft_strjoinfree(current,

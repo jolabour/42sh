@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:52:23 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/22 04:58:14 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/23 11:37:22 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_node			*ft_new_node(void)
 {
 	t_node		*new;
 
-	if (!(new = (t_node *)malloc(sizeof(t_node))))
+	if (!(new = (t_node *)ft_malloc_exit(sizeof(t_node))))
 		return (NULL);
 	ft_bzero(new, sizeof(t_node));
 	return (new);
@@ -176,13 +176,19 @@ int				ft_ast_continue_list(t_node **list, t_42sh *shell)
 {
 	t_toklist	*new;
 
+	if (isatty(STDIN_FILENO))
+	{
+		ft_putstr("> ");
+		shell->prompt_len = 2;
+	}
+	ft_strdel(&(shell->stdin->input));
+	free(shell->stdin);
 	if (get_line(shell) != 1)
 		return (-1);
 	if (!(new = ft_lexer(&(shell->stdin->input), shell)))
 		return (-1);
 	if (!(*list = ft_toklist_to_node(shell->stdin->input, new)))
 		return (-1);
-	free(shell->stdin->input);
 	return (1);
 }
 
@@ -555,7 +561,7 @@ t_node			*ft_build_ast(t_node *list, t_42sh *shell)
 			return (NULL);
 		}
 	}
-	if (begin)
-		ft_print_ast(begin, 0);
+	// if (begin)
+	// 	ft_print_ast(begin, 0);
 	return (begin);
 }

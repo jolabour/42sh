@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/22 07:07:29 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/23 11:36:16 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <unistd.h>
+# include <stdbool.h>
 # include "libft.h"
 # include "histo.h"
 
@@ -388,7 +389,8 @@ t_node					*ft_build_ast(t_node *list, t_42sh *shell);
 int						check_builtin(t_42sh *sh);
 void					free_tab(char **str);
 void					ft_launch_job(t_joblist *job, t_42sh *shell);
-int						ft_wait_job(t_joblist *job);
+int						ft_manage_job(t_joblist *job, t_42sh *shell);
+int						ft_wait_job(t_joblist *job, int options);
 int						ft_exe_badtoken(t_node *current, t_42sh *shell);
 int						ft_exe_pipe(t_node *current, t_42sh *shell);
 int						ft_exe_and(t_node *current, t_42sh *shell);
