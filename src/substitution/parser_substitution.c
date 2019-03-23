@@ -152,12 +152,21 @@ char			*substitute_param(t_42sh *sh, char *str, int *pos)
 char			*dollar_substitute(t_42sh *sh, char *str, int *pos)
 {
 	char		*new;
-
+	char		*tmp;
+	
 	new = NULL;
 	if (str[*pos + 1] == '{')
 	{
 		*pos = *pos + 2;
 		new = substitute_param(sh, str, pos);
+	}
+	if (str[*pos + 1] == '(' && str[*pos + 2] == '(')
+	{
+		tmp = ft_strdup(str + *pos + 1);
+		ft_check_exp_ari(tmp);
+		if (!(tmp = ft_erase_space(tmp)))
+			ft_exp_ari_error("malloc error");
+		new = ft_exp_ari(tmp, ft_strlen(tmp));
 	}/*if (sh->argv->argv[sh->argv->cur_str][sh->argv->pos_str + 1] 
 	== '(' && sh->argv->argv[sh->argv->cur_str][sh->argv->pos_str + 2] == '(')*/
 	//	substitute_arithmetic(sh);

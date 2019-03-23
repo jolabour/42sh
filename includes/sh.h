@@ -127,6 +127,15 @@ typedef struct			s_main
 	struct winsize		winsize;
 }						t_main;
 
+typedef struct			s_list_ari
+{
+	struct s_list_ari	*next;
+	int					nbr;
+	int					opt;
+	char				*var;
+	char				*name;
+}						t_list_ari;
+
 char					*ft_strjoinfree(char *s1, char *s2, unsigned int which);
 
 typedef struct			s_proclist
@@ -295,6 +304,7 @@ typedef struct		s_42sh
 	int				retval;
 	int				foreground;
 	t_tmpfd			*tmp_fds;
+	t_list_ari		*ari;
 }					t_42sh;
 
 typedef struct			s_tokcond
@@ -764,5 +774,56 @@ void				list_del(t_env **env, t_env *to_del, t_env *prev);
 char				*substitute_alias(char *name, t_42sh *sh);
 void				*ft_malloc_exit(size_t size);
 char				**ft_command_to_args(t_node *current, t_42sh *shell);
+
+/*
+** ft_erase_space.c
+*/
+
+char					*ft_erase_space(char *str);
+
+/*
+** ft_true_op.c
+*/
+
+char					*ft_true_op(char *str, int size);
+
+/*
+** ft_logic_op.c
+*/
+
+char					*ft_logic_op(char *str, int size);
+
+/*
+** ft_math_op.c
+*/
+
+char					*ft_math_op(char *str, int n);
+int						ft_count_prev_num(char *str, int m);
+int 		    		ft_count_next_num(char *str);
+
+/*
+** ft_itoa_exp_ari.c
+*/
+
+void					ft_itoa_exp_ari(char *str, int nbr, int n);
+
+/*
+** ft_exp_ari_error.c
+*/
+
+void					ft_exp_ari_error(char *str);
+
+/*
+** ft_check_exp_ari.c
+*/
+
+void					ft_check_exp_ari(char *str);
+
+/*
+** ft_check_var.c			
+*/
+
+char					*ft_check_var(char *str, t_list_ari *list_var);
+char					*ft_exp_ari(char *str, int len);
 
 #endif
