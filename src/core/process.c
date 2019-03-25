@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/23 03:54:43 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/25 02:28:14 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,13 +176,14 @@ void			process(t_42sh *sh)
 	check_substitute_history(sh);
 	if (sh->history_mark->error_code == 0 && ft_strcmp(sh->stdin->input, "fc\n") != 0)
 		add_history(sh, sh->stdin->input, sh->path_history);
-	if (!(list = ft_lexer(&(sh->stdin->input), sh)))
-		exit(2);
-	if (!(list = ft_toklist_to_node((sh->stdin->input), list)))
-		exit(2);
-	if (!(list = ft_build_ast(list, sh)))
-		exit(2);
-	g_exetab[((t_node *)list)->token](list, sh);
+	list = ft_lexer(&(sh->stdin->input), sh);
+	if (list)
+	{
+		list = ft_toklist_to_node((sh->stdin->input), list);
+		list = ft_build_ast(list, sh);
+		if (list)
+			g_exetab[((t_node *)list)->token](list, sh);
+	}
 	// ft_lexer(sh);
 	// if (ft_strcmp(sh->stdin->input, "exit\n") == 0)
 	// 	reset_term(sh);

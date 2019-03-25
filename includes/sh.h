@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/23 11:36:16 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/25 02:22:12 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,6 +276,7 @@ typedef struct		s_42sh
 {
 	char			**tokens;
 	char			**builtin;
+	char			**args;
 	t_argv			*argv;
 	char			*valide_path;
 	int				winsize;
@@ -774,6 +775,7 @@ void				list_del(t_env **env, t_env *to_del, t_env *prev);
 char				*substitute_alias(char *name, t_42sh *sh);
 void				*ft_malloc_exit(size_t size);
 char				**ft_command_to_args(t_node *current, t_42sh *shell);
+char				*get_var(t_42sh *sh, char *str);
 
 /*
 ** ft_erase_space.c

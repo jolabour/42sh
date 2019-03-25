@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 22:54:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/20 04:36:41 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/25 01:43:00 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ char			*get_var(t_42sh *sh, char *str)
 		tmp = tmp->next;
 		i++;
 	}
-	substitute = ft_strdup("\0");
-	return (substitute);
+	return (NULL);
 }
 
 char			*substitute_param(t_42sh *sh, char *str, int *pos)

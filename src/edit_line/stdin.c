@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/20 04:22:55 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/24 23:50:10 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,10 @@ int			get_line(t_42sh *sh)
 			if ((i = check_input(sh, buf)) != 1)
 			{
 				if (i == -1 || (sh->stdin->ctrlc == 1 && i == 2))
+				{
+					reset_term(sh);
 					return (0);
+				}
 				if (i == 2)
 					clean_print(sh);
 			}

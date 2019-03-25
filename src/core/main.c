@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:21:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/23 04:04:22 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/25 02:26:49 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int			main(int argc, char **argv, char **env)
 {
 	t_42sh	sh;
 
+	sh.args = argv;
 	init_shell(&sh, env);
 	ft_init(&sh);
 	if (!(env[0]))

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/23 12:10:26 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/24 23:55:05 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -867,15 +867,15 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 	BUCKET_CONTENT	*bucket_entry;
 	void			*exe;
 
-	if (!(shell->argv->argv = ft_expanse_command(current, shell)))
-		exit(2);
-	if (shell->argv->argv[0] && !(shell->argv
-		->argv[0] = substitute_alias(shell->argv->argv[0], shell)))
-		exit(2);
-	if (parse_test(shell) == 0)
-		return ((shell->retval = 1));
-	// if (!(shell->argv->argv = ft_command_to_args(current, shell)))
+	// if (!(shell->argv->argv = ft_expanse_command(current, shell)))
+	// 	exit(2);
+	// if (shell->argv->argv[0] && !(shell->argv
+	// 	->argv[0] = substitute_alias(shell->argv->argv[0], shell)))
+	// 	exit(2);
+	// if (parse_test(shell) == 0)
 	// 	return ((shell->retval = 1));
+	if (!(shell->argv->argv = ft_command_to_args(current, shell)))
+		return ((shell->retval = 1));
 	free_tab(shell->copy_env);
 	shell->copy_env = list_to_tab(shell->env, shell->copy_env);
 	if (shell->bin_dirs)
