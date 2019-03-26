@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/25 02:46:34 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/26 10:26:23 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,54 @@ int			ft_parse_cmd_sub(char *word, size_t *index, t_txtlist **current)
 	return (0);
 }
 
+typedef struct	s_spparam
+{
+	char		c;
+	char		*(*f)(t_42sh *);
+}				t_spparam;
+
+char		*ft_spparam_dollar(t_42sh *shell)
+{
+	return (ft_itoa(shell->pid));
+}
+
+char		*ft_spparam_qmark(t_42sh *shell)
+{
+	return (ft_itoa(shell->retval));
+}
+
+char		*ft_spparam_bang(t_42sh *shell)
+{
+	(void)shell;
+	return (ft_itoa(0));
+}
+
+char		*ft_spparam_zero(t_42sh *shell)
+{
+	if (shell->args[0])
+		return (ft_strdup(shell->args[0]));
+	return (ft_strdup("42sh"));
+}
+
+t_spparam	g_spparamtab[] =
+{
+	{'$', &ft_spparam_dollar},
+	{'?', &ft_spparam_qmark},
+	{'!', &ft_spparam_bang},
+	{'0', &ft_spparam_zero},
+	{'\0', NULL}
+};
+
+char		*(*ft_get_spparam(char c))(t_42sh *)
+{
+	int		i;
+
+	i = 0;
+	while (g_spparamtab[i].c && g_spparamtab[i].c != c)
+		i++;
+	return (g_spparamtab[i].f);
+}
+
 int			ft_parse_var(char *word, size_t *index,
 			t_txtlist **current, int *dquote)
 {
@@ -169,8 +217,7 @@ int			ft_parse_var(char *word, size_t *index,
 		(*current)->start = *index;
 		(*current)->dquote = *dquote;
 		(*index)++;
-		if (word[*index] == '$' || word[*index] == '?' || word[*index] == '!'
-			|| word[*index] == '0')
+		if (ft_get_spparam(word[*index]))
 			(*index)++;
 		else if (ft_isalpha(word[*index]) ||  word[*index] == '_')
 			while (ft_isalnum(word[*index]) || word[*index] == '_')
@@ -346,61 +393,6 @@ int			ft_exp_text(t_txtlist *txt, t_42sh *shell)
 	return (0);
 }
 
-int			ft_exp_tilde(t_txtlist *txt, t_42sh *shell)
-{
-	(void)shell;
-	txt->data = ft_strsub(txt->data, txt->start, txt->len);
-	return (0);
-}
-
-typedef struct	s_spparam
-{
-	char		c;
-	char		*(*f)(t_42sh *);
-}				t_spparam;
-
-char		*ft_spparam_dollar(t_42sh *shell)
-{
-	return (ft_itoa(shell->pid));
-}
-
-char		*ft_spparam_qmark(t_42sh *shell)
-{
-	return (ft_itoa(shell->retval));
-}
-
-char		*ft_spparam_bang(t_42sh *shell)
-{
-	(void)shell;
-	return (ft_itoa(0));
-}
-
-char		*ft_spparam_zero(t_42sh *shell)
-{
-	if (shell->args[0])
-		return (ft_strdup(shell->args[0]));
-	return (ft_strdup("42sh"));
-}
-
-t_spparam	g_spparamtab[] =
-{
-	{'$', &ft_spparam_dollar},
-	{'?', &ft_spparam_qmark},
-	{'!', &ft_spparam_bang},
-	{'0', &ft_spparam_zero},
-	{'\0', NULL}
-};
-
-char		*(*ft_get_spparam(char c))(t_42sh *)
-{
-	int		i;
-
-	i = 0;
-	while (g_spparamtab[i].c && g_spparamtab[i].c != c)
-		i++;
-	return (g_spparamtab[i].f);
-}
-
 char		*ft_getvar(char *var, t_42sh *shell)
 {
 	void	*ptr;
@@ -417,13 +409,112 @@ char		*ft_getvar(char *var, t_42sh *shell)
 	return (NULL);
 }
 
+char				*ft_tilde_alone(t_42sh *shell)
+{
+	char			*path;
+	struct passwd	*pw;
+
+	path = ft_getvar("HOME", shell);
+	if (!path)
+	{
+		pw = getpwuid(getuid());
+		if (pw)
+			path = ft_strdup(pw->pw_dir);
+	}
+	return (path);
+}
+
+char				*ft_tilde_user(t_txtlist *txt)
+{
+	char			*user;
+	struct passwd	*pw;
+
+	user = ft_strsub(txt->data, txt->start + 1, txt->len - 1);
+	if (user)
+	{
+		pw = getpwnam(user);
+		free(user);
+		if (pw)
+			return (ft_strdup(pw->pw_dir));
+	}
+	return (NULL);
+}
+
+int			ft_exp_tilde(t_txtlist *txt, t_42sh *shell)
+{
+	char	*res;
+
+	if (txt->data[txt->start + txt->len]
+		&& txt->data[txt->start + txt->len] != '/'
+		&& txt->data[txt->start + txt->len] != ':')
+		return (ft_exp_text(txt, shell));
+	if (txt->len == 1)
+		res = ft_tilde_alone(shell);
+	else if (txt->data[txt->start + 1] == '+')
+		res = ft_getvar("PWD", shell);
+	else if (txt->data[txt->start + 1] == '-')
+		res = ft_getvar("OLDPWD", shell);
+	else
+		res = ft_tilde_user(txt);
+	if (!res)
+		return (ft_exp_text(txt, shell));
+	txt->data = res;
+	return (0);
+}
+
+int			ft_count_quotes(char *word)
+{
+	int		i;
+	int		quotes;
+
+	i = 0;
+	quotes = 0;
+	while (word[i])
+	{
+		if (word[i] == '\\' || word[i] == '\"' || word[i] == '\'')
+			quotes++;
+		i++;
+	}
+	return (quotes);
+}
+
+char		*ft_backslash_quotes(char *word)
+{
+	char	*res;
+	int		i;
+	int		quotes;
+
+	quotes = ft_count_quotes(word);
+	if (!quotes)
+		return (word);
+	res = (char *)ft_malloc_exit((ft_strlen(word) + quotes + 1) * sizeof(char));
+	i = 0;
+	quotes = 0;
+	while (word[i])
+	{
+		if (word[i] == '\\' || word[i] == '\"' || word[i] == '\'')
+		{
+			res[i + quotes] = '\\';
+			quotes++;
+		}
+		res[i + quotes] = word[i];
+		i++;
+	}
+	res[i + quotes] = '\0';
+	free(word);
+	return (res);
+}
+
 int			ft_exp_var(t_txtlist *txt, t_42sh *shell)
 {
 	char	*var;
 
+	if (txt->len == 1)
+		return (ft_exp_text(txt, shell));
 	var = ft_strsub(txt->data, txt->start + 1, txt->len - 1);
 	txt->data = ft_getvar(var, shell);
 	free(var);
+	txt->data = txt->data ? ft_backslash_quotes(txt->data) : ft_strdup("");
 	return (0);
 }
 
@@ -446,7 +537,7 @@ int			ft_exp_brace(t_txtlist *txt, t_42sh *shell)
 		var = ft_strsub(txt->data, txt->start + 2, i);
 	}
 	res = var ? ft_getvar(var, shell) : NULL;
-	txt->data = res;
+	txt->data = res ? ft_backslash_quotes(txt->data) : ft_strdup("");
 	return (0);
 }
 
