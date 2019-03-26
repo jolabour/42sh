@@ -59,8 +59,7 @@ static char	*add_char_arg(t_42sh *sh, char *arg, long buf)
 	}
 	else
 	{
-		if (sh->history_mark->is_find == 1)
-			arg = realloc_when_find(sh, arg, buf);
+		arg = realloc_when_find(sh, arg, buf);
 	}
 	sh->history_mark->error_code = 0;
 	return (arg);

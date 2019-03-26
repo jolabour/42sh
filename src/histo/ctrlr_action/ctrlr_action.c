@@ -61,7 +61,7 @@ void			reset_history_curs_pos(t_42sh *sh)
 	sh->history_mark->cursor_pos = -1;
 	sh->history_mark->line_pos = -1;
 	sh->history_mark->nb_moove = -1;
-	sh->history_mark->dup_select = -1;
+	sh->history_mark->dup_select = 0;
 	sh->history_mark->is_find = 0;
 }
 

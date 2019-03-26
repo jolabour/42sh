@@ -60,7 +60,7 @@ static	int	check_occ_in_dup(t_42sh *sh, char *arg, char *dup)
 		pos_start--;
 		i++;
 	}
-	return (1);
+	return (0);
 }
 
 void		back_in_history(t_42sh *sh, char *dup, char *arg)
