@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 22:54:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/25 01:43:00 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/26 11:53:56 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,8 +161,13 @@ char			*dollar_substitute(t_42sh *sh, char *str, int *pos)
 	}
 	if (str[*pos + 1] == '(' && str[*pos + 2] == '(')
 	{
-		tmp = ft_strdup(str + *pos + 1);
-		ft_check_exp_ari(tmp);
+		if (!(tmp = ft_strdup(str + *pos + 1)))
+			return (NULL);
+		if (0 == ft_check_exp_ari(tmp))
+		{
+			free(tmp);
+			return (NULL);
+		}
 		if (!(tmp = ft_erase_space(tmp)))
 			ft_exp_ari_error("malloc error");
 		new = ft_exp_ari(tmp, ft_strlen(tmp));

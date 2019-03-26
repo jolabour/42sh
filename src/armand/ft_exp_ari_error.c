@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/18 23:13:30 by achavy            #+#    #+#             */
-/*   Updated: 2019/02/18 23:40:47 by achavy           ###   ########.fr       */
+/*   Updated: 2019/03/26 11:56:40 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,5 +17,4 @@ void	ft_exp_ari_error(char *str)
 	ft_putstr_fd("42sh: exp_ari: ",2);
 	ft_putstr_fd(str, 2);
 	ft_putchar_fd('\n', 2);
-	exit (0);
 }

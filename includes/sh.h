@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/25 02:22:12 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/26 11:47:32 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -819,7 +819,7 @@ void					ft_exp_ari_error(char *str);
 ** ft_check_exp_ari.c
 */
 
-void					ft_check_exp_ari(char *str);
+int						ft_check_exp_ari(char *str);
 
 /*
 ** ft_check_var.c			

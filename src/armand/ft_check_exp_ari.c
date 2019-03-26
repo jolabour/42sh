@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/02/18 23:41:08 by achavy           ###   ########.fr       */
+/*   Updated: 2019/03/26 11:53:27 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int		ft_check_op(char *str, int i)
 			return (i + 2);
 	}
 	ft_exp_ari_error(ft_strjoin("operator error or missing : ", str));
-	return (i);
+	return (-1);
 }
 
 static int		ft_check_num(char *str, int i)
@@ -51,26 +51,30 @@ static int		ft_check_num(char *str, int i)
 			return (ft_check_digit(str, i + 1));
 	}
 	ft_exp_ari_error(ft_strjoin("operande error or missing : ", str));
-	return (i);
+	return (-1);
 }
 
-void			ft_check_exp_ari(char *str)
+int			ft_check_exp_ari(char *str)
 {
 	int i;
 	
 	i = 0;
 	while (str[i] == ' ' || str[i] == '(' || str[i] == ')')
 		i++;
-	i = ft_check_num(str, i);
+	if ((-1 == (i = ft_check_num(str, i))))
+		return (0);	
 	while (str[i])
 	{
 		while (str[i] == ' ' || str[i] == '(' || str[i] == ')')
 			i++;
 		if (!str[i])
-			return ;
-		i = ft_check_op(str, i);
+			return (1);
+		if ((-1 == (i = ft_check_op(str, i))))
+			return (0);
 		while (str[i] == ' ' || str[i] == '(' || str[i] == ')')
 			i++;
-		i = ft_check_num(str, i);
+		if ((-1 == (i = ft_check_num(str, i))))
+			return (0);
 	}
+	return (1);
 }

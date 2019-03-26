@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/02/18 23:41:08 by achavy           ###   ########.fr       */
+/*   Updated: 2019/03/26 11:56:34 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,46 @@ static void		ft_resolve(char *str, int size)
 	ft_strdel(&tmp);
 }
 
-	char		*ft_exp_ari(char *str, int size)
+static int	end_ari(char *str)
 {
+	int	j;
+	int i;
+
+	i = 2;
+	j = 2;
+	while (j != 0)
+	{
+		if (str[i] == '(')
+			j++;
+		if (str[i] == ')')
+			j--;
+		i++;
+		if (str[i] == '\0')
+			return (0);
+	}
+	return (i);
+}
+
+char		*ft_exp_ari(char *str, int size)
+{
+	char 	*tmp;
+	char	*end;
 	int		i;
 	int		p;
 
 	i = 0;
 	p = -1;
+	end = NULL;
+	tmp = NULL;
+	size = end_ari(str);
+	if (!(end = ft_strdup(&str[size])))
+		return (NULL);
+	if (!(tmp = ft_strsub(str, 0, size)))
+		return (NULL);
+	free(str);
+	str = NULL;
+	str = tmp;
+	tmp = NULL;
 	while (i < size)
 	{
 		if (str[i] == ')' && p == -1)
@@ -54,7 +87,12 @@ static void		ft_resolve(char *str, int size)
 	if (p != -1)
 		ft_exp_ari_error("parenthese error");
 	ft_resolve(str, size);
-	return (str);
+	if (!(tmp = ft_strjoin(str, end)))
+		return (NULL);
+	free(str);
+	str = NULL;
+	end = NULL;
+	return (tmp);
 }
 
 void		ft_modif_var(t_list_ari *list_var)
