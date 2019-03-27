@@ -6,30 +6,12 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/24 23:55:05 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/27 05:52:00 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void			ft_putulglg_fd(unsigned long long nbr, int fd)
-{
-	if (nbr >= 10)
-		ft_putulglg_fd(nbr / 10, fd);
-	ft_putchar_fd(nbr % 10 + '0', fd);
-}
-
-void			*ft_malloc_exit(size_t size)
-{
-	void		*addr;
-
-	if ((addr = malloc(size)))
-		return (addr);
-	ft_putstr_fd("42sh: malloc: cannot allocate ", 2);
-	ft_putulglg_fd(size, 2);
-	ft_putstr_fd(" bytes\n", 2);
-	exit(2);
-}
 
 int				ft_exe_badtoken(t_node *current, t_42sh *shell)
 {
@@ -153,6 +135,8 @@ void			ft_launch_job(t_joblist *job, t_42sh *shell)
 	int			pipefd[3];
 
 	proc = job->process;
+	pipefd[0] = -1;
+	pipefd[1] = -1;
 	pipefd[2] = -1;
 	while (proc)
 	{

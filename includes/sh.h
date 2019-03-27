@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/26 11:47:32 by achavy           ###   ########.fr       */
+/*   Updated: 2019/03/27 06:14:04 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -703,10 +703,10 @@ void				test_d(t_42sh *sh, struct stat info);
 void				test_e(t_42sh *sh, struct stat info);
 void				test_f(t_42sh *sh, struct stat info);
 void				test_g(t_42sh *sh, struct stat info);
-void				test_L(t_42sh *sh, struct stat info);
+void				test_l(t_42sh *sh, struct stat info);
 void				test_p(t_42sh *sh, struct stat info);
 void				test_r(t_42sh *sh, struct stat info);
-void				test_S(t_42sh *sh, struct stat info);
+void				test_su(t_42sh *sh, struct stat info);
 void				test_s(t_42sh *sh, struct stat info);
 void				test_u(t_42sh *sh, struct stat info);
 void				test_w(t_42sh *sh, struct stat info);
@@ -776,6 +776,18 @@ char				*substitute_alias(char *name, t_42sh *sh);
 void				*ft_malloc_exit(size_t size);
 char				**ft_command_to_args(t_node *current, t_42sh *shell);
 char				*get_var(t_42sh *sh, char *str);
+void				list_alias(t_42sh *sh);
+t_alias				*new_alias(char **line);
+void				add_to_list_alias(t_42sh *sh, char **split);
+void				lst_del(t_alias **alias, t_alias *to_del, t_alias *prev);
+int					check_alias(t_alias_mark **alias, char **split);
+void				print_export(t_42sh *sh);
+void				print_type_alias(t_42sh *sh, int i, char *str);
+void				print_type_builtin(t_42sh *sh, int i);
+void				print_type_error(t_42sh *sh, int i);
+void				print_type_binary(t_42sh *sh, int i, char *str);
+void				print_type_hash(t_42sh *sh, int i, char *str);
+void				lst_del_var(t_var **var, t_var *to_del, t_var *prev);
 
 /*
 ** ft_erase_space.c

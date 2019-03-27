@@ -1,30 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memalloc.c                                      :+:      :+:    :+:   */
+/*   print_export.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/14 01:34:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 00:09:38 by jolabour         ###   ########.fr       */
+/*   Created: 2019/03/27 03:52:33 by jolabour          #+#    #+#             */
+/*   Updated: 2019/03/27 03:56:15 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "sh.h"
 
-void	*ft_memalloc(size_t size)
+void			print_export(t_42sh *sh)
 {
-	char	*tab;
-	size_t	i;
+	int			i;
 
 	i = 0;
-	tab = NULL;
-	if (!(tab = ft_malloc_exit(sizeof(void) * size)))
-		return (NULL);
-	while (i < size)
+	while (sh->copy_env[i])
 	{
-		tab[i] = '\0';
+		ft_putstr("export ");
+		ft_putendl(sh->copy_env[i]);
 		i++;
 	}
-	return (tab);
 }

@@ -6,11 +6,18 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 08:56:10 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/17 04:09:21 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/02/19 01:18:20 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
+
+void		prompt2(t_42sh *sh, char *buf)
+{
+	ft_strcat(buf, "\x1B[1;33m | \x1B[1;32m$> \x1B[0;0m");
+	ft_putstr(buf);
+	sh->prompt_len = ft_strlen(buf) - 34;
+}
 
 void		prompt(t_env *list, t_42sh *sh)
 {
@@ -38,7 +45,5 @@ void		prompt(t_env *list, t_42sh *sh)
 		else
 			ft_strcat(buf, pwd);
 	}
-	ft_strcat(buf, "\x1B[1;33m | \x1B[1;32m$> \x1B[0;0m");
-	ft_putstr(buf);
-	sh->prompt_len = ft_strlen(buf) - 34;
+	prompt2(sh, buf);
 }

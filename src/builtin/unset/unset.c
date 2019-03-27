@@ -1,15 +1,16 @@
-#include "sh.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 05:57:55 by jolabour          #+#    #+#             */
+/*   Updated: 2019/03/27 06:01:09 by jolabour         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void		lst_del_var(t_var **var, t_var *to_del, t_var *prev)
-{
-	if (*var == to_del)
-		*var = to_del->next;
-	else
-		prev->next = to_del->next;
-	free(to_del->sub);
-	free(to_del->to_sub);
-	free(to_del);
-}
+#include "sh.h"
 
 int			search_var(t_var_mark *var_mark, t_var **var, char *str)
 {
@@ -63,7 +64,8 @@ void		del_var(t_42sh *sh)
 	while (sh->argv->argv[i])
 	{
 		if ((j = search_var(sh->var, &sh->var->begin, sh->argv->argv[i])) == 0)
-			search_env(&sh->env, sh->argv->argv[i], ft_strlen(sh->argv->argv[i]));
+			search_env(&sh->env, sh->argv->argv[i],
+				ft_strlen(sh->argv->argv[i]));
 		if (j == 1)
 			sh->var->size--;
 		i++;

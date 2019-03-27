@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/10 02:33:37 by jolabour          #+#    #+#             */
-/*   Updated: 2019/01/25 20:27:05 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/03/27 00:07:59 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,5 +107,6 @@ void				ft_puts_yellow(char *str);
 void				ft_puts_cyan(char *str);
 void				*ft_realloc(void *ptr, size_t prev_size, size_t new_size);
 char				**ft_strsplitsetone(char const *s, char delim);
+void				*ft_malloc_exit(size_t size);
 
 #endif

@@ -1,18 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hash.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 04:10:56 by jolabour          #+#    #+#             */
+/*   Updated: 2019/03/27 06:14:57 by jolabour         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "sh.h"
 
 void		reset_hashtable(t_ht *ht)
 {
 	BUCKET_CONTENT		*tmp;
 	unsigned int		i;
-	uint8_t	j;
+	uint8_t				j;
 
 	i = 0;
 	while (i < INITIAL_HASHTABLE_SIZE)
 	{
 		if (ht->buckets[i].first != NULL)
 		{
-			j = ht->buckets[i].length;
-			while (j > 0)
+			j = ht->buckets[i].length + 1;
+			while (--j > 0)
 			{
 				tmp = ht->buckets[i].first;
 				ht->buckets[i].first = ht->buckets[i].first->next;
@@ -21,7 +33,6 @@ void		reset_hashtable(t_ht *ht)
 				tmp->pathlen = 0;
 				free(tmp);
 				tmp = NULL;
-				j--;
 			}
 			ht->buckets[i].length = 0;
 			ht->buckets[i].first = NULL;
@@ -30,37 +41,57 @@ void		reset_hashtable(t_ht *ht)
 	}
 }
 
-void		check_hash_opt(t_42sh *sh)
+int			check_hash_opt(t_42sh *sh, char *str, int *i)
+{
+	if (ft_strequ(str, "-r") == 1)
+	{
+		reset_hashtable(&sh->hashtable);
+		*i = *i + 1;
+	}
+	else if (ft_strequ(str, "-a") == 1)
+	{
+		init_hashtable(sh);
+		*i = *i + 1;
+	}
+	else
+	{
+		ft_putstr_fd("42sh: hash: ", 2);
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": invalid option\n", 2);
+		ft_putstr_fd("hash: usage: hash [-r] [-a] [name ...]\n", 2);
+		sh->retval = 1;
+		return (0);
+	}
+	return (1);
+}
+
+int			check_slash(char *str)
+{
+	int		i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void		check_hash(t_42sh *sh)
 {
 	int		i;
 	char	*path;
 
-	i = 1;
-	if (sh->argv->argv[i][0] == '-')
-	{
-		if (ft_strequ(sh->argv->argv[i], "-r") == 1)
-		{
-			reset_hashtable(&sh->hashtable);
-			i++;
-		}
-		else if (ft_strequ(sh->argv->argv[i], "-a") == 1)
-		{
-			init_hashtable(sh);
-			i++;
-		}
-		else
-		{
-			ft_putstr_fd("42sh: hash: ", 2);
-			ft_putstr_fd(sh->argv->argv[1], 2);
-			ft_putstr_fd(": invalid option\n", 2);
-			ft_putstr_fd("hash: usage: hash [-r] [-a] [name ...]\n", 2);
-			sh->retval = 1;
+	i = 0;
+	if (sh->argv->argv[i + 1][0] == '-')
+		if (check_hash_opt(sh, sh->argv->argv[i + 1], &i) == 0)
 			return ;
-		}
-	}
-	while (sh->argv->argv[i])
-	{
-		if (sh->argv->argv[i][0] == '/' || check_is_builtin(sh, sh->argv->argv[i]) == 1);
+	while (sh->argv->argv[++i])
+		if (check_slash(sh->argv->argv[i]) == 1 ||
+			check_is_builtin(sh, sh->argv->argv[i]) == 1)
+			continue ;
 		else if (ht_lookup(sh->argv->argv[i], &sh->hashtable) == NULL)
 		{
 			if ((path = check_access(sh, i)) != NULL)
@@ -74,8 +105,6 @@ void		check_hash_opt(t_42sh *sh)
 			}
 			ft_strdel(&path);
 		}
-		i++;
-	}
 }
 
 void		builtin_hash(t_42sh *sh)
@@ -83,7 +112,7 @@ void		builtin_hash(t_42sh *sh)
 	if (sh->argv->size == 1)
 		print_hashtable(sh->hashtable);
 	else
-		check_hash_opt(sh);
+		check_hash(sh);
 	if (sh->retval == 1)
 		return ;
 	sh->retval = 0;

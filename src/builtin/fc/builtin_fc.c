@@ -6,12 +6,13 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/18 23:37:09 by ttresori          #+#    #+#             */
-/*   Updated: 2019/03/17 03:40:35 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/27 06:13:03 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fc.h"
 
+/*
 void	print_nb_and_str(t_42sh *sh, int nb, char *str)
 {
 	if (sh->history_mark->print_nb_line == 0)
@@ -88,4 +89,4 @@ void	builtin_fc(t_42sh *sh)
 	sh->history_mark->print_nb_line = 0;
 	sh->history_mark->reverse_print = 0;
 	check_for_l_opt(sh);
-}
+}*/

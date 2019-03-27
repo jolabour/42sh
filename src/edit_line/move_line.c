@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/06 02:50:13 by jolabour          #+#    #+#             */
-/*   Updated: 2018/12/17 04:19:28 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/02/19 00:59:27 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ void		move_up(t_42sh *sh)
 		return ;
 	else
 	{
-		tputs(tgoto(tgetstr("up", NULL), sh->winsize - 1, sh->winsize - 1), 0, putchar_custom);
+		tputs(tgoto(tgetstr("up", NULL), sh->winsize - 1, sh->winsize - 1),
+				0, putchar_custom);
 		sh->stdin->line_pos -= sh->winsize;
 		sh->stdin->cursor_pos -= sh->winsize;
 		while (sh->stdin->line_pos < 0)
 			move_to_right(sh);
 	}
 }
-

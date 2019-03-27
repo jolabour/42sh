@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/12 07:29:27 by jolabour          #+#    #+#             */
-/*   Updated: 2017/11/12 07:34:39 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/27 00:11:53 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_strnew(size_t size)
 	char	*str;
 
 	i = 0;
-	if (!(str = (char *)malloc(sizeof(char) * (size + 1))))
+	if (!(str = (char *)ft_malloc_exit(sizeof(char) * (size + 1))))
 		return (NULL);
 	while (i < size)
 	{

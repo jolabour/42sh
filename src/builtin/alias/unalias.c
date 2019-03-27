@@ -1,15 +1,16 @@
-#include "sh.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unalias.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 01:04:33 by jolabour          #+#    #+#             */
+/*   Updated: 2019/03/27 01:06:13 by jolabour         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void		lst_del(t_alias **alias, t_alias *to_del, t_alias *prev)
-{
-	if (*alias == to_del)
-		*alias = to_del->next;
-	else
-		prev->next = to_del->next;
-	free(to_del->sub);
-	free(to_del->to_sub);
-	free(to_del);
-}
+#include "sh.h"
 
 int			check_opt(t_42sh *sh)
 {
@@ -79,7 +80,8 @@ void		del_alias(t_42sh *sh)
 	}
 	while (sh->argv->argv[i])
 	{
-		if ((j = search_alias(sh->alias, &sh->alias->begin, sh->argv->argv[i])) == 0)
+		if ((j = search_alias(sh->alias,
+				&sh->alias->begin, sh->argv->argv[i])) == 0)
 		{
 			ft_putstr_fd("42sh: unalias: ", 2);
 			ft_putstr_fd(sh->argv->argv[i], 2);

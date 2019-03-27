@@ -1,30 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memalloc.c                                      :+:      :+:    :+:   */
+/*   test_l.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/14 01:34:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 00:09:38 by jolabour         ###   ########.fr       */
+/*   Created: 2019/03/27 05:35:43 by jolabour          #+#    #+#             */
+/*   Updated: 2019/03/27 05:37:11 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "sh.h"
 
-void	*ft_memalloc(size_t size)
+void		test_lt(t_42sh *sh)
 {
-	char	*tab;
-	size_t	i;
+	int		tmp;
+	int		tmp2;
 
-	i = 0;
-	tab = NULL;
-	if (!(tab = ft_malloc_exit(sizeof(void) * size)))
-		return (NULL);
-	while (i < size)
-	{
-		tab[i] = '\0';
-		i++;
-	}
-	return (tab);
+	tmp = ft_atoi(sh->argv->argv[1]);
+	tmp2 = ft_atoi(sh->argv->argv[3]);
+	if (tmp < tmp2)
+		sh->retval = 0;
+	else
+		sh->retval = 1;
+}
+
+void		test_le(t_42sh *sh)
+{
+	int		tmp;
+	int		tmp2;
+
+	tmp = ft_atoi(sh->argv->argv[1]);
+	tmp2 = ft_atoi(sh->argv->argv[3]);
+	if (tmp <= tmp2)
+		sh->retval = 0;
+	else
+		sh->retval = 1;
 }

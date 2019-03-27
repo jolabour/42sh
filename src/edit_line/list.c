@@ -6,21 +6,11 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:28:33 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/11 20:25:24 by marvin           ###   ########.fr       */
+/*   Updated: 2019/03/27 00:23:04 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
-
-void		list_del(t_env **env, t_env *to_del, t_env *prev)
-{
-	if (*env == to_del)
-		*env = to_del->next;
-	else
-		prev->next = to_del->next;
-	free(to_del->str);
-	free(to_del);
-}
 
 int			len_list(t_env *env)
 {
@@ -35,17 +25,15 @@ int			len_list(t_env *env)
 	return (i);
 }
 
-char	**list_to_tab(t_env *env, char **copy_env)
+char		**list_to_tab(t_env *env, char **copy_env)
 {
 	int		i;
 
-	if (!(copy_env = malloc(sizeof(char *) * (len_list(env) + 1))))
-		print_error(_ENOMEM, 1);
+	copy_env = (char**)ft_malloc_exit(sizeof(char *) * (len_list(env) + 1));
 	i = 0;
 	while (env)
 	{
-		if ((copy_env[i] = ft_strdup(env->str)) == NULL)
-			print_error(_ENOMEM, 1);
+		copy_env[i] = ft_strdup(env->str);
 		env = env->next;
 		i++;
 	}
@@ -57,8 +45,8 @@ t_env		*create_node(char *str)
 {
 	t_env	*new;
 
-	if (!(new = malloc(sizeof(*new))) || !(new->str = ft_strdup(str)))
-		return (NULL);
+	new = (t_env*)ft_malloc_exit(sizeof(*new));
+	new->str = ft_strdup(str);
 	new->next = NULL;
 	return (new);
 }
@@ -88,8 +76,7 @@ t_env		*set_list(char **env)
 	i = 0;
 	while (env[i])
 	{
-		if (!(new = create_node(env[i])))
-			print_error(_ENOMEM, 1);
+		new = create_node(env[i]);
 		lst_push(&start, new);
 		i++;
 	}

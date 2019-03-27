@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   type.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 05:37:41 by jolabour          #+#    #+#             */
+/*   Updated: 2019/03/27 05:57:40 by jolabour         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "sh.h"
 
 char		*check_is_alias(t_42sh *sh, char *str)
@@ -39,43 +51,30 @@ int			check_is_builtin(t_42sh *sh, char *str)
 
 void		get_type(t_42sh *sh)
 {
-	int		i;
-	char	*to_print;
+	int				i;
+	char			*to_print;
+	BUCKET_CONTENT	*bucket_entry;
 
-	i = 1;
-	while (i < sh->argv->size)
+	i = 0;
+	while (++i < sh->argv->size)
 	{
 		if ((to_print = check_is_alias(sh, sh->argv->argv[i])) != NULL)
 		{
-			ft_putstr(sh->argv->argv[i]);
-			ft_putstr(" is an alias for ");
-			ft_putendl(to_print);
+			print_type_alias(sh, i, to_print);
 			ft_strdel(&to_print);
-			sh->retval = 0;
 		}
 		else if (check_is_builtin(sh, sh->argv->argv[i]) == 1)
-		{
-			ft_putstr(sh->argv->argv[i]);
-			ft_putendl(" is a shell builtin");
-			sh->retval = 0;
-		}
+			print_type_builtin(sh, i);
+		else if ((bucket_entry = ht_lookup(sh->argv->argv[0],
+					&sh->hashtable)) != NULL)
+			print_type_hash(sh, i, bucket_entry->path);
 		else if ((to_print = check_access(sh, i)) != NULL)
 		{
-			ft_putstr(sh->argv->argv[i]);
-			ft_putstr(" is ");
-			ft_putendl(to_print);
+			print_type_binary(sh, i, to_print);
 			ft_strdel(&to_print);
-			sh->retval = 0;
 		}
 		else
-		{
-			ft_putstr_fd("42sh: type: ", 2);
-			ft_putstr_fd(sh->argv->argv[i], 2);
-			ft_putendl_fd(": not found", 2);
-			if (sh->retval != 0)
-				sh->retval = 1;
-		}
-		i++;
+			print_type_error(sh, i);
 	}
 }
 

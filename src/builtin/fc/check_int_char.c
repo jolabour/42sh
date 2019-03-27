@@ -6,12 +6,12 @@
 /*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/18 23:37:19 by ttresori          #+#    #+#             */
-/*   Updated: 2019/02/18 23:38:10 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/03/27 06:13:26 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fc.h"
-
+/*
 static int	get_int_stop_char(t_42sh *sh, char *stop_char, int len_stop)
 {
 	int			i;
@@ -123,4 +123,4 @@ int			check_if_alpha(t_42sh *sh)
 		return (1);
 	}
 	return (0);
-}
+}*/

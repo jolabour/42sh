@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 22:46:40 by jolabour          #+#    #+#             */
-/*   Updated: 2018/08/17 01:11:45 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/02/19 00:32:08 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ static void				exit_left(t_42sh *sh)
 	move_to_left(sh);
 	move_to_left(sh);
 }
-void				exit_select_mode(t_42sh *sh, int pos)
+
+void					exit_select_mode(t_42sh *sh, int pos)
 {
 	int			end_pos;
 
@@ -48,6 +49,4 @@ void				exit_select_mode(t_42sh *sh, int pos)
 		move_to_right(sh);
 	while (sh->line_pos > end_pos)
 		move_to_left(sh);
-/*	while (sh->line_pos > sh->len_line)
-		move_to_left(sh);*/
 }

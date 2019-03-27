@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/17 15:46:59 by abeauvoi          #+#    #+#             */
-/*   Updated: 2017/04/21 19:56:29 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2019/03/27 00:12:22 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char			**ft_strsplit(char const *s, char c)
 	size_t		j;
 	size_t		words;
 
-	if (!s || !(split = (char **)malloc(sizeof(*split)
+	if (!s || !(split = (char **)ft_malloc_exit(sizeof(*split)
 					* ((words = ft_word_count(s, c)) + 1))))
 		return (NULL);
 	split[words] = NULL;

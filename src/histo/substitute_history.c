@@ -6,7 +6,7 @@
 /*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/10 19:41:02 by ttresori          #+#    #+#             */
-/*   Updated: 2019/03/08 00:33:52 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/27 00:50:12 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "sh.h"
@@ -69,9 +69,7 @@ char *search_str_input(t_42sh *sh, int start, int *nb_del)
     str_to_find = NULL;
     sub = NULL;
     i = 0;
-    if (!(str_to_find = (char*)malloc(sizeof(char) 
-        * (ft_strlen(sh->stdin->input) + 1))))
-        print_error(_ENOMEM, 1);
+    str_to_find = (char*)ft_malloc_exit(sizeof(char) * (sh->stdin->len_line + 1));
    while (sh->stdin->input[start] 
         && (sh->stdin->input[start] != ' ' 
         && sh->stdin->input[start] != '\t')
@@ -174,8 +172,7 @@ int get_nb_history(t_42sh *sh, int pos, int *nb_del)
 
     i = 0;
     nb = 0;
-    if (!(nb_to_find = (char*)malloc(sizeof(char) * ft_strlen(sh->stdin->input))))
-        print_error(_ENOMEM, 1);
+    nb_to_find = (char*)ft_malloc_exit(sizeof(char) * ft_strlen(sh->stdin->input));
     if (sh->stdin->input[pos + 1] == '-' && (sh->stdin->input[pos + 2] >= '0' 
     && sh->stdin->input[pos + 2] <= '9'))
     {

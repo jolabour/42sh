@@ -1,30 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memalloc.c                                      :+:      :+:    :+:   */
+/*   list_unset.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/14 01:34:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 00:09:38 by jolabour         ###   ########.fr       */
+/*   Created: 2019/03/27 05:58:49 by jolabour          #+#    #+#             */
+/*   Updated: 2019/03/27 06:01:08 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "sh.h"
 
-void	*ft_memalloc(size_t size)
+void		list_del(t_env **env, t_env *to_del, t_env *prev)
 {
-	char	*tab;
-	size_t	i;
+	if (*env == to_del)
+		*env = to_del->next;
+	else
+		prev->next = to_del->next;
+	free(to_del->str);
+	free(to_del);
+}
 
-	i = 0;
-	tab = NULL;
-	if (!(tab = ft_malloc_exit(sizeof(void) * size)))
-		return (NULL);
-	while (i < size)
-	{
-		tab[i] = '\0';
-		i++;
-	}
-	return (tab);
+void		lst_del_var(t_var **var, t_var *to_del, t_var *prev)
+{
+	if (*var == to_del)
+		*var = to_del->next;
+	else
+		prev->next = to_del->next;
+	free(to_del->sub);
+	free(to_del->to_sub);
+	free(to_del);
 }

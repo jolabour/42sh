@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 18:26:21 by ttresori          #+#    #+#             */
-/*   Updated: 2019/03/14 23:41:53 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/27 00:43:38 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,6 @@ void clean_history(char *path)
 	close(fd);
 }
 
-/*void	print_history(char *path, int start)
-{
-	char *get_line;
-	int fd;
-	int i;
-
-	if (!(fd = open(path, O_RDWR)))
-		ft_putendl_fd("Can't open [.42sh_history] file", 2);
-	i = 0;
-	while (get_next_line(fd, &get_line) == 1)
-    {
-		if (i++ >= start)
-			ft_putendl_fd(get_line, 0);
-        free(get_line);
-    }
-	close (fd);
-}
-*/
 void	print_history_n(char *path)
 {
 	char *get_line;
@@ -78,8 +60,7 @@ void	print_history_r(char *path)
         free(get_line);
     }
 	close (fd);
-	if (!(str = (char**)malloc(sizeof(char*) * (i))))
-		return ;
+	str = (char**)ft_malloc_exit(sizeof(char*) * (i));
 	if (!(fd = open(path, O_RDWR)))
 		ft_putendl_fd("Can't open [.42sh_history] file", 2);
 	i = 0;
@@ -99,14 +80,3 @@ void	print_history_r(char *path)
 	close (fd);
 	
 }
-
-// void	history_p(t_42sh *sh)
-// {
-// 	sh->lexer = sh->lexer->next;
-// 	sh->lexer = sh->lexer->next;
-// 	while (sh->lexer->str != NULL)
-// 	{
-// 		ft_putendl(sh->lexer->str);
-// 		sh->lexer = sh->lexer->next;
-// 	}
-// }

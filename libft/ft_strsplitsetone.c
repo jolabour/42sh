@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strsplitsetone.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 00:14:29 by jolabour          #+#    #+#             */
+/*   Updated: 2019/03/27 00:14:36 by jolabour         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 #include "libft.h"
 
@@ -15,13 +27,13 @@ size_t				check_delim(const char *str, char c)
 	return (i);
 }
 
-char			**ft_strsplitsetone(char const *s, char delim)
+char				**ft_strsplitsetone(char const *s, char delim)
 {
 	char		**split;
 	size_t		len;
 
 	len = check_delim(s, delim);
-	if (!(split = malloc(sizeof(char*) * 3)))
+	if (!(split = (char**)ft_malloc_exit(sizeof(char*) * 3)))
 		return (NULL);
 	if (len >= ft_strlen(s))
 	{

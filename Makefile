@@ -22,21 +22,21 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  hashtable/hashtable.c edit_line/keymap_select.c \
 			  hashtable/init_hashtable.c utils/ft_joinpath.c utils/env.c \
 			  edit_line/select_mode.c edit_line/move_select_mode.c \
-			  edit_line/action_select_mode.c edit_line/move_line.c \
+			  edit_line/action_select_mode.c edit_line/move_line.c edit_line/utils_stdin.c \
 			  geff/main.c geff/ft_lexer.c geff/ft_ast.c geff/ft_expanse.c\
 			  histo/init_file_history.c histo/parser_history.c \
 			  edit_line/move_histo.c histo/substitute_history.c \
-			  builtin/test/test.c builtin/test/test_bcdef.c builtin/test/test_glprS.c \
-			  builtin/test/test_suwxz.c builtin/echo/echo.c substitution/parser_substitution.c \
-			  builtin/tabulation/tabulation.c builtin/alias/alias.c \
+			  builtin/test/test.c builtin/test/test_bcdef.c builtin/test/test_glprs.c \
+			  builtin/test/test_suwxz.c builtin/test/test_l.c builtin/echo/echo.c substitution/parser_substitution.c \
+			  builtin/tabulation/tabulation.c builtin/alias/alias.c  builtin/alias/list_alias.c \
 			  builtin/test/exec_other.c builtin/test/test_other.c builtin/alias/unalias.c \
-			  builtin/hash/hash.c builtin/type/type.c histo/ctrlr_action/utils_ctrlr.c \
+			  builtin/hash/hash.c builtin/type/type.c builtin/type/print_type.c histo/ctrlr_action/utils_ctrlr.c \
 			  histo/ctrlr_action/get_line_ctrlr.c histo/ctrlr_action/place_curs_ctrlr.c \
 			  histo/ctrlr_action/prompt_ctrlr.c  histo/ctrlr_action/back_in_history.c \
 			  builtin/fc/builtin_fc.c builtin/fc/check_int_char.c builtin/fc/edit_last_command.c \
-			  histo/ctrlr_action/ctrlr_action.c builtin/set/set.c builtin/unset/unset.c builtin/export/export.c armand/ft_check_exp_ari.c armand/ft_erase_space.c armand/ft_exp_ari_error.c \
+			  histo/ctrlr_action/ctrlr_action.c builtin/set/set.c builtin/unset/unset.c builtin/export/export.c armand/ft_check_exp_ari.c armand/ft_erase_space.c armand/ft_exp_ari_error.c builtin/export/print_export.c \
 			  armand/ft_logic_op.c armand/ft_true_op.c armand/ft_check_var.c armand/ft_itoa_exp_ari.c \
-			  armand/ft_math_op.c armand/exp_ari.c
+			  armand/ft_math_op.c armand/exp_ari.c builtin/unset/list_unset.c
 
 
 #

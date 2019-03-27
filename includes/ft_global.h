@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/20 02:33:57 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/27 06:14:17 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,6 @@ t_bttab					g_bttab[] =
 	{"unalias", &builtin_unalias},
 	{"hash", &builtin_hash},
 	{"type", &builtin_type},
-	{"fc", &builtin_fc},
 	{"set", &builtin_set},
 	{"unset", &builtin_unset},
 	{"export", &builtin_export},

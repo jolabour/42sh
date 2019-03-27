@@ -1,26 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   alias.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 00:57:29 by jolabour          #+#    #+#             */
+/*   Updated: 2019/03/27 03:42:37 by jolabour         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "sh.h"
 
-void	list_alias(t_42sh *sh)
-{
-	t_alias	*tmp;
-	int		i;
-
-	i = 0;
-	tmp = sh->alias->begin;
-	if (sh->alias->size == 0)
-		return ;
-	while (i < sh->alias->size)
-	{
-		ft_putstr(tmp->to_sub);
-		ft_putstr("='");
-		ft_putstr(tmp->sub);
-		ft_putstr("'\n");
-		tmp = tmp->next;
-		i++;
-	}
-}
-
-int		print_alias(t_42sh *sh, char *str)
+int			print_alias(t_42sh *sh, char *str)
 {
 	t_alias	*tmp;
 	int		i;
@@ -45,23 +37,10 @@ int		print_alias(t_42sh *sh, char *str)
 	return (-1);
 }
 
-t_alias	*new_alias(char **line)
-{
-	t_alias *new;
-
-	if (!(new = malloc(sizeof(t_alias))))
-		print_error(_ENOMEM, 1);
-	new->to_sub = ft_strdup(line[0]);
-	new->sub = ft_strdup(line[1]);
-	new->next = NULL;
-	new->prev = NULL;
-	return (new);
-}
-
 int			check_alias(t_alias_mark **alias, char **split)
 {
-	int i;
-	t_alias *start;
+	int		i;
+	t_alias	*start;
 
 	i = 0;
 	start = (*alias)->begin;
@@ -79,30 +58,6 @@ int			check_alias(t_alias_mark **alias, char **split)
 		i++;
 	}
 	return (-1);
-}
-
-void	add_to_list_alias(t_42sh *sh, char **split)
-{
-	t_alias *new;
-
-	if (check_alias(&sh->alias, split) == 0)
-		return ;
-	new = new_alias(split);
-	if (sh->alias->size == 0)
-	{
-		new->next = sh->alias->last;
-		new->prev = sh->alias->begin;
-		sh->alias->begin = new;
-		sh->alias->last = new;
-	}
-	else
-	{
-		new->prev = NULL;
-		new->next = sh->alias->begin;
-		sh->alias->begin->prev = new;
-		sh->alias->begin = new;
-	}
-	sh->alias->size++;
 }
 
 void		add_alias(t_42sh *sh)

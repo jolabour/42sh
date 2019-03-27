@@ -1,8 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_other.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 04:56:57 by jolabour          #+#    #+#             */
+/*   Updated: 2019/03/27 05:35:10 by jolabour         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "sh.h"
-
-const char			*option_tab_other[7] = {"=", "!=", "-eq", "-ne", "-ge", "-lt", "-le"};
-
-const t_ak			action_option_other[7] = {test_equal, test_diff, test_eq, test_ne, test_ge, test_lt, test_le};
 
 int			check_nbr(t_42sh *sh)
 {
@@ -31,28 +39,29 @@ int			check_nbr(t_42sh *sh)
 
 int			execute_other_opt(t_42sh *sh, char *str)
 {
-	int		i;
-	int		pos;
+	const char			*option_tab_other[7] = {"=", "!=",
+		"-eq", "-ne", "-ge", "-lt", "-le"};
+	const t_ak			action_option_other[7] = {test_equal,
+		test_diff, test_eq, test_ne, test_ge, test_lt, test_le};
+	int					i;
+	int					pos;
 
-	i = 0;
-	while (i < 7)
+	i = -1;
+	while (++i < 7)
 	{
 		if (ft_strequ(str, option_tab_other[i]) != 0)
 		{
 			if (i >= 2 && (pos = check_nbr(sh)) != 0)
 			{
-				sh->retval = 2;
 				ft_putstr_fd("test: integer expression expected: ", 2);
 				ft_putendl_fd(sh->argv->argv[pos], 2);
-				return (2);
+				return (sh->retval = 2);
 			}
 			action_option_other[i](sh);
 			return (1);
 		}
-		i++;
 	}
 	ft_putstr_fd("42sh: condition expected: ", 2);
 	ft_putendl_fd(sh->argv->argv[2], 2);
-	sh->retval = 2;
-	return (0);
+	return (sh->retval = 2);
 }

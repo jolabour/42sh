@@ -6,12 +6,12 @@
 /*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/18 23:37:26 by ttresori          #+#    #+#             */
-/*   Updated: 2019/02/18 23:38:14 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/03/27 06:13:46 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fc.h"
-
+/*
 static void	create_tmp_file(char *to_write)
 {
 	int fd;
@@ -111,4 +111,4 @@ void	edit_last_command(t_42sh *sh)
 		}
 		unlink(PATH_TMP);
 	}
-}
+}*/

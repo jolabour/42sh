@@ -6,7 +6,7 @@
 /*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/18 22:49:55 by ttresori          #+#    #+#             */
-/*   Updated: 2019/02/18 22:49:58 by ttresori         ###   ########.fr       */
+/*   Updated: 2019/03/27 00:51:38 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,7 @@ void			ctrlr_action(t_42sh *sh)
 	sh->history_mark->pos_arg = 0;
 	reset_history_curs_pos(sh);
 	sh->history_mark->dup_select = 0;
-	if (!(arg = (char*)malloc(sizeof(char) * 0)))
-		return ;
+	arg = (char*)ft_malloc_exit(sizeof(char) * 0);
 	clean_line_lentoback(sh->prompt_len);
 	print_prompt_search(sh, 0, NULL, NULL, sh->history_mark->pos_arg);
 	sh->stdin->cursor_pos = 16;
