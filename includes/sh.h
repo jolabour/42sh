@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 06:14:04 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/29 02:12:20 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ typedef struct			s_toktab
 {
 	char				*str;
 	t_tok				token;
+	bool				alias_recognition;
+	bool				redir_op;
 }						t_toktab;
 
 typedef struct			s_toklist
@@ -121,11 +123,27 @@ typedef struct			s_node
 	struct s_node		*redir;
 }						t_node;
 
-typedef struct			s_main
+typedef enum			e_txttype
 {
-	char				*ttyname;
-	struct winsize		winsize;
-}						t_main;
+	TXT_NONE = 0,
+	TEXT,
+	TILDE,
+	VAR,
+	BRACE_VAR,
+	CMD_SUB,
+	CMD_SUB_BQUOTE,
+	ARTH_EXPR
+}						t_txttype;
+
+typedef struct			s_txtlist
+{
+	t_txttype			token;
+	char				*data;
+	size_t				start;
+	size_t				len;
+	int					dquote;
+	struct s_txtlist	*next;
+}						t_txtlist;
 
 typedef struct			s_list_ari
 {
@@ -281,6 +299,7 @@ typedef struct		s_42sh
 	char			*valide_path;
 	int				winsize;
 	int				prompt_len;
+	char			*prompt;
 	char			*pwd;
 	char			**bin_dirs;
 	char			**copy_env;
@@ -308,12 +327,23 @@ typedef struct		s_42sh
 	t_list_ari		*ari;
 }					t_42sh;
 
-typedef struct			s_tokcond
+typedef struct		s_lex
 {
-	int					(*cond)(char **, size_t *, t_toklist **, t_42sh *);
-	int					dquote_mode;
-	int					sub_mode;
-}						t_tokcond;
+	char			*input;
+	size_t			index;
+	t_toklist		*begin;
+	t_toklist		*current;
+	bool			alias_recognition;
+	bool			redir_op;
+	size_t			ignore_alias;
+}					t_lex;
+
+typedef struct		s_tokcond
+{
+	int				(*cond)(t_lex *, t_42sh *);
+	int				dquote_mode;
+	int				sub_mode;
+}					t_tokcond;
 
 typedef struct		s_bttab
 {
@@ -321,41 +351,33 @@ typedef struct		s_bttab
 	void			(*f)(t_42sh *);
 }					t_bttab;
 
+typedef struct			s_spparam
+{
+	char				c;
+	char				*(*f)(t_42sh *);
+}						t_spparam;
+
 void					ft_init(t_42sh *shell);
 
 /*
 **						lexer
 */
 
-int						ft_lex_operator(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_notoperator(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_newline(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_backslash(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_quote(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_dquote(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_dollar(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_bquote(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_ionumber(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_newoperator(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_blank(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_sharp(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_word(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-int						ft_lex_newword(char **input, size_t *index,
-						t_toklist **current, t_42sh *shell);
-t_toklist				*ft_lexer(char **input, t_42sh *shell);
+int						ft_lex_operator(t_lex *, t_42sh *shell);
+int						ft_lex_notoperator(t_lex *, t_42sh *shell);
+int						ft_lex_newline(t_lex *, t_42sh *shell);
+int						ft_lex_backslash(t_lex *, t_42sh *shell);
+int						ft_lex_quote(t_lex *, t_42sh *shell);
+int						ft_lex_dquote(t_lex *, t_42sh *shell);
+int						ft_lex_dollar(t_lex *, t_42sh *shell);
+int						ft_lex_bquote(t_lex *, t_42sh *shell);
+int						ft_lex_ionumber(t_lex *, t_42sh *shell);
+int						ft_lex_newoperator(t_lex *, t_42sh *shell);
+int						ft_lex_blank(t_lex *, t_42sh *shell);
+int						ft_lex_sharp(t_lex *, t_42sh *shell);
+int						ft_lex_word(t_lex *, t_42sh *shell);
+int						ft_lex_newword(t_lex *, t_42sh *shell);
+int						ft_lexer(char *input, t_lex *lex, t_42sh *shell);
 void					ft_print_toklist(char *input, t_toklist *list);
 
 /*
@@ -421,6 +443,39 @@ int						ft_exe_dless(t_node *current, t_42sh *shell);
 int						ft_exe_rbrace(t_node *current, t_42sh *shell);
 int						ft_exe_command(t_node *current, t_42sh *shell);
 
+/*
+**						expanse
+*/
+
+char					*(*ft_get_spparam(char c))(t_42sh *);
+int						ft_parse_tilde(char *word, size_t *index,
+						t_txtlist **current, int *dquote);
+int						ft_parse_var(char *word, size_t *index,
+						t_txtlist **current, int *dquote);
+int						ft_parse_bquote(char *word, size_t *index,
+						t_txtlist **current, int *dquote);
+int						ft_parse_backslash(char *word, size_t *index,
+						t_txtlist **current, int *dquote);
+int						ft_parse_quote(char *word, size_t *index,
+						t_txtlist **current, int *dquote);
+int						ft_parse_text(char *word, size_t *index,
+						t_txtlist **current, int *dquote);
+char					*ft_spparam_dollar(t_42sh *shell);
+char					*ft_spparam_qmark(t_42sh *shell);
+char					*ft_spparam_bang(t_42sh *shell);
+char					*ft_spparam_zero(t_42sh *shell);
+int						ft_exp_text(t_txtlist *txt, t_42sh *shell);
+int						ft_exp_tilde(t_txtlist *txt, t_42sh *shell);
+int						ft_exp_var(t_txtlist *txt, t_42sh *shell);
+int						ft_exp_brace(t_txtlist *txt, t_42sh *shell);
+int						ft_exp_sub(t_txtlist *txt, t_42sh *shell);
+int						ft_exp_bquote(t_txtlist *txt, t_42sh *shell);
+int						ft_exp_expr(t_txtlist *txt, t_42sh *shell);
+
+/*
+**						globals
+*/
+
 extern char				*g_tokstr[];
 extern t_toktab			g_toktab[];
 extern t_tokcond		g_tokcond[];
@@ -428,6 +483,11 @@ extern int				(*g_asttab[])(t_node **begin, t_node **current,
 						t_node **list, t_42sh *shell);
 extern int				(*g_exetab[])(t_node *current, t_42sh *shell);
 extern t_bttab			g_bttab[];
+extern t_spparam		g_spparamtab[];
+extern int				(*g_txttab[])(char *word, size_t *index,
+						t_txtlist **current, int *dquote);
+extern char				*g_txtstr[];
+extern int				(*g_exptab[])(t_txtlist *txt, t_42sh *shell);
 
 typedef				void(*t_ak)(t_42sh *sh);
 typedef				void(*t_test)(t_42sh *sh, struct stat info);
@@ -788,6 +848,7 @@ void				print_type_error(t_42sh *sh, int i);
 void				print_type_binary(t_42sh *sh, int i, char *str);
 void				print_type_hash(t_42sh *sh, int i, char *str);
 void				lst_del_var(t_var **var, t_var *to_del, t_var *prev);
+
 
 /*
 ** ft_erase_space.c

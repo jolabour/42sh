@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/27 06:14:17 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/29 02:59:35 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,45 +50,42 @@ char					*g_tokstr[] =
 
 t_toktab				g_toktab[] =
 {
-	{"|", PIPE},
-	{"&", AND},
-	{";", SEMI},
-	{"<", LESS},
-	{">", GREAT},
-	{"(", LPAR},
-	{")", RPAR},
-	{"{", LBRACE},
-	{"}", RBRACE},
-	{"&&", AND_IF},
-	{"||", OR_IF},
-	{"<<", DLESS},
-	{">>", DGREAT},
-	{"<&", LESSAND},
-	{"<&-", LESSANDDASH},
-	{">&", GREATAND},
-	{">&-", GREATANDDASH},
-	{"<>", LESSGREAT},
-	{"<<-", DLESSDASH},
-	{">|", CLOBBER},
-	{NULL, NONE}
+	{"|", PIPE, 1, 0},
+	{"&", AND, 1, 0},
+	{";", SEMI, 1, 0},
+	{"<", LESS, 0, 1},
+	{">", GREAT, 0, 1},
+	{"(", LPAR, 1, 0},
+	{")", RPAR, 1, 0},
+	{"{", LBRACE, 1, 0},
+	{"}", RBRACE, 1, 0},
+	{"&&", AND_IF, 1, 0},
+	{"||", OR_IF, 1, 0},
+	{"<<", DLESS, 0, 1},
+	{">>", DGREAT, 0, 1},
+	{"<&", LESSAND, 0, 1},
+	{"<&-", LESSANDDASH, 0, 1},
+	{">&", GREATAND, 0, 1},
+	{">&-", GREATANDDASH, 0, 1},
+	{"<>", LESSGREAT, 0, 1},
+	{"<<-", DLESSDASH, 0, 1},
+	{">|", CLOBBER, 0, 1},
+	{NULL, NONE, 0, 0}
 };
 
 t_tokcond				g_tokcond[] =
 {
-	{&ft_lex_operator, 0, 0},
-	{&ft_lex_notoperator, 0, 0},
 	{&ft_lex_newline, 0, 0},
 	{&ft_lex_backslash, 1, 1},
 	{&ft_lex_quote, 0, 0},
 	{&ft_lex_dquote, 0, 0},
-	{&ft_lex_dollar, 1, 1},
-	{&ft_lex_bquote, 1, 1},
+	{&ft_lex_dollar, 1, 0},
+	{&ft_lex_bquote, 1, 0},
 	{&ft_lex_ionumber, 0, 0},
-	{&ft_lex_newoperator, 0, 0},
+	{&ft_lex_operator, 0, 0},
 	{&ft_lex_blank, 0, 0},
-	{&ft_lex_sharp, 0, 1},
+	{&ft_lex_sharp, 0, 0},
 	{&ft_lex_word, 1, 1},
-	{&ft_lex_newword, 0, 0}
 };
 
 int						(*g_asttab[])(t_node **begin, t_node **current,
@@ -168,6 +165,50 @@ t_bttab					g_bttab[] =
 	{"unset", &builtin_unset},
 	{"export", &builtin_export},
 	{NULL, NULL}
+};
+
+t_spparam				g_spparamtab[] =
+{
+	{'$', &ft_spparam_dollar},
+	{'?', &ft_spparam_qmark},
+	{'!', &ft_spparam_bang},
+	{'0', &ft_spparam_zero},
+	{'\0', NULL}
+};
+
+int						(*g_txttab[])(char *word, size_t *index,
+						t_txtlist **current, int *dquote) =
+{
+	&ft_parse_tilde,
+	&ft_parse_var,
+	&ft_parse_bquote,
+	&ft_parse_backslash,
+	&ft_parse_quote,
+	&ft_parse_text
+};
+
+char					*g_txtstr[] =
+{
+	"TXT_NONE",
+	"TEXT",
+	"TILDE",
+	"VAR",
+	"BRACE_VAR",
+	"CMD_SUB",
+	"CMD_SUB_BQUOTE",
+	"ARTH_EXPR"
+};
+
+int						(*g_exptab[])(t_txtlist *txt, t_42sh *shell) =
+{
+	NULL,
+	&ft_exp_text,
+	&ft_exp_tilde,
+	&ft_exp_var,
+	&ft_exp_brace,
+	&ft_exp_sub,
+	&ft_exp_bquote,
+	&ft_exp_expr
 };
 
 #endif

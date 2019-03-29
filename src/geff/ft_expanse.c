@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/27 03:41:54 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/28 23:34:42 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,28 +34,6 @@ char		**ft_init_args(t_node *current)
 	args[i] = NULL;
 	return (args);
 }
-
-typedef enum			e_txttype
-{
-	TXT_NONE = 0,
-	TEXT,
-	TILDE,
-	VAR,
-	BRACE_VAR,
-	CMD_SUB,
-	CMD_SUB_BQUOTE,
-	ARTH_EXPR
-}						t_txttype;
-
-typedef struct			s_txtlist
-{
-	t_txttype			token;
-	char				*data;
-	size_t				start;
-	size_t				len;
-	int					dquote;
-	struct s_txtlist	*next;
-}						t_txtlist;
 
 t_txtlist		*ft_new_txtlist(void)
 {
@@ -157,12 +135,6 @@ int			ft_parse_cmd_sub(char *word, size_t *index, t_txtlist **current)
 	return (0);
 }
 
-typedef struct	s_spparam
-{
-	char		c;
-	char		*(*f)(t_42sh *);
-}				t_spparam;
-
 char		*ft_spparam_dollar(t_42sh *shell)
 {
 	return (ft_itoa(shell->pid));
@@ -185,15 +157,6 @@ char		*ft_spparam_zero(t_42sh *shell)
 		return (ft_strdup(shell->args[0]));
 	return (ft_strdup("42sh"));
 }
-
-t_spparam	g_spparamtab[] =
-{
-	{'$', &ft_spparam_dollar},
-	{'?', &ft_spparam_qmark},
-	{'!', &ft_spparam_bang},
-	{'0', &ft_spparam_zero},
-	{'\0', NULL}
-};
 
 char		*(*ft_get_spparam(char c))(t_42sh *)
 {
@@ -305,17 +268,6 @@ int			ft_parse_bquote(char *word, size_t *index,
 	return (1);
 }
 
-int			(*g_txttab[])(char *word, size_t *index,
-			t_txtlist **current, int *dquote) =
-{
-	&ft_parse_tilde,
-	&ft_parse_var,
-	&ft_parse_bquote,
-	&ft_parse_backslash,
-	&ft_parse_quote,
-	&ft_parse_text
-};
-
 void			ft_parse_error(t_txtlist *list)
 {
 	t_txtlist	*tmp;
@@ -355,18 +307,6 @@ t_txtlist		*ft_parse_word(char *word)
 	}
 	return (list[0]);
 }
-
-char			*g_txtstr[] =
-{
-	"TXT_NONE",
-	"TEXT",
-	"TILDE",
-	"VAR",
-	"BRACE_VAR",
-	"CMD_SUB",
-	"CMD_SUB_BQUOTE",
-	"ARTH_EXPR"
-};
 
 void			ft_print_txtlist(char *input, t_txtlist *list)
 {
@@ -561,20 +501,6 @@ int			ft_exp_expr(t_txtlist *txt, t_42sh *shell)
 	txt->data = ft_strsub(txt->data, txt->start, txt->len);
 	return (0);
 }
-
-
-
-int			(*g_exptab[])(t_txtlist *txt, t_42sh *shell) =
-{
-	NULL,
-	&ft_exp_text,
-	&ft_exp_tilde,
-	&ft_exp_var,
-	&ft_exp_brace,
-	&ft_exp_sub,
-	&ft_exp_bquote,
-	&ft_exp_expr
-};
 
 int			ft_bruh(t_txtlist *list, t_42sh *shell)
 {

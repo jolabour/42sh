@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:52:23 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/23 11:37:22 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/29 02:28:31 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,8 @@ int				ft_ast_isassignment(t_node *current, t_node *list)
 	char		*equal;
 	char		*word;
 
-	if (!(current->right) && (equal = ft_strchr(list->data, '=')))
+	if (!(current->right) && (equal = ft_strchr(list->data, '='))
+		&& equal != list->data)
 	{
 		if (*(list->data) >= '0' && *(list->data) <= '9')
 			return (0);
@@ -174,21 +175,17 @@ int				ft_ast_isseparator(t_node *current)
 
 int				ft_ast_continue_list(t_node **list, t_42sh *shell)
 {
-	t_toklist	*new;
+	t_lex		lex;
 
-	if (isatty(STDIN_FILENO))
-	{
-		ft_putstr("> ");
-		shell->prompt_len = 2;
-	}
+	shell->prompt = "> ";
+	prompt(shell->env, shell);
 	ft_strdel(&(shell->stdin->input));
 	free(shell->stdin);
 	if (get_line(shell) != 1)
 		return (-1);
-	if (!(new = ft_lexer(&(shell->stdin->input), shell)))
+	if (ft_lexer(shell->stdin->input, &lex, shell))
 		return (-1);
-	if (!(*list = ft_toklist_to_node(shell->stdin->input, new)))
-		return (-1);
+	*list = ft_toklist_to_node(shell->stdin->input, lex.begin);
 	return (1);
 }
 

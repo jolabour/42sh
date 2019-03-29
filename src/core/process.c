@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 06:08:35 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/29 02:23:33 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ char			*substitute_alias(char *name, t_42sh *sh)
 		tmp = tmp->next;
 		i++;
 	}
-	return (name);
+	ft_strdel(&name);
+	return (NULL);
 }
 
 void			free_tab(char **str)
@@ -78,8 +79,10 @@ void			free_tab(char **str)
 
 void			process(t_42sh *sh)
 {
+	t_lex		lex;
 	void		*list;
 
+	sh->prompt = NULL;
 	prompt(sh->env, sh);
 	if (get_line(sh) != 1)
 		return ;
@@ -89,10 +92,9 @@ void			process(t_42sh *sh)
 	if (sh->history_mark->error_code == 0 &&
 		ft_strcmp(sh->stdin->input, "fc\n") != 0)
 		add_history(sh, sh->stdin->input, sh->path_history);
-	list = ft_lexer(&(sh->stdin->input), sh);
-	if (list)
+	if (!ft_lexer(sh->stdin->input, &lex, sh) && lex.begin)
 	{
-		list = ft_toklist_to_node((sh->stdin->input), list);
+		list = ft_toklist_to_node((lex.input), lex.begin);
 		list = ft_build_ast(list, sh);
 		if (list)
 			g_exetab[((t_node *)list)->token](list, sh);
