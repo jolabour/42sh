@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/27 05:52:00 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/30 20:18:16 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,12 @@ t_proclist		*ft_get_pipeline(t_node *current)
 {
 	t_proclist	*process;
 
-	if (!(process = (t_proclist *)ft_malloc_exit(sizeof(t_proclist))))
-		return (NULL);
+	process = (t_proclist *)ft_malloc_exit(sizeof(t_proclist));
 	*process = (t_proclist){0, NULL, 0, NULL, NULL, NULL};
 	if (current->token == PIPE)
 	{
 		process->command = current->left;
-		if (!(process->next = ft_get_pipeline(current->right)))
-			return (NULL);
+		process->next = ft_get_pipeline(current->right);
 	}
 	else
 	{
@@ -59,9 +57,8 @@ t_joblist		*ft_get_job(t_node *current, t_42sh *shell)
 {
 	t_joblist	*job;
 
-	if (!(job = (t_joblist *)ft_malloc_exit(sizeof(t_joblist)))
-		|| !(job->process = ft_get_pipeline(current)))
-		return (NULL);
+	job = (t_joblist *)ft_malloc_exit(sizeof(t_joblist));
+	job->process = ft_get_pipeline(current);
 	if (shell->pgid)
 		job->pgid = shell->pgid;
 	else
@@ -88,14 +85,13 @@ int				ft_exe_file(t_node *current, t_42sh *shell,
 
 	if (!shell->forked)
 	{
-		if (!(job = ft_get_job(current, shell)))
-			exit(2);
+		job = ft_get_job(current, shell);
 		job->process->path = path;
 		job->process->args = args;
 		ft_launch_job(job, shell);
 		if (!shell->pgid && shell->foreground)
 			tcsetpgrp(STDIN_FILENO, job->pgid);
-		shell->retval = ft_manage_job(job, shell);;
+		shell->retval = ft_manage_job(job, shell);
 		if (!shell->pgid && shell->foreground)
 			tcsetpgrp(STDIN_FILENO, shell->pid);
 		return (shell->retval);
@@ -135,9 +131,7 @@ void			ft_launch_job(t_joblist *job, t_42sh *shell)
 	int			pipefd[3];
 
 	proc = job->process;
-	pipefd[0] = -1;
-	pipefd[1] = -1;
-	pipefd[2] = -1;
+	ft_memset(pipefd, -1, sizeof(pipefd));
 	while (proc)
 	{
 		if (proc->next && pipe(pipefd) == -1)
@@ -150,6 +144,8 @@ void			ft_launch_job(t_joblist *job, t_42sh *shell)
 			ft_launch_process(proc, shell, pipefd, job->pgid);
 		if (job->pgid == 0)
 			job->pgid = proc->pid;
+		if (!shell->foreground)
+			shell->last_bg = proc->pid;
 		setpgid(proc->pid, job->pgid);
 		close(pipefd[1]);
 		close(pipefd[2]);
@@ -297,18 +293,34 @@ void			ft_report_status(t_joblist *job, int status)
 	ft_putstr_fd("\n", 2);
 }
 
+void			ft_push_job_back(t_joblist *job, t_42sh *shell)
+{
+	t_joblist	**tmp;
+
+	tmp = &(shell->jobs);
+	while (*tmp)
+		tmp = &((*tmp)->next);
+	*tmp = job;
+}
+
 int				ft_manage_job(t_joblist *job, t_42sh *shell)
 {
 	int			status;
 
 	status = ft_wait_job(job, WUNTRACED);
+	tcgetattr(STDIN_FILENO, &(job->term));
+	if (shell->foreground)
+		tcsetattr(STDIN_FILENO, TCSADRAIN, &(shell->term));
 	if (!shell->pgid)
 	{
+		if (ft_any_stopped(job)
+			|| (WIFSIGNALED(status) && WTERMSIG(status) == 2))
+			ft_putstr_fd("\n", 2);
 		if (WIFSTOPPED(status))
 			ft_report_status(job, status);
 		else if (ft_any_stopped(job))
 			ft_report_status(job, _WSTOPPED);
-		else if (WIFSIGNALED(status))
+		else if (WIFSIGNALED(status) && WTERMSIG(status) != 2)
 			ft_report_status(job, status);
 	}
 	return (ft_get_retval(status));
@@ -330,18 +342,30 @@ int				ft_exe_pipe(t_node *current, t_42sh *shell)
 	return (shell->retval);
 }
 
+void			ft_print_bg(t_joblist *job, t_42sh *shell)
+{
+	ft_putstr_fd("[", 2);
+	ft_putnbr_fd(job->num, 2);
+	ft_putstr_fd("] ", 2);
+	ft_putnbr_fd(shell->last_bg, 2);
+	ft_putstr_fd("\n", 2);
+}
+
 int				ft_exe_and(t_node *current, t_42sh *shell)
 {
 	t_joblist	*job;
 	int			foreground;
 
+	// if (shell->pgid)
+	// 	return (ft_exe_semi(current, shell));
 	shell->forked = 0;
-	if (!(job = ft_get_job(current->left, shell)))
-		exit(2);
+	job = ft_get_job(current->left, shell);
 	foreground = shell->foreground;
 	shell->foreground = 0;
 	ft_launch_job(job, shell);
 	shell->foreground = foreground;
+	if (!(shell->pgid))
+		ft_print_bg(job, shell);
 	shell->retval = 0;
 	if (current->right)
 		shell->retval = g_exetab[current->right->token](current->right, shell);
@@ -586,7 +610,7 @@ int				ft_exe_greatand(t_node *current, t_42sh *shell)
 	int			src;
 
 	if (!(ft_str_isdigit(current->right->data)))
-		return (ft_exe_and(current, shell));
+		return (ft_exe_great(current, shell));
 	dest = current->left ? ft_atoi(current->left->data) : 1;
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
@@ -677,150 +701,6 @@ int				ft_exe_rbrace(t_node *current, t_42sh *shell)
 	return (shell->retval = ret);
 }
 
-// char			*ft_expanse_replace(char *arg, int start, int len, char *by)
-// {
-// 	char		*result;
-// 	int			count;
-
-// 	count = start + ft_strlen(by) + ft_strlen(arg + start + len);
-// 	if (!(result = (char *)ft_malloc_exit((count + 1) * sizeof(char))))
-// 		return (NULL);
-// 	ft_strncpy(result, arg, (size_t)start);
-// 	ft_strcpy(result + start, by);
-// 	ft_strcat(result + start, arg + start + len);
-// 	free(arg);
-// 	return (result);
-// }
-
-// int				ft_expanse_tilde(char **arg, int start, t_42sh *shell)
-// {
-// 	int			i;
-// 	char		*dir;
-// 	struct passwd	*passwd;
-
-// 	i = start + 1;
-// 	if ((*arg)[i] >= '0' && (*arg)[i] <= '9')
-// 		return (1);
-// 	while ((*arg)[i] != '\0' && (*arg)[i] != '/' && (*arg)[i] != ':')
-// 	{
-// 		if (ft_isalnum((*arg)[i]) == 0 && (*arg)[i] != '_')
-// 			return (1);
-// 		i++;
-// 	}
-// 	if ((i - start) == 1)
-// 	{
-// 		dir = //RECUPERER VARIABLE HOME
-// 		if (!dir && (!(passwd = getpwuid(getuid()))
-// 			|| !(dir = ft_strdup(passwd->pw_dir))))
-// 			return (-1);
-// 	}
-// 	else
-// 	{
-// 		if (!(dir = ft_strsub(*arg, start + 1, i - start - 1))
-// 			|| !(passwd = getpwnam(dir)))
-// 			return (-1);
-// 		free(dir);
-// 		if (!(passwd = ft_strdup(passwd->pw_dir)))
-// 			return (-1);
-// 	}
-// 	if (!(arg = ft_expanse_replace(*arg, start, i, dir)))
-// 		return (-1);
-// 	i = ft_strlen(dir);
-// 	free(dir);
-// 	return (i);
-// }
-
-// int				ft_expanse_dollar_par(char **arg, int start, t_42sh *shell)
-// {
-// 	int			pars;
-// 	int			i;
-// 	int			quote;
-
-// 	pars = 1;
-// 	i = start + 2;
-// 	quote = '\0';
-// 	while (pars)
-// 	{
-// 		if ((*arg)[i] == '\\')
-// 			000
-
-			
-// 	}
-// }
-
-// int				ft_expanse_dollar(char **arg, int start, t_42sh *shell,
-// 				char quote)
-// {
-// 	if ((*arg)[start + 1] == '(')
-// 		return (i = ft_expanse_dollar_par(arg, start, shell));
-// 	else if ((*arg)[start + 1] == '{')
-// 		return (i = ft_expanse_dollar_brace(arg, start, shell, quote));
-// 	else
-// 		return (ft_expanse_dollar_simple(arg, start, shell, quote));
-// }
-
-// int				ft_expanse_arg(char **arg, t_42sh *shell)
-// {
-// 	char		quote;
-// 	int			i;
-// 	int			j;
-
-// 	quote = '\0';
-// 	i = 0;
-// 	while ((*arg)[i])
-// 	{
-// 		j = 0;
-// 		if ((*arg)[i] == quote)
-// 			quote = '\0';
-// 		else if (((*arg)[i] == '\'' || (*arg)[i] == '\"') && quote == '\0')
-// 			quote = (*arg)[i];
-// 		else if ((*arg)[i] == '\\')
-// 			j = 2;
-// 		else if ((*arg)[i] == '~' && i == 0)
-// 			j = ft_expanse_tilde(arg, i, shell);
-// 		else if ((*arg)[i] == '$' && quote != '\'')
-// 			j = ft_expanse_dollar(arg, i, shell, quote);
-// 		else if ((*arg)[i] == '`' && quote != '\'')
-// 			j = ft_expanse_bquote(arg, i, shell);
-// 		else
-// 			j = 1;
-// 		if (j < 0)
-// 			return (-1);
-// 		i = i + j;
-// 	}
-// 	return (0);
-// }
-
-char			**ft_expanse_command(t_node *current, t_42sh *shell)
-{
-	char		**args;
-	t_node		*words;
-	int			i;
-
-	(void)shell;
-	i = 0;
-	words = current->right;
-	while (words)
-	{
-		words = words->right;
-		i++;
-	}
-	if (!(args = (char **)ft_malloc_exit((i + 1) * sizeof(char *))))
-		return (NULL);
-	i = 0;
-	words = current->right;
-	while (words)
-	{
-		if (!(args[i] = ft_strdup(words->data)))
-			return (NULL);
-		words = words->right;
-		i++;
-	}
-	args[i] = NULL;
-	shell->argv->size = i;
-	return (args);
-}
-
 void			(*ft_isbuiltin(char *word))(t_42sh *)
 {
 	int			i;
@@ -851,13 +731,6 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 	BUCKET_CONTENT	*bucket_entry;
 	void			*exe;
 
-	// if (!(shell->argv->argv = ft_expanse_command(current, shell)))
-	// 	exit(2);
-	// if (shell->argv->argv[0] && !(shell->argv
-	// 	->argv[0] = substitute_alias(shell->argv->argv[0], shell)))
-	// 	exit(2);
-	// if (parse_test(shell) == 0)
-	// 	return ((shell->retval = 1));
 	if (!(shell->argv->argv = ft_command_to_args(current, shell)))
 		return ((shell->retval = 1));
 	free_tab(shell->copy_env);

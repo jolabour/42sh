@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/10 02:30:37 by jolabour          #+#    #+#             */
-/*   Updated: 2017/11/10 02:30:42 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/03/30 18:37:39 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ void	ft_putstr(char const *s)
 
 	i = 0;
 	while (s[i])
-	{
-		ft_putchar(s[i]);
 		i++;
-	}
+	write(1, s, i);
 }

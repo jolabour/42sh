@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:47:25 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/29 03:05:29 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/30 10:39:48 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,10 @@ int				ft_continue_line(t_lex *lex, t_42sh *shell)
 	prompt(shell->env, shell);
 	free(shell->stdin);
 	if (get_line(shell) != 1)
+	{
+		ft_putstr_fd("42sh: syntax error: unexpected end of file\n", 2);
 		return (-1);
+	}
 	shell->stdin->input = ft_strjoinfree(lex->input, shell->stdin->input, 3);
 	lex->input = shell->stdin->input;
 	return (0);
@@ -297,7 +300,10 @@ int				ft_lex_quote(t_lex *lex, t_42sh *shell)
 			if (lex->input[lex->index] == '\0')
 			{
 				if (ft_continue_line(lex, shell))
+				{
+					ft_putstr_fd(EOFWHILELOOK"`\''\n", 2);
 					return (-1);
+				}
 			}
 			else
 				ft_lex_word(lex, shell);
@@ -377,7 +383,10 @@ int				ft_lex_dquote_mode(t_lex *lex, t_42sh *shell)
 		if (lex->input[lex->index] == '\0')
 		{
 			if (ft_continue_line(lex, shell))
+			{
+				ft_putstr_fd(EOFWHILELOOK"`\"'\n", 2);
 				return (-1);
+			}
 		}
 		else
 		{
@@ -519,7 +528,10 @@ int				ft_lex_dollar_brace(t_lex *lex, t_42sh *shell)
 		if (lex->input[lex->index] == '\0')
 		{
 			if (ft_continue_line(lex, shell))
+			{
+				ft_putstr_fd(EOFWHILELOOK"`}'\n", 2);
 				return (-1);
+			}
 		}
 		else
 		{
@@ -545,7 +557,10 @@ int				ft_lex_dollar_par(t_lex *lex, t_42sh *shell)
 		if (lex->input[lex->index] == '\0')
 		{
 			if (ft_continue_line(lex, shell))
+			{
+				ft_putstr_fd(EOFWHILELOOK"`)'\n", 2);
 				return (-1);
+			}
 		}
 		else
 		{
@@ -627,7 +642,10 @@ int				ft_lex_bquote_mode(t_lex *lex, t_42sh *shell)
 		if (lex->input[lex->index] == '\0')
 		{
 			if (ft_continue_line(lex, shell))
+			{
+				ft_putstr_fd(EOFWHILELOOK"``'\n", 2);
 				return (-1);
+			}
 		}
 		else
 		{
@@ -903,14 +921,11 @@ void			ft_print_toklist(char *input, t_toklist *list)
 	}
 }
 
-int				ft_lexer(char *input, t_lex *lex, t_42sh *shell)
+int				ft_lexer(t_lex *lex, t_42sh *shell)
 {
 	int			i;
 	int			ret;
 
-	ft_bzero(lex, sizeof(t_lex));
-	lex->input = input;
-	lex->alias_recognition = true;
 	while (lex->input[lex->index])
 	{
 		i = 0;

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 08:56:10 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/29 02:31:30 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/30 18:40:03 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,3 +59,4 @@ void		prompt(t_env *list, t_42sh *sh)
 	else
 		def_prompt(list, sh);
 }
+	

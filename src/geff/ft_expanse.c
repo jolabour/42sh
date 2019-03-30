@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/28 23:34:42 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/30 16:22:17 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,8 +147,7 @@ char		*ft_spparam_qmark(t_42sh *shell)
 
 char		*ft_spparam_bang(t_42sh *shell)
 {
-	(void)shell;
-	return (ft_itoa(0));
+	return (ft_itoa(shell->last_bg));
 }
 
 char		*ft_spparam_zero(t_42sh *shell)
@@ -477,7 +476,7 @@ int			ft_exp_brace(t_txtlist *txt, t_42sh *shell)
 		var = ft_strsub(txt->data, txt->start + 2, i);
 	}
 	res = var ? ft_getvar(var, shell) : NULL;
-	txt->data = res ? ft_backslash_quotes(txt->data) : ft_strdup("");
+	txt->data = res ? ft_backslash_quotes(res) : ft_strdup("");
 	return (0);
 }
 
@@ -502,7 +501,7 @@ int			ft_exp_expr(t_txtlist *txt, t_42sh *shell)
 	return (0);
 }
 
-int			ft_bruh(t_txtlist *list, t_42sh *shell)
+int			ft_exp(t_txtlist *list, t_42sh *shell)
 {
 	while (list)
 	{
@@ -557,8 +556,8 @@ char			*ft_expanse_word(char *word, t_42sh *shell)
 	(void)result;
 	if (!(list = ft_parse_word(word)))
 		return (NULL);
-	ft_print_txtlist(word, list);
-	ft_bruh(list, shell);
+	// ft_print_txtlist(word, list);
+	ft_exp(list, shell);
 	result = ft_txt_join(list);
 	return (result);
 }
@@ -572,13 +571,53 @@ char		**ft_expanse_args(char **args, t_42sh *shell)
 	while (args[i])
 	{
 		tmp = args[i];
-		if (!(args[i] = ft_expanse_word(args[i], shell)))
-			exit(2);
+		args[i] = ft_expanse_word(args[i], shell);
 		free(tmp);
 		i++;
 	}
 	shell->argv->size = i;
 	return (args);
+}
+
+void		ft_rmquotes_word(char *word)
+{
+	int		i;
+	char	quote;
+
+	i = 0;
+	quote = 0;
+	while (word[i])
+	{
+		if (word[i] == '\\' && quote != '\'')
+		{
+			ft_strcpy(word + i, word + i + 1);
+			i++;
+		}
+		else if (word[i] == '\"' && quote != '\'')
+		{
+			ft_strcpy(word + i, word + i + 1);
+			quote = (quote == '\"') ? 0 : '\"';
+		}
+		else if (word[i] == '\'' && quote != '\"')
+		{
+			ft_strcpy(word + i, word + i + 1);
+			quote = (quote == '\'') ? 0 : '\'';
+		}
+		else
+			i++;
+	}
+}
+
+void		ft_rmquotes_args(char **args)
+{
+	int		i;
+
+	i = 0;
+	while (args[i])
+	{
+		ft_rmquotes_word(args[i]);
+		i++;
+	}
 }
 
 char		**ft_command_to_args(t_node *current, t_42sh *shell)
@@ -587,7 +626,6 @@ char		**ft_command_to_args(t_node *current, t_42sh *shell)
 
 	args = ft_init_args(current);
 	ft_expanse_args(args, shell);
-	// args = ft_split_args(args, shell);
-	// ft_rmquotes_args(args, shell);
+	ft_rmquotes_args(args);
 	return (args);
 }

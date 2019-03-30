@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/29 02:12:20 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/30 20:19:20 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@
 # define OPT_DOWN 1113266971
 # define SET_FG_RED		"\x1b[38;5;196m"
 # define RESET_COLOR	"\x1b[0m"
+
+# define EOFWHILELOOK "42sh: unexpected EOF while looking for matching "
 
 # ifdef MINISHELL
 #  define PROG_NAME "minishell"
@@ -172,6 +174,7 @@ typedef struct			s_joblist
 	t_proclist			*process;
 	t_node				*command;
 	int					num;
+	struct termios		term;
 	struct s_joblist	*next;
 }						t_joblist;
 
@@ -316,15 +319,17 @@ typedef struct		s_42sh
 	t_alias_mark	*alias;
   	t_ht			hashtable;
 	t_var_mark		*var;
+	t_list_ari		*ari;
 
 	pid_t			pgid;
 	int				forked;
 	t_joblist		*jobs;
+	t_joblist		*current;
 	pid_t			pid;
+	pid_t			last_bg;
 	int				retval;
 	int				foreground;
 	t_tmpfd			*tmp_fds;
-	t_list_ari		*ari;
 }					t_42sh;
 
 typedef struct		s_lex
@@ -345,11 +350,18 @@ typedef struct		s_tokcond
 	int				sub_mode;
 }					t_tokcond;
 
-typedef struct		s_bttab
+typedef struct		s_ast
 {
-	char			*name;
-	void			(*f)(t_42sh *);
-}					t_bttab;
+	t_node			*begin;
+	t_node			*current;
+	t_node			*list;
+}					t_ast;
+
+typedef struct			s_bttab
+{
+	char				*name;
+	void				(*f)(t_42sh *);
+}						t_bttab;
 
 typedef struct			s_spparam
 {
@@ -377,7 +389,7 @@ int						ft_lex_blank(t_lex *, t_42sh *shell);
 int						ft_lex_sharp(t_lex *, t_42sh *shell);
 int						ft_lex_word(t_lex *, t_42sh *shell);
 int						ft_lex_newword(t_lex *, t_42sh *shell);
-int						ft_lexer(char *input, t_lex *lex, t_42sh *shell);
+int						ft_lexer(t_lex *lex, t_42sh *shell);
 void					ft_print_toklist(char *input, t_toklist *list);
 
 /*
@@ -413,7 +425,7 @@ int						ft_ast_lbrace(t_node **begin, t_node **current,
 int						ft_ast_rbrace(t_node **begin, t_node **current,
 						t_node **list, t_42sh *shell);
 t_node					*ft_toklist_to_node(char *input, t_toklist *list);
-t_node					*ft_build_ast(t_node *list, t_42sh *shell);
+int						ft_build_ast(t_ast *ast, t_42sh *shell);
 
 /*
 **						exe
@@ -848,7 +860,7 @@ void				print_type_error(t_42sh *sh, int i);
 void				print_type_binary(t_42sh *sh, int i, char *str);
 void				print_type_hash(t_42sh *sh, int i, char *str);
 void				lst_del_var(t_var **var, t_var *to_del, t_var *prev);
-
+int					ft_str_isdigit(char *str);
 
 /*
 ** ft_erase_space.c

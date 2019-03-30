@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:52:23 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/29 02:28:31 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/03/30 10:30:45 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,10 +182,14 @@ int				ft_ast_continue_list(t_node **list, t_42sh *shell)
 	ft_strdel(&(shell->stdin->input));
 	free(shell->stdin);
 	if (get_line(shell) != 1)
+	{
+		ft_putstr_fd("42sh: syntax error: unexpected end of file\n", 2);
 		return (-1);
-	if (ft_lexer(shell->stdin->input, &lex, shell))
+	}
+	lex = (t_lex){shell->stdin->input, 0, NULL, NULL, true, false, 0};
+	if (ft_lexer(&lex, shell))
 		return (-1);
-	*list = ft_toklist_to_node(shell->stdin->input, lex.begin);
+	*list = ft_toklist_to_node(lex.input, lex.begin);
 	return (1);
 }
 
@@ -535,30 +539,27 @@ void			ft_print_ast(t_node *ast, int rec)
 	}
 }
 
-t_node			*ft_build_ast(t_node *list, t_42sh *shell)
+int				ft_build_ast(t_ast *ast, t_42sh *shell)
 {
-	t_node		*begin;
-	t_node		*current;
 	int			ret;
 
-	begin = NULL;
-	current = NULL;
-	while (list)
+	while (ast->list)
 	{
-		ret = g_asttab[list->token](&begin, &current, &list, shell);
-		if (ret == 1 && !list && (ft_ast_isbreakline(current)
-			|| ft_ast_isincompound(current)))
-			ret = ft_ast_continue_list(&list, shell);
+		ret = g_asttab[ast->list->token](&(ast->begin), &(ast->current),
+			&(ast->list), shell);
+		if (ret == 1 && !ast->list && (ft_ast_isbreakline(ast->current)
+			|| ft_ast_isincompound(ast->current)))
+			ret = ft_ast_continue_list(&(ast->list), shell);
 		if (ret != 1)
 		{
 			if (ret == 0)
-				ft_error_unexpected(list);
-			ft_ast_free(begin);
-			ft_ast_free(list);
-			return (NULL);
+				ft_error_unexpected(ast->list);
+			ft_ast_free(ast->begin);
+			ft_ast_free(ast->list);
+			return (-1);
 		}
 	}
 	// if (begin)
 	// 	ft_print_ast(begin, 0);
-	return (begin);
+	return (0);
 }
