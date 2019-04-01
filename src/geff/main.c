@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/30 20:18:16 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/01 10:12:26 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,34 +186,6 @@ int				ft_get_retval(int status)
 	return (-1);
 }
 
-int				ft_any_stopped(t_joblist *job)
-{
-	t_proclist	*proc;
-
-	proc = job->process;
-	while (proc)
-	{
-		if (WIFSTOPPED(proc->status))
-			return (1);
-		proc = proc->next;
-	}
-	return (0);
-}
-
-int				ft_any_running(t_joblist *job)
-{
-	t_proclist	*proc;
-
-	proc = job->process;
-	while (proc)
-	{
-		if (!proc->status)
-			return (1);
-		proc = proc->next;
-	}
-	return (0);
-}
-
 int				ft_wait_job(t_joblist *job, int options)
 {
 	t_proclist	*proc;
@@ -228,69 +200,6 @@ int				ft_wait_job(t_joblist *job, int options)
 	if (waitpid(proc->pid, &(proc->status), options) == 0)
 		proc->status = 0;
 	return (proc->status);
-}
-
-char			*g_sigtab[] =
-{
-	"SIGERR",
-	"SIGHUP",
-	"SIGINT",
-	"SIGQUIT",
-	"SIGILL",
-	"SIGTRAP",
-	"SIGABRT",
-	"SIGEMT",
-	"SIGFPE",
-	"SIGKILL",
-	"SIGBUS",
-	"SIGSEGV",
-	"SIGSYS",
-	"SIGPIPE",
-	"SIGALRM",
-	"SIGTERM",
-	"SIGURG",
-	"SIGSTOP",
-	"SIGTSTP",
-	"SIGCONT",
-	"SIGCHLD",
-	"SIGTTIN",
-	"SIGTTOU",
-	"SIGIO",
-	"SIGXCPU",
-	"SIGXFSZ",
-	"SIGVTALRM",
-	"SIGPROF",
-	"SIGWINCH",
-	"SIGINFO",
-	"SIGUSR1",
-	"SIGUSR2"
-};
-
-void			ft_report_status(t_joblist *job, int status)
-{
-	ft_putstr_fd("[", 2);
-	ft_putnbr_fd(job->num, 2);
-	ft_putstr_fd("]  ", 2);
-	if (WIFSTOPPED(status))
-	{
-		ft_putstr_fd("Stopped", 2);
-		if (WSTOPSIG(status) > 0 && WSTOPSIG(status) <= 31)
-		{
-			ft_putstr_fd("(", 2);
-			ft_putstr_fd(g_sigtab[WSTOPSIG(status)], 2);
-			ft_putstr_fd(")", 2);
-		}
-	}
-	else if (WIFSIGNALED(status))
-	{
-		if (WTERMSIG(status) > 0 && WTERMSIG(status) <= 31)
-			ft_putstr_fd(g_sigtab[WTERMSIG(status)], 2);
-	}
-	else if (WIFEXITED(status))
-		ft_putstr_fd("Done", 2);
-	else
-		ft_putstr_fd("Running", 2);
-	ft_putstr_fd("\n", 2);
 }
 
 void			ft_push_job_back(t_joblist *job, t_42sh *shell)
@@ -313,15 +222,17 @@ int				ft_manage_job(t_joblist *job, t_42sh *shell)
 		tcsetattr(STDIN_FILENO, TCSADRAIN, &(shell->term));
 	if (!shell->pgid)
 	{
-		if (ft_any_stopped(job)
-			|| (WIFSIGNALED(status) && WTERMSIG(status) == 2))
-			ft_putstr_fd("\n", 2);
-		if (WIFSTOPPED(status))
-			ft_report_status(job, status);
-		else if (ft_any_stopped(job))
-			ft_report_status(job, _WSTOPPED);
-		else if (WIFSIGNALED(status) && WTERMSIG(status) != 2)
-			ft_report_status(job, status);
+		if (ft_any_stopped(job))
+		{
+			ft_putstr_fd("\n", STDOUT_FILENO);
+			ft_report_job_def(job, shell, STDERR_FILENO);
+		}
+		else if (WIFSIGNALED(status))
+		{
+			ft_putstr_fd(g_sigtab[WTERMSIG(status) > 0 && WTERMSIG(status)
+				< 32 ? WTERMSIG(status) : 0], STDERR_FILENO);
+			ft_putstr_fd("\n", STDERR_FILENO);
+		}
 	}
 	return (ft_get_retval(status));
 }

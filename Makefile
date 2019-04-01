@@ -36,7 +36,8 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  builtin/fc/builtin_fc.c builtin/fc/check_int_char.c builtin/fc/edit_last_command.c \
 			  histo/ctrlr_action/ctrlr_action.c builtin/set/set.c builtin/unset/unset.c builtin/export/export.c armand/ft_check_exp_ari.c armand/ft_erase_space.c armand/ft_exp_ari_error.c builtin/export/print_export.c \
 			  armand/ft_logic_op.c armand/ft_true_op.c armand/ft_check_var.c armand/ft_itoa_exp_ari.c \
-			  armand/ft_math_op.c armand/exp_ari.c builtin/unset/list_unset.c
+			  armand/ft_math_op.c armand/exp_ari.c builtin/unset/list_unset.c \
+			  builtin/jobs/jobs.c
 
 
 #
@@ -94,6 +95,7 @@ $(OBJS_DIR)/%.o: %.c
 	@mkdir -p $(OBJS_DIR)/builtin/export
 	@mkdir -p $(OBJS_DIR)/geff
 	@mkdir -p $(OBJS_DIR)/armand
+	@mkdir -p $(OBJS_DIR)/builtin/jobs
 	@$(COMP)
 
 clean:

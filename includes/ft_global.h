@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/29 02:59:35 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/01 06:30:45 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,6 +209,110 @@ int						(*g_exptab[])(t_txtlist *txt, t_42sh *shell) =
 	&ft_exp_sub,
 	&ft_exp_bquote,
 	&ft_exp_expr
+};
+
+char					*g_sigtab[] =
+{
+	"Unknown signal",
+	"Hangup: 1",
+	"Interrupt: 2",
+	"Quit: 3",
+	"Illegal instruction: 4",
+	"Trace/BPT trap: 5",
+	"Abort trap: 6",
+	"EMT trap: 7",
+	"Floating point exception: 8",
+	"Killed: 9",
+	"Bus error: 10",
+	"Segmentation fault: 11",
+	"Bad system call: 12",
+	"Broken pipe: 13",
+	"Alarm clock: 14",
+	"Terminated: 15",
+	"Urgent condition: 16",
+	"Suspended (signal): 17",
+	"Suspended: 18",
+	"Continue: 19",
+	"Child status: 20",
+	"Stopped (tty input): 21",
+	"Stopped (tty output): 22",
+	"Possible I/O: 23",
+	"Cputime limit exceeded: 24",
+	"Filesize limit exceeded: 25",
+	"Virtual timer expired: 26",
+	"Profiling timer expired: 27",
+	"Window resize: 28",
+	"Status request: 29",
+	"User defined signal 1: 30",
+	"User defined signal 2: 31"
+};
+
+char			*g_sigabrevtab[] =
+{
+	"SIGUKWN",
+	"SIGHUP",
+	"SIGINT",
+	"SIGQUIT",
+	"SIGILL",
+	"SIGTRAP",
+	"SIGABRT",
+	"SIGEMT",
+	"SIGFPE",
+	"SIGKILL",
+	"SIGBUS",
+	"SIGSEGV",
+	"SIGSYS",
+	"SIGPIPE",
+	"SIGALRM",
+	"SIGTERM",
+	"SIGURG",
+	"SIGSTOP",
+	"SIGTSTP",
+	"SIGCONT",
+	"SIGCHLD",
+	"SIGTTIN",
+	"SIGTTOU",
+	"SIGIO",
+	"SIGXCPU",
+	"SIGXFSZ",
+	"SIGVTALRM",
+	"SIGPROF",
+	"SIGWINCH",
+	"SIGINFO",
+	"SIGUSR1",
+	"SIGUSR2"
+};
+
+void				(*g_printtab[])(t_node *command, int fd) =
+{
+	&ft_print_badtoken,
+	&ft_print_badtoken,
+	&ft_print_badtoken,
+	&ft_print_badtoken,
+	&ft_print_badtoken,
+	&ft_print_badtoken,
+	&ft_print_badtoken,
+	&ft_print_sep,
+	&ft_print_sep,
+	&ft_print_sep,
+	&ft_print_redir,
+	&ft_print_redir,
+	&ft_print_badtoken,
+	&ft_print_par,
+	&ft_print_sep,
+	&ft_print_sep,
+	&ft_print_redir,
+	&ft_print_redir,
+	&ft_print_redir_and,
+	&ft_print_redir_close,
+	&ft_print_redir_and,
+	&ft_print_redir_close,
+	&ft_print_redir,
+	&ft_print_redir,
+	&ft_print_redir,
+	&ft_print_badtoken,
+	&ft_print_brace,
+	&ft_print_command
 };
 
 #endif

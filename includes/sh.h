@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/30 20:19:20 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/01 07:39:58 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -485,6 +485,28 @@ int						ft_exp_bquote(t_txtlist *txt, t_42sh *shell);
 int						ft_exp_expr(t_txtlist *txt, t_42sh *shell);
 
 /*
+**						print_command
+*/
+
+void					ft_print_badtoken(t_node *command, int fd);
+void					ft_print_sep(t_node *command, int fd);
+void					ft_print_redir(t_node *command, int fd);
+void					ft_print_par(t_node *command, int fd);
+void					ft_print_redir_and(t_node *command, int fd);
+void					ft_print_redir_close(t_node *command, int fd);
+void					ft_print_brace(t_node *command, int fd);
+void					ft_print_command(t_node *command, int fd);
+
+/*
+**						jobs
+*/
+
+int						ft_any_stopped(t_joblist *job);
+int						ft_any_running(t_joblist *job);
+void					ft_report_job_def(t_joblist *job, t_42sh *sh, int fd);
+
+
+/*
 **						globals
 */
 
@@ -500,6 +522,9 @@ extern int				(*g_txttab[])(char *word, size_t *index,
 						t_txtlist **current, int *dquote);
 extern char				*g_txtstr[];
 extern int				(*g_exptab[])(t_txtlist *txt, t_42sh *shell);
+extern char				*g_sigtab[];
+extern char				*g_sigabrevtab[];
+extern void				(*g_printtab[])(t_node *command, int fd);
 
 typedef				void(*t_ak)(t_42sh *sh);
 typedef				void(*t_test)(t_42sh *sh, struct stat info);
