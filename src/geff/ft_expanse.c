@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/30 16:22:17 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/02 19:25:06 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -556,7 +556,7 @@ char			*ft_expanse_word(char *word, t_42sh *shell)
 	(void)result;
 	if (!(list = ft_parse_word(word)))
 		return (NULL);
-	// ft_print_txtlist(word, list);
+	//ft_print_txtlist(word, list);
 	ft_exp(list, shell);
 	result = ft_txt_join(list);
 	return (result);
@@ -628,4 +628,13 @@ char		**ft_command_to_args(t_node *current, t_42sh *shell)
 	ft_expanse_args(args, shell);
 	ft_rmquotes_args(args);
 	return (args);
+}
+
+char		*ft_simple_expanse(char *word, t_42sh *shell)
+{
+	char	*new;
+
+	new = ft_expanse_word(word, shell);
+	ft_rmquotes_word(word);
+	return (new);
 }

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/01 06:30:45 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/02 17:01:20 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,9 @@ t_bttab					g_bttab[] =
 	{"set", &builtin_set},
 	{"unset", &builtin_unset},
 	{"export", &builtin_export},
+	{"jobs", &builtin_jobs},
+	{"fg", &builtin_fg},
+	{"bg", &builtin_bg},
 	{NULL, NULL}
 };
 
@@ -283,36 +286,36 @@ char			*g_sigabrevtab[] =
 	"SIGUSR2"
 };
 
-void				(*g_printtab[])(t_node *command, int fd) =
+char				*(*g_cmdlinetab[])(t_node *command) =
 {
-	&ft_print_badtoken,
-	&ft_print_badtoken,
-	&ft_print_badtoken,
-	&ft_print_badtoken,
-	&ft_print_badtoken,
-	&ft_print_badtoken,
-	&ft_print_badtoken,
-	&ft_print_sep,
-	&ft_print_sep,
-	&ft_print_sep,
-	&ft_print_redir,
-	&ft_print_redir,
-	&ft_print_badtoken,
-	&ft_print_par,
-	&ft_print_sep,
-	&ft_print_sep,
-	&ft_print_redir,
-	&ft_print_redir,
-	&ft_print_redir_and,
-	&ft_print_redir_close,
-	&ft_print_redir_and,
-	&ft_print_redir_close,
-	&ft_print_redir,
-	&ft_print_redir,
-	&ft_print_redir,
-	&ft_print_badtoken,
-	&ft_print_brace,
-	&ft_print_command
+	&ft_cmdline_badtoken,
+	&ft_cmdline_badtoken,
+	&ft_cmdline_badtoken,
+	&ft_cmdline_badtoken,
+	&ft_cmdline_badtoken,
+	&ft_cmdline_badtoken,
+	&ft_cmdline_badtoken,
+	&ft_cmdline_sep,
+	&ft_cmdline_sep,
+	&ft_cmdline_sep,
+	&ft_cmdline_redir,
+	&ft_cmdline_redir,
+	&ft_cmdline_badtoken,
+	&ft_cmdline_par,
+	&ft_cmdline_sep,
+	&ft_cmdline_sep,
+	&ft_cmdline_redir,
+	&ft_cmdline_redir,
+	&ft_cmdline_redir_and,
+	&ft_cmdline_redir_close,
+	&ft_cmdline_redir_and,
+	&ft_cmdline_redir_close,
+	&ft_cmdline_redir,
+	&ft_cmdline_redir,
+	&ft_cmdline_redir,
+	&ft_cmdline_badtoken,
+	&ft_cmdline_brace,
+	&ft_cmdline_command
 };
 
 #endif

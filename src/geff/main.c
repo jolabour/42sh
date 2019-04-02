@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/01 10:12:26 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/02 20:53:32 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,17 @@ t_proclist		*ft_get_pipeline(t_node *current)
 	t_proclist	*process;
 
 	process = (t_proclist *)ft_malloc_exit(sizeof(t_proclist));
-	*process = (t_proclist){0, NULL, 0, NULL, NULL, NULL};
+	*process = (t_proclist){0, NULL, NULL, 0, false, NULL, NULL, NULL};
 	if (current->token == PIPE)
 	{
 		process->command = current->left;
+		process->cmdline = g_cmdlinetab[current->left->token](current->left);
 		process->next = ft_get_pipeline(current->right);
 	}
 	else
 	{
 		process->command = current;
+		process->cmdline = g_cmdlinetab[current->token](current);
 		process->next = NULL;
 	}
 	return (process);
@@ -53,6 +55,16 @@ int				ft_get_job_number(t_joblist *jobs)
 	return (max + 1);
 }
 
+void			ft_push_job_back(t_joblist *job, t_42sh *shell)
+{
+	t_joblist	**tmp;
+
+	tmp = &(shell->jobs);
+	while (*tmp)
+		tmp = &((*tmp)->next);
+	*tmp = job;
+}
+
 t_joblist		*ft_get_job(t_node *current, t_42sh *shell)
 {
 	t_joblist	*job;
@@ -63,9 +75,14 @@ t_joblist		*ft_get_job(t_node *current, t_42sh *shell)
 		job->pgid = shell->pgid;
 	else
 		job->pgid = 0;
-	job->command = current;
+	job->cmdline = g_cmdlinetab[current->token](current);
 	job->next = NULL;
 	job->num = ft_get_job_number(shell->jobs);
+	job->stopped = false;
+	tcgetattr(STDIN_FILENO, &(job->term));
+	if (!shell->current)
+		shell->current = job;
+	ft_push_job_back(job, shell);
 	return (job);
 }
 
@@ -106,6 +123,7 @@ int				ft_exe_file(t_node *current, t_42sh *shell,
 void			ft_launch_process(t_proclist *proc, t_42sh *shell,
 				int pipefd[3], pid_t pgid)
 {
+	shell->jobs = NULL;
 	setpgid(getpid(), (pgid = pgid ? pgid : getpid()));
 	if (!shell->pgid && shell->foreground)
 		tcsetpgrp(STDIN_FILENO, pgid);
@@ -125,6 +143,57 @@ void			ft_launch_process(t_proclist *proc, t_42sh *shell,
 	exit(g_exetab[proc->command->token](proc->command, shell));
 }
 
+int				ft_pipe_exit(int pipefd[2])
+{
+	if (pipe(pipefd) == -1)
+	{
+		ft_putstr_fd("42sh: pipe: Error\n", 2);
+		exit(2);
+	}
+	return (0);
+}
+
+pid_t			ft_fork_exit(void)
+{
+	pid_t		pid;
+
+	pid = fork();
+	if (pid == -1)
+	{
+		ft_putstr_fd("42sh: fork: Error\n", 2);
+		exit(2);
+	}
+	return (pid);
+}
+
+int				ft_dup_exit(int fd)
+{
+	int			ret;
+
+	if (fcntl(fd, F_GETFD) == -1)
+		return (-1);
+	if ((ret = dup(fd)) == -1)
+	{
+		ft_putstr_fd("42sh: dup: Error\n", 2);
+		exit(2);
+	}
+	return (ret);
+}
+
+int				ft_dup2_exit(int fd1, int fd2)
+{
+	int			ret;
+
+	if (fcntl(fd1, F_GETFD) == -1)
+		return (-1);
+	if ((ret = dup2(fd1, fd2)) == -1)
+	{
+		ft_putstr_fd("42sh: dup: Error\n", 2);
+		exit(2);
+	}
+	return (ret);
+}
+
 void			ft_launch_job(t_joblist *job, t_42sh *shell)
 {
 	t_proclist	*proc;
@@ -134,12 +203,11 @@ void			ft_launch_job(t_joblist *job, t_42sh *shell)
 	ft_memset(pipefd, -1, sizeof(pipefd));
 	while (proc)
 	{
-		if (proc->next && pipe(pipefd) == -1)
-			exit(2);
+		if (proc->next)
+			ft_pipe_exit(pipefd);
 		if (!proc->next)
 			pipefd[1] = -1;
-		if ((proc->pid = fork()) < 0)
-			exit(2);
+		proc->pid = ft_fork_exit();
 		if (!proc->pid)
 			ft_launch_process(proc, shell, pipefd, job->pgid);
 		if (job->pgid == 0)
@@ -168,6 +236,8 @@ void			ft_write_status(int status)
 	ft_putnbr(WIFSTOPPED(status));
 	ft_putstr(" - WSTOPSIG: ");
 	ft_putnbr(WSTOPSIG(status));
+	ft_putstr("\nWIFCONTINUED: ");
+	ft_putnbr(WIFCONTINUED(status));
 	ft_putstr("\nWCOREDUMP: ");
 	ft_putnbr(WCOREDUMP(status));
 	ft_putstr("\nisatty: ");
@@ -186,40 +256,104 @@ int				ft_get_retval(int status)
 	return (-1);
 }
 
-int				ft_wait_job(t_joblist *job, int options)
+int				ft_wait_job(t_joblist *job, int options, t_42sh *shell)
 {
 	t_proclist	*proc;
+	int 		status;
 
 	proc = job->process;
-	while (proc && proc->next)
+	while (proc)
 	{
-		if (waitpid(proc->pid, &(proc->status), options) == 0)
-			proc->status = 0;
+		if (!proc->complete && waitpid(proc->pid, &(proc->status), options))
+		{
+			if (WIFSTOPPED(proc->status))
+				shell->current = job;
+			else if (WIFCONTINUED(proc->status))
+			{
+				proc->status = 0;
+				job->stopped = false;
+			}
+			else
+				proc->complete = true;
+		}
+		status = proc->status;
 		proc = proc->next;
 	}
-	if (waitpid(proc->pid, &(proc->status), options) == 0)
-		proc->status = 0;
-	return (proc->status);
+	return (status);
 }
 
-void			ft_push_job_back(t_joblist *job, t_42sh *shell)
+t_joblist		*ft_get_last_job(t_joblist *jobs)
 {
-	t_joblist	**tmp;
+	if (jobs)
+		while (jobs->next)
+			jobs = jobs->next;
+	return (jobs);
+}
 
-	tmp = &(shell->jobs);
-	while (*tmp)
-		tmp = &((*tmp)->next);
-	*tmp = job;
+void			ft_remove_job(t_joblist *job, t_42sh *shell)
+{
+	t_joblist	**tmp_job;
+	t_proclist	*tmp_proc;
+
+	tmp_job = &(shell->jobs);
+	while (*tmp_job)
+	{
+		if (*tmp_job == job)
+			*tmp_job = (*tmp_job)->next;
+		else
+			tmp_job = &((*tmp_job)->next);
+	}
+	if (job == shell->current)
+		shell->current = ft_get_last_job(shell->jobs);
+	while (job->process)
+	{
+		tmp_proc = job->process;
+		job->process = job->process->next;
+		free(tmp_proc->cmdline);
+		free(tmp_proc);
+	}
+	free(job->cmdline);
+	free(job);
+}
+
+void			ft_check_job(t_joblist *job, t_42sh *shell)
+{
+	ft_wait_job(job, WUNTRACED | WNOHANG | WCONTINUED, shell);
+	if (!ft_any_running(job))
+	{
+		if (job->stopped ? !ft_any_stopped(job) : true)
+			ft_report_job_def(job, shell, STDERR_FILENO);
+		job->stopped = true;
+		if (!ft_any_stopped(job))
+			ft_remove_job(job, shell);
+	}
+	else
+		job->stopped = false;
+}
+
+void			ft_check_jobs(t_42sh *shell)
+{
+	t_joblist	*jobs;
+
+	jobs = shell->jobs;
+	while (jobs)
+	{
+		ft_check_job(jobs, shell);
+		jobs = jobs->next;
+	}
 }
 
 int				ft_manage_job(t_joblist *job, t_42sh *shell)
 {
 	int			status;
 
-	status = ft_wait_job(job, WUNTRACED);
+	status = ft_wait_job(job, WUNTRACED, shell);
 	tcgetattr(STDIN_FILENO, &(job->term));
-	if (shell->foreground)
+	if (!shell->pgid && shell->foreground)
+	{
+		tcsetpgrp(STDIN_FILENO, shell->pid);
 		tcsetattr(STDIN_FILENO, TCSADRAIN, &(shell->term));
+	}
 	if (!shell->pgid)
 	{
 		if (ft_any_stopped(job))
@@ -234,6 +368,7 @@ int				ft_manage_job(t_joblist *job, t_42sh *shell)
 			ft_putstr_fd("\n", STDERR_FILENO);
 		}
 	}
+	ft_any_stopped(job) ? job->stopped = true : ft_remove_job(job, shell);
 	return (ft_get_retval(status));
 }
 
@@ -242,15 +377,11 @@ int				ft_exe_pipe(t_node *current, t_42sh *shell)
 	t_joblist	*job;
 
 	shell->forked = 0;
-	if (!(job = ft_get_job(current, shell)))
-		exit(2);
+	job = ft_get_job(current, shell);
 	ft_launch_job(job, shell);
 	if (!shell->pgid && shell->foreground)
 		tcsetpgrp(STDIN_FILENO, job->pgid);
-	shell->retval = ft_manage_job(job, shell);
-	if (!shell->pgid && shell->foreground)
-		tcsetpgrp(STDIN_FILENO, shell->pid);
-	return (shell->retval);
+	return (shell->retval = ft_manage_job(job, shell));
 }
 
 void			ft_print_bg(t_joblist *job, t_42sh *shell)
@@ -319,8 +450,7 @@ void			ft_build_tmp_fd(int fd, t_tmpfd **begin)
 {
 	t_tmpfd		*tmp;
 
-	if (!(tmp = (t_tmpfd *)ft_malloc_exit(sizeof(t_tmpfd))))
-		exit(2);
+	tmp = (t_tmpfd *)ft_malloc_exit(sizeof(t_tmpfd));
 	tmp->initial = fd;
 	if ((tmp->cloexec = fcntl(fd, F_GETFD)) != -1)
 	{
@@ -404,7 +534,6 @@ int				ft_exe_less(t_node *current, t_42sh *shell)
 int				ft_exe_rpar(t_node *current, t_42sh *shell)
 {
 	t_joblist	*job;
-	int			status;
 
 	if (!shell->forked)
 	{
@@ -413,10 +542,10 @@ int				ft_exe_rpar(t_node *current, t_42sh *shell)
 		ft_launch_job(job, shell);
 		if (!shell->pgid && shell->foreground)
 			tcsetpgrp(STDIN_FILENO, job->pgid);
-		status = ft_wait_job(job, WUNTRACED);
+		shell->retval = ft_manage_job(job, shell);
 		if (!shell->pgid && shell->foreground)
 			tcsetpgrp(STDIN_FILENO, shell->pid);
-		return (WEXITSTATUS(status));
+		return (shell->retval);
 	}
 	if (current->redir
 		&& g_exetab[current->redir->token](current->redir, shell))

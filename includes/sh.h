@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/01 07:39:58 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/02 20:09:38 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,9 @@ typedef struct			s_proclist
 {
 	pid_t				pid;
 	t_node				*command;
+	char				*cmdline;
 	int					status;
+	bool				complete;
 	char				*path;
 	char				**args;
 	struct s_proclist	*next;
@@ -172,8 +174,9 @@ typedef struct			s_joblist
 {
 	pid_t				pgid;
 	t_proclist			*process;
-	t_node				*command;
+	char				*cmdline;
 	int					num;
+	bool				stopped;
 	struct termios		term;
 	struct s_joblist	*next;
 }						t_joblist;
@@ -435,7 +438,7 @@ int						check_builtin(t_42sh *sh);
 void					free_tab(char **str);
 void					ft_launch_job(t_joblist *job, t_42sh *shell);
 int						ft_manage_job(t_joblist *job, t_42sh *shell);
-int						ft_wait_job(t_joblist *job, int options);
+int						ft_wait_job(t_joblist *job, int options, t_42sh *shell);
 int						ft_exe_badtoken(t_node *current, t_42sh *shell);
 int						ft_exe_pipe(t_node *current, t_42sh *shell);
 int						ft_exe_and(t_node *current, t_42sh *shell);
@@ -483,19 +486,20 @@ int						ft_exp_brace(t_txtlist *txt, t_42sh *shell);
 int						ft_exp_sub(t_txtlist *txt, t_42sh *shell);
 int						ft_exp_bquote(t_txtlist *txt, t_42sh *shell);
 int						ft_exp_expr(t_txtlist *txt, t_42sh *shell);
+char					*ft_simple_expanse(char *word, t_42sh *shell);
 
 /*
-**						print_command
+**						cmdline_command
 */
 
-void					ft_print_badtoken(t_node *command, int fd);
-void					ft_print_sep(t_node *command, int fd);
-void					ft_print_redir(t_node *command, int fd);
-void					ft_print_par(t_node *command, int fd);
-void					ft_print_redir_and(t_node *command, int fd);
-void					ft_print_redir_close(t_node *command, int fd);
-void					ft_print_brace(t_node *command, int fd);
-void					ft_print_command(t_node *command, int fd);
+char					*ft_cmdline_badtoken(t_node *command);
+char					*ft_cmdline_sep(t_node *command);
+char					*ft_cmdline_redir(t_node *command);
+char					*ft_cmdline_par(t_node *command);
+char					*ft_cmdline_redir_and(t_node *command);
+char					*ft_cmdline_redir_close(t_node *command);
+char					*ft_cmdline_brace(t_node *command);
+char					*ft_cmdline_command(t_node *command);
 
 /*
 **						jobs
@@ -504,7 +508,12 @@ void					ft_print_command(t_node *command, int fd);
 int						ft_any_stopped(t_joblist *job);
 int						ft_any_running(t_joblist *job);
 void					ft_report_job_def(t_joblist *job, t_42sh *sh, int fd);
-
+void					ft_check_jobs(t_42sh *shell);
+void					builtin_jobs(t_42sh *sh);
+void					ft_remove_job(t_joblist *job, t_42sh *shell);
+int						ft_manage_job(t_joblist *job, t_42sh *shell);
+void					builtin_fg(t_42sh *sh);
+void					builtin_bg(t_42sh *sh);
 
 /*
 **						globals
@@ -524,7 +533,7 @@ extern char				*g_txtstr[];
 extern int				(*g_exptab[])(t_txtlist *txt, t_42sh *shell);
 extern char				*g_sigtab[];
 extern char				*g_sigabrevtab[];
-extern void				(*g_printtab[])(t_node *command, int fd);
+extern char				*(*g_cmdlinetab[])(t_node *command);
 
 typedef				void(*t_ak)(t_42sh *sh);
 typedef				void(*t_test)(t_42sh *sh, struct stat info);
