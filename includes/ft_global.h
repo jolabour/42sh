@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/02 17:01:20 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/03 02:04:02 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ t_bttab					g_bttab[] =
 	{"jobs", &builtin_jobs},
 	{"fg", &builtin_fg},
 	{"bg", &builtin_bg},
+	{"exit", &builtin_exit},
 	{NULL, NULL}
 };
 

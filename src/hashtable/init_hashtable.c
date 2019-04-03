@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/25 04:30:08 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 06:21:46 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/02 04:45:24 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ void		init_hashtable(t_42sh *sh)
 
 	i = 0;
 	ft_memset(&sh->hashtable, 0, sizeof(sh->hashtable));
+	if (sh->bin_dirs == NULL)
+		return ;
 	while ((path = sh->bin_dirs[i++]) != NULL)
 	{
 		if ((dirp = opendir(path)) == NULL)

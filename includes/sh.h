@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/02 20:09:38 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/03 02:01:49 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -895,6 +895,7 @@ void				print_type_binary(t_42sh *sh, int i, char *str);
 void				print_type_hash(t_42sh *sh, int i, char *str);
 void				lst_del_var(t_var **var, t_var *to_del, t_var *prev);
 int					ft_str_isdigit(char *str);
+void				builtin_exit(t_42sh *sh);
 
 /*
 ** ft_erase_space.c
