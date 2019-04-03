@@ -6,7 +6,7 @@
 /*   By: ttresori <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/18 22:49:55 by ttresori          #+#    #+#             */
-/*   Updated: 2019/03/27 00:51:38 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/03 05:25:47 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,48 +65,46 @@ void			reset_history_curs_pos(t_42sh *sh)
 	sh->history_mark->is_find = 0;
 }
 
-void			ctrlr_read(t_42sh *sh, char *dup, char *arg)
+void			ctrlr_read(t_42sh *sh, char *dup)
 {
 	while (42)
 	{
-		if (!(arg = get_line_ctrlr(sh, arg, dup)))
+		if (!(sh->arg_r = get_line_ctrlr(sh, sh->arg_r, dup)))
 		{
-			to_exit_ctrlr(sh, dup, arg);
+			to_exit_ctrlr(sh, dup, sh->arg_r);
 			return ;
 		}
 		if (dup)
 			free(dup);
-		if ((dup = search_history_ctrl_r(sh, arg)))
+		if ((dup = search_history_ctrl_r(sh, sh->arg_r)))
 		{
 			sh->history_mark->is_find = 1;
-			print_prompt_search(sh, 0, arg, dup, sh->history_mark->pos_arg);
+			print_prompt_search(sh, 0, dup, sh->history_mark->pos_arg);
 		}
 		else
 		{
-			print_prompt_search(sh, 1, arg, NULL, sh->history_mark->pos_arg);
+			print_prompt_search(sh, 1, NULL, sh->history_mark->pos_arg);
 			reset_history_curs_pos(sh);
 		}
-		place_curs_ctrlr(sh, arg, dup);
+		place_curs_ctrlr(sh, sh->arg_r, dup);
 	}
 }
 
 void			ctrlr_action(t_42sh *sh)
 {
-	char	*arg;
 	char	*dup;
 	int		is_find;
 
 	dup = NULL;
 	is_find = 0;
-	arg = NULL;
 	sh->history_mark->error_code = 0;
 	sh->history_mark->ctrlr_arg = NULL;
 	sh->history_mark->pos_arg = 0;
 	reset_history_curs_pos(sh);
 	sh->history_mark->dup_select = 0;
-	arg = (char*)ft_malloc_exit(sizeof(char) * 0);
+	sh->arg_r = ft_strdup("\0");
 	clean_line_lentoback(sh->prompt_len);
-	print_prompt_search(sh, 0, NULL, NULL, sh->history_mark->pos_arg);
+	print_prompt_search(sh, 0, NULL, sh->history_mark->pos_arg);
 	sh->stdin->cursor_pos = 16;
-	ctrlr_read(sh, dup, arg);
+	ctrlr_read(sh, dup);
 }

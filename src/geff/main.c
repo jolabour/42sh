@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/02 20:53:32 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/03 04:09:05 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -782,10 +782,7 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 	}
 	shell->valide_path = ft_getenv(shell->env, "PATH=", sizeof("PATH=") - 1);
 	if (shell->valide_path)
-	{
-		if ((shell->bin_dirs = ft_strsplit(shell->valide_path, ':')) == NULL)
-			print_error(_ENOMEM, 1);
-	}
+		shell->bin_dirs = ft_strsplit(shell->valide_path, ':');
 	exe = ft_isbuiltin(shell->argv->argv[0]);
 	if (exe)
 		return ((shell->retval = ft_exe_builtin(current, shell, exe)));

@@ -1,1 +1,0 @@
-1) Ajouter la substitution dans la liste

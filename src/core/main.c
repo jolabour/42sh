@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:21:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/28 05:38:20 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/03 04:15:15 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int			main(int argc, char **argv, char **env)
 {
 	t_42sh	sh;
 
+	(void)argc;
 	sh.args = argv;
 	init_shell(&sh, env);
 	ft_init(&sh);
@@ -26,8 +27,6 @@ int			main(int argc, char **argv, char **env)
 	{
 		sh.need_get_line = true;
 		process(&sh);
-		if (argc == 2 && ft_strequ(argv[1], "--history"))
-			print_history(sh.history_mark);
 		ft_strdel(&sh.stdin->input);
 		free(sh.stdin);
 		del_history(sh.history_mark);
