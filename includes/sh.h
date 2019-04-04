@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/04 04:41:39 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/04 23:20:13 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -423,6 +423,7 @@ int							ft_ast_lbrace(t_node **begin, t_node **current,
 int							ft_ast_rbrace(t_node **begin, t_node **current,
 		t_node **list, t_42sh *shell);
 t_node						*ft_toklist_to_node(char *input, t_toklist *list);
+void						ft_ast_free(t_node *ast);
 int							ft_build_ast(t_ast *ast, t_42sh *shell);
 
 /*

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/04 02:16:42 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/04 23:21:02 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,5 +100,6 @@ void			process(t_42sh *sh)
 		if (ast.begin)
 			g_exetab[ast.begin->token](ast.begin, sh);
 	}
+	ft_ast_free(ast.begin);
 	ft_check_jobs(sh);
 }

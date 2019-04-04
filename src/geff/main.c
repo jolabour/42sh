@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/04 04:50:08 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/04 23:59:14 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,6 +290,26 @@ t_joblist		*ft_get_last_job(t_joblist *jobs)
 	return (jobs);
 }
 
+void			ft_remove_proc(t_proclist *proc)
+{
+	//int			i;
+
+	free(proc->cmdline);
+	if (proc->path)
+		free(proc->path);
+	// if (proc->args)
+	// {
+	// 	i = 0;
+	// 	while (proc->args[i])
+	// 	{
+	// 		free(proc->args[i]);
+	// 		i++;
+	// 	}
+	// 	free(proc->args);
+	// }
+	free(proc);
+}
+
 void			ft_remove_job(t_joblist *job, t_42sh *shell)
 {
 	t_joblist	**tmp_job;
@@ -309,8 +329,7 @@ void			ft_remove_job(t_joblist *job, t_42sh *shell)
 	{
 		tmp_proc = job->process;
 		job->process = job->process->next;
-		free(tmp_proc->cmdline);
-		free(tmp_proc);
+		ft_remove_proc(tmp_proc);
 	}
 	free(job->cmdline);
 	free(job);
@@ -437,7 +456,7 @@ int				ft_dup_tmp_fd(int fd)
 	denied[STDIN_FILENO] = false;
 	denied[STDOUT_FILENO] = false;
 	denied[STDERR_FILENO] = false;
-	while ((cpy = dup(fd)) >= STDIN_FILENO && cpy <= STDERR_FILENO)
+	while ((cpy = ft_dup_exit(fd)) >= STDIN_FILENO && cpy <= STDERR_FILENO)
 		denied[cpy] = true;
 	if (denied[STDIN_FILENO])
 		close(STDIN_FILENO);
@@ -456,8 +475,7 @@ void			ft_build_tmp_fd(int fd, t_tmpfd **begin)
 	tmp->initial = fd;
 	if ((tmp->cloexec = fcntl(fd, F_GETFD)) != -1)
 	{
-		if ((tmp->tmp = ft_dup_tmp_fd(fd)) == -1)
-			exit(2);
+		tmp->tmp = ft_dup_tmp_fd(fd);
 		fcntl(tmp->tmp, F_SETFD, FD_CLOEXEC);
 	}
 	else
@@ -487,24 +505,55 @@ void			ft_reset_tmp_fd(t_tmpfd *begin)
 	}
 }
 
+int				ft_open_error(char *path, int options, char *unexp)
+{
+	int			fd;
+	struct stat	sstat;
+
+	if ((fd = open(path, options)) == -1)
+	{
+		ft_putstr_fd("42sh: ", STDERR_FILENO);
+		ft_putstr_fd(unexp, STDERR_FILENO);
+		if (access(path, F_OK))
+			ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		else if (stat(path, &sstat))
+			ft_putstr_fd(": Unknown error (stat)\n", STDERR_FILENO);
+		else if (S_ISDIR(sstat.st_mode))
+			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		else if ((((options & O_RDONLY) || (options & O_RDWR))
+			&& access(path, R_OK)) || (((options & O_WRONLY)
+			|| (options & O_RDWR)) && access(path, W_OK)))
+			ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+		else
+			ft_putstr_fd(": Unknown error. For more informations please feel "
+				"free to make a request at errno@missing.42.fr\n",
+				STDERR_FILENO);
+		free(path);
+	}
+	return (fd);
+}
+
 int				ft_exe_great(t_node *current, t_42sh *shell)
 {
+	char		*path;
 	int			dest;
 	int			src;
 
 	dest = current->left ? ft_atoi(current->left->data) : 1;
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	if ((src = open(current->right->data, O_WRONLY)) == -1)
+	path = ft_simple_expanse(current->right->data, shell);
+	if ((src = open(path, O_WRONLY)) == -1)
 	{
-		if ((src = open(current->right->data, O_WRONLY | O_CREAT)) == -1)
+		if ((src = ft_open_error(path, O_WRONLY | O_CREAT,
+			current->right->data)) == -1)
 			return (1);
 		fchmod(src, 0644);
 	}
+	free(path);
 	if (dest != src)
 	{
-		if (dup2(src, dest) == -1)
-			exit(2);
+		ft_dup2_exit(src, dest);
 		close(src);
 	}
 	if (current->redir)
@@ -514,18 +563,20 @@ int				ft_exe_great(t_node *current, t_42sh *shell)
 
 int				ft_exe_less(t_node *current, t_42sh *shell)
 {
+	char		*path;
 	int			dest;
 	int			src;
 
 	dest = current->left ? ft_atoi(current->left->data) : 0;
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	if ((src = open(current->right->data, O_RDONLY)) == -1)
+	path = ft_simple_expanse(current->right->data, shell);
+	if ((src = ft_open_error(path, O_RDONLY, current->right->data)) == -1)
 		return (1);
+	free(path);
 	if (dest != src)
 	{
-		if (dup2(src, dest) == -1)
-			exit(2);
+		ft_dup2_exit(src, dest);
 		close(src);
 	}
 	if (current->redir)
@@ -577,23 +628,25 @@ int				ft_exe_or_if(t_node *current, t_42sh *shell)
 
 int				ft_exe_dgreat(t_node *current, t_42sh *shell)
 {
+	char		*path;
 	int			dest;
 	int			src;
 
 	dest = current->left ? ft_atoi(current->left->data) : 1;
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	if ((src = open(current->right->data, O_WRONLY | O_APPEND)) == -1)
+	path = ft_simple_expanse(current->right->data, shell);
+	if ((src = open(path, O_WRONLY | O_APPEND)) == -1)
 	{
-		if ((src = open(current->right->data,
-			O_WRONLY | O_APPEND | O_CREAT)) == -1)
+		if ((src = ft_open_error(path, O_WRONLY | O_APPEND | O_CREAT,
+			current->right->data)) == -1)
 			return (1);
 		fchmod(src, 0644);
 	}
+	free(path);
 	if (dest != src)
 	{
-		if (dup2(src, dest) == -1)
-			exit(2);
+		ft_dup2_exit(src, dest);
 		close(src);
 	}
 	if (current->redir)
@@ -615,19 +668,45 @@ int				ft_str_isdigit(char *str)
 	return (1);
 }
 
+int				ft_ambigous_error(char *fd, char *unexp)
+{
+	ft_putstr_fd("42sh: ", STDERR_FILENO);
+	ft_putstr_fd(unexp, STDERR_FILENO);
+	ft_putstr_fd(": ambiguous redirect\n", STDERR_FILENO);
+	free(fd);
+	return (1);
+}
+
+int				ft_badfd_error(char *fd, char *unexp)
+{
+	ft_putstr_fd("42sh: ", STDERR_FILENO);
+	ft_putstr_fd(unexp, STDERR_FILENO);
+	ft_putstr_fd(": Bad file descriptor\n", STDERR_FILENO);
+	free(fd);
+	return (1);
+}
+
 int				ft_exe_lessand(t_node *current, t_42sh *shell)
 {
+	char		*fd;
 	int			dest;
 	int			src;
+	int			ret;
 
 	dest = current->left ? ft_atoi(current->left->data) : 0;
-	if (!ft_str_isdigit(current->right->data))
-		return (1);
+	fd = ft_simple_expanse(current->right->data, shell);
+	if (!ft_str_isdigit(fd) || !fd[0])
+		return (ft_ambigous_error(fd, current->right->data));
+	src = ft_atoi(fd);
+	ret = fcntl(src, F_GETFD);
+	if (ft_strlen(fd) > 10 || (ft_strlen(fd) == 10
+		&& ft_strcmp(fd, "2147483647") > 0) || ret == -1 || ret & FD_CLOEXEC)
+		return (ft_badfd_error(fd, current->right->data));
+	free(fd);
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	src = ft_atoi(current->right->data);
-	if (dest != src && dup2(src, dest) == -1)
-		exit(2);
+	if (dest != src)
+		 ft_dup2_exit(src, dest);
 	if (current->redir)
 		return (g_exetab[current->redir->token](current->redir, shell));
 	return (0);
@@ -648,17 +727,25 @@ int				ft_exe_lessanddash(t_node *current, t_42sh *shell)
 
 int				ft_exe_greatand(t_node *current, t_42sh *shell)
 {
+	char		*fd;
 	int			dest;
 	int			src;
+	int			ret;
 
-	if (!(ft_str_isdigit(current->right->data)))
-		return (ft_exe_great(current, shell));
-	dest = current->left ? ft_atoi(current->left->data) : 1;
+	dest = current->left ? ft_atoi(current->left->data) : 0;
+	fd = ft_simple_expanse(current->right->data, shell);
+	if (!ft_str_isdigit(fd) || !fd[0])
+		return (ft_ambigous_error(fd, current->right->data));
+	src = ft_atoi(fd);
+	ret = fcntl(src, F_GETFD);
+	if (ft_strlen(fd) > 10 || (ft_strlen(fd) == 10
+		&& ft_strcmp(fd, "2147483647") > 0) || ret == -1 || ret & FD_CLOEXEC)
+		return (ft_badfd_error(fd, current->right->data));
+	free(fd);
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	src = ft_atoi(current->right->data);
-	if (dest != src && dup2(src, dest) == -1)
-		exit(2);
+	if (dest != src)
+		ft_dup2_exit(src, dest);
 	if (current->redir)
 		return (g_exetab[current->redir->token](current->redir, shell));
 	return (0);
@@ -679,22 +766,25 @@ int				ft_exe_greatanddash(t_node *current, t_42sh *shell)
 
 int				ft_exe_lessgreat(t_node *current, t_42sh *shell)
 {
+	char		*path;
 	int			dest;
 	int			src;
 
+	path = ft_simple_expanse(current->right->data, shell);
 	dest = current->left ? ft_atoi(current->left->data) : 0;
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	if ((src = open(current->right->data, O_RDWR)) == -1)
+	if ((src = open(path, O_RDWR)) == -1)
 	{
-		if ((src = open(current->right->data, O_RDWR | O_CREAT)) == -1)
+		if ((src = ft_open_error(path, O_RDWR
+			| O_CREAT, current->right->data)) == -1)
 			return (1);
 		fchmod(src, 0644);
 	}
+	free(path);
 	if (dest != src)
 	{
-		if (dup2(src, dest) == -1)
-			exit(2);
+		ft_dup2_exit(src, dest);
 		close(src);
 	}
 	if (current->redir)
@@ -706,19 +796,19 @@ int				ft_exe_dless(t_node *current, t_42sh *shell)
 {
 	int			dest;
 	int			pipefd[2];
+	char		*heredoc;
 
 	dest = current->left ? ft_atoi(current->left->data) : 0;
-	if (pipe(pipefd) == -1)
-		exit(2);
+	ft_pipe_exit(pipefd);
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	write(pipefd[1], current->right->right->data,
-		ft_strlen(current->right->right->data));
+	heredoc = ft_simple_expanse(current->right->right->data, shell);
+	ft_putstr_fd(heredoc, pipefd[1]);
+	free(heredoc);
 	close(pipefd[1]);
 	if (dest != pipefd[0])
 	{
-		if (dup2(pipefd[0], dest) == -1)
-			exit(2);
+		ft_dup2_exit(pipefd[0], dest);
 		close(pipefd[0]);
 	}
 	if (current->redir)

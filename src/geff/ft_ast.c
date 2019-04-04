@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:52:23 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/30 10:30:45 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/04 23:20:21 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -457,12 +457,9 @@ void			ft_ast_free(t_node *ast)
 {
 	if (ast)
 	{
-		if (ast->left)
-			ft_ast_free(ast->left);
-		if (ast->right)
-			ft_ast_free(ast->right);
-		if (ast->redir)
-			ft_ast_free(ast->redir);
+		ft_ast_free(ast->left);
+		ft_ast_free(ast->right);
+		ft_ast_free(ast->redir);
 		if (ast->data)
 			free(ast->data);
 		free(ast);
