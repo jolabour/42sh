@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/02 19:25:06 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/04 04:27:22 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -335,13 +335,16 @@ int			ft_exp_text(t_txtlist *txt, t_42sh *shell)
 char		*ft_getvar(char *var, t_42sh *shell)
 {
 	void	*ptr;
+	char	*varenv;
 
 	ptr = ft_get_spparam(*var);
 	if (ptr)
 		return (((char *(*)(t_42sh *))ptr)(shell));
-	ptr = ft_getenv(shell->env, var, ft_strlen(var));
+	varenv = ft_strjoin(var, "=");
+	ptr = ft_getenv(shell->env, varenv, ft_strlen(var));
+	free(varenv);
 	if (ptr)
-		return (ft_strdup(ptr + 1));
+		return (ft_strdup(ptr));
 	ptr = get_var(shell, var);
 	if (ptr)
 		return ((char *)ptr);

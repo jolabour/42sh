@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keymap.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/19 00:40:38 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 05:37:16 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/04 02:28:03 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int					check_input(t_42sh *sh, long buf)
 	int				i;
 
 	i = -1;
-	while (i++ < NB_INPUT)
+	while (++i < NB_INPUT)
 	{
 		if (input_tab[i] == buf)
 		{

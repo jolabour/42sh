@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   action_select_mode.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 22:49:28 by jolabour          #+#    #+#             */
-/*   Updated: 2019/02/19 00:29:14 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/04 03:10:39 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void				copy_select(t_42sh *sh)
 void				del_select(t_42sh *sh)
 {
 	int		tmp2;
-	char	tmp[256];
+	char	*tmp;
 
 	tmp2 = 0;
 	if (sh->stdin->start_und > sh->stdin->end_und)
@@ -45,8 +45,12 @@ void				del_select(t_42sh *sh)
 		sh->stdin->input[0] = '\0';
 	else
 	{
-		ft_strcpy(tmp, sh->stdin->input + sh->stdin->end_und + 1);
+		if (sh->stdin->end_und == sh->stdin->len_line)
+			tmp = ft_strdup(sh->stdin->input + sh->stdin->end_und);
+		else		
+			tmp = ft_strdup(sh->stdin->input + sh->stdin->end_und + 1);
 		ft_strcpy(sh->stdin->input + sh->stdin->start_und, tmp);
+		free(tmp);
 	}
 	sh->stdin->len_line = ft_strlen(sh->stdin->input);
 }

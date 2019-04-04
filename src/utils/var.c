@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 03:29:36 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/03 03:35:19 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/04 02:37:08 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,19 +93,11 @@ void			check_local_variable(t_42sh *sh, char *str)
 {
 	char	**split;
 
-	if (check_equal(str) != 1)
-		return ;
 	split = ft_strsplitsetone(str, '=');
-	if (check_env(&sh->env, split) == 1)
-	{
-		if (ft_strequ(split[0], "PATH") == 1)
-			reset_hashtable(&sh->hashtable);
-		free(split[0]);
-		free(split[1]);
-		free(split);
-		return ;
-	}
-	add_to_varlist(sh, split);
+	if (ft_strequ(split[0], "PATH") == 1)
+		reset_hashtable(&sh->hashtable);
+	if (check_env(&sh->env, split) != 1)
+		add_to_varlist(sh, split);
 	free(split[0]);
 	free(split[1]);
 	free(split);

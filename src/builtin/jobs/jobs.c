@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/30 12:26:36 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/02 19:04:43 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/04 02:19:01 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,20 +139,20 @@ int				ft_any_running(t_joblist *job)
 	return (0);
 }
 
-int				ft_exited(int status, int fd)
+int				ft_exited(t_proclist *proc, int fd)
 {
 	int			spaces;
 
-	if (WIFEXITED(status))
+	if (proc->complete && WIFEXITED(proc->status))
 	{
 		ft_putstr_fd("Done", fd);
 		spaces = 26;
-		if (WEXITSTATUS(status))
+		if (WEXITSTATUS(proc->status))
 		{
 			ft_putstr_fd("(", fd);
-			ft_putnbr(WEXITSTATUS(status));
+			ft_putnbr(WEXITSTATUS(proc->status));
 			ft_putstr_fd(")", fd);
-			spaces = 26 - ft_chars_in_int(WEXITSTATUS(status)) - 2;
+			spaces = 26 - ft_chars_in_int(WEXITSTATUS(proc->status)) - 2;
 		}
 		if (spaces > 0 && spaces < 27)
 			write(fd, "                          ", (size_t)spaces);
@@ -386,7 +386,7 @@ void			ft_report_job_long(t_joblist *job, t_42sh *sh, int fd)
 			: ft_putstr_fd("     ", fd);
 		ft_putnbr_fd(proc->pid, fd);
 		ft_putstr_fd(" ", fd);
-		if (!(ft_exited(proc->status, fd) || ft_signaled(proc->status, fd)
+		if (!(ft_exited(proc, fd) || ft_signaled(proc->status, fd)
 			|| ft_stopped_long(proc->status, fd)))
 			ft_running(proc->status, fd);
 		ft_putstr_fd(proc == job->process ? "  " : "| ", fd);
@@ -418,7 +418,7 @@ void			ft_report_job_def(t_joblist *job, t_42sh *sh, int fd)
 	{
 		if (ft_any_stopped(job))
 			ft_stopped(_WSTOPPED, fd);
-		else if (!(ft_exited(last->status, fd)
+		else if (!(ft_exited(last, fd)
 			|| ft_signaled(last->status, fd)))
 			write(fd, "                              ", 30);
 	}

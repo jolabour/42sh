@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/03 06:32:54 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/04 04:41:39 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 # define BUCKET_CONTENT t_bucket_content
 # define OPTION_TEST 15
 # define NB_INPUT_SELECT 8
-# define NB_INPUT 18
+# define NB_INPUT 17
 # define RIGHT_KEY 4414235
 # define LEFT_KEY 4479771
 # define HOME 4741915
@@ -458,7 +458,9 @@ int							ft_exe_command(t_node *current, t_42sh *shell);
 **							expanse
 */
 
-char						*(*ft_get_spparam(char c))(t_42sh *);
+typedef char *(*t_param)(t_42sh *);
+
+t_param						ft_get_spparam(char c);
 int							ft_parse_tilde(char *word, size_t *index,
 		t_txtlist **current, int *dquote);
 int							ft_parse_var(char *word, size_t *index,
@@ -904,5 +906,7 @@ int							ft_check_exp_ari(char *str);
 
 char						*ft_check_var(char *str, t_list_ari *list_var);
 char						*ft_exp_ari(char *str, int len);
+
+void						check_local_variable(t_42sh *sh, char *str);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/03 04:09:05 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/04 04:50:08 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,12 +334,14 @@ void			ft_check_job(t_joblist *job, t_42sh *shell)
 void			ft_check_jobs(t_42sh *shell)
 {
 	t_joblist	*jobs;
+	t_joblist	*next;
 
 	jobs = shell->jobs;
 	while (jobs)
 	{
+		next = jobs->next;
 		ft_check_job(jobs, shell);
-		jobs = jobs->next;
+		jobs = next;
 	}
 }
 
@@ -766,6 +768,85 @@ int				ft_exe_builtin(t_node *current, t_42sh *shell,
 	return (shell->retval);
 }
 
+void			ft_add_tmp_env(char *var, char *value, t_42sh *shell)
+{
+	char		**newenv;
+	int			i;
+
+	i = 0;
+	while (shell->copy_env[i] && !ft_strnequ(var, shell->copy_env[i],
+		ft_strlen(var)))
+		i++;
+	if (shell->copy_env[i])
+	{
+		free(shell->copy_env[i]);
+		shell->copy_env[i] = ft_strjoin(var, value);
+	}
+	else
+	{
+		newenv = (char **)ft_malloc_exit((i + 2) * sizeof(char *));
+		i = -1;
+		while (shell->copy_env[++i])
+			newenv[i] = shell->copy_env[i];
+		newenv[i] = ft_strjoin(var, value);
+		newenv[i + 1] = NULL;
+		free(shell->copy_env);
+		shell->copy_env = newenv;
+	}
+}
+
+int				ft_tmp_assigns(t_node *current, t_42sh *shell)
+{
+	char		*var;
+	char		*value;
+
+	current = current->left;
+	while (current)
+	{
+		var = ft_strchr(current->data, '=');
+		value = ft_simple_expanse(var + 1, shell);
+		var = ft_strsub(current->data, 0, var - current->data + 1);
+		ft_add_tmp_env(var, value, shell);
+		free(var);
+		free(value);
+		current = current->left;
+	}
+	return (0);
+}
+
+int				ft_sustained_assigns(t_node *current, t_42sh *shell)
+{
+	char		*var;
+	char		*value;
+
+	current = current->left;
+	while (current)
+	{
+		var = ft_strchr(current->data, '=');
+		value = ft_simple_expanse(var + 1, shell);
+		var = ft_strsub(current->data, 0, var - current->data + 1);
+		var = ft_strjoinfree(var, value, 3);
+		check_local_variable(shell, var);
+		free(var);
+		current = current->left;
+	}
+	return (0);
+}
+
+int				ft_assigns(t_node *current, t_42sh *shell)
+{
+	free_tab(shell->copy_env);
+	shell->copy_env = list_to_tab(shell->env, shell->copy_env);
+	if (current->left)
+	{
+		if (!current->right)
+			return (ft_sustained_assigns(current, shell));
+		else
+			return (ft_tmp_assigns(current, shell));
+	}
+	return (0);
+}
+
 int				ft_exe_command(t_node *current, t_42sh *shell)
 {
 	BUCKET_CONTENT	*bucket_entry;
@@ -773,8 +854,10 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 
 	if (!(shell->argv->argv = ft_command_to_args(current, shell)))
 		return ((shell->retval = 1));
-	free_tab(shell->copy_env);
-	shell->copy_env = list_to_tab(shell->env, shell->copy_env);
+	if (ft_assigns(current, shell))
+		return ((shell->retval = 1));
+	if (!current->right)
+		return ((shell->retval = 0));
 	if (shell->bin_dirs)
 	{
 		free_tab(shell->bin_dirs);
