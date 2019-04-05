@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:47:25 by geargenc          #+#    #+#             */
-/*   Updated: 2019/03/30 10:39:48 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/05 06:04:10 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int				ft_continue_line(t_lex *lex, t_42sh *shell)
 	shell->prompt = "> ";
 	prompt(shell->env, shell);
 	free(shell->stdin);
+	del_history(shell->history_mark);
 	if (get_line(shell) != 1)
 	{
 		ft_putstr_fd("42sh: syntax error: unexpected end of file\n", 2);
@@ -921,6 +922,19 @@ void			ft_print_toklist(char *input, t_toklist *list)
 	}
 }
 
+void			ft_lex_free(t_lex *lex)
+{
+	t_toklist	*tmp;
+
+	while (lex->begin)
+	{
+		tmp = lex->begin;
+		lex->begin = lex->begin->next;
+		free(tmp);
+	}
+	free(lex->input);
+}
+
 int				ft_lexer(t_lex *lex, t_42sh *shell)
 {
 	int			i;
@@ -932,7 +946,10 @@ int				ft_lexer(t_lex *lex, t_42sh *shell)
 		while ((ret = g_tokcond[i].cond(lex, shell)) > 0)
 			i++;
 		if (ret == -1)
+		{
+			ft_lex_free(lex);
 			return (-1);
+		}
 		if (lex->input[lex->index] == '\0')
 			ft_lex_delimiter(lex, shell);
 	}

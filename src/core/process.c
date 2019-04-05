@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/04 23:21:02 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/05 06:59:50 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,11 @@ char			*check_access(t_42sh *sh, int pos)
 	int				i;
 	char			*tmp;
 	char			*tmp2;
-	struct stat		info;
 
 	i = -1;
 	tmp2 = NULL;
 	if (access(sh->argv->argv[pos], F_OK) == 0)
-		tmp2 = ft_strdup(sh->argv->argv[pos]);
+		return (ft_strdup(sh->argv->argv[pos]));
 	else if (sh->bin_dirs)
 		while (sh->bin_dirs[++i])
 		{
@@ -31,12 +30,9 @@ char			*check_access(t_42sh *sh, int pos)
 			tmp2 = ft_strjoin(tmp, sh->argv->argv[pos]);
 			ft_strdel(&tmp);
 			if (access(tmp2, F_OK) == 0)
-				break ;
+				return (tmp2);
 			ft_strdel(&tmp2);
 		}
-	stat(tmp2, &info);
-	if ((S_ISREG(info.st_mode)) == 1)
-		return (tmp2);
 	return (NULL);
 }
 
@@ -99,7 +95,7 @@ void			process(t_42sh *sh)
 		ft_build_ast(&ast, sh);
 		if (ast.begin)
 			g_exetab[ast.begin->token](ast.begin, sh);
+		ft_ast_free(ast.begin);
 	}
-	ft_ast_free(ast.begin);
 	ft_check_jobs(sh);
 }

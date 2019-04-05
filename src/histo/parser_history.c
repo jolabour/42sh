@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:18 by ttresori          #+#    #+#             */
-/*   Updated: 2019/04/05 02:35:49 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/05 07:00:20 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int		substitute_history(t_42sh *sh, int *i)
 	if (substitute[0] == '\0')
 	{
 		*i = *i + 1;
+		free(substitute);
 		return (0);
 	}
 	get_substitute(sh, *i, substitute, nb_del);

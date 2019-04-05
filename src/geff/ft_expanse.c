@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/04 04:27:22 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/05 06:59:51 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,7 +341,7 @@ char		*ft_getvar(char *var, t_42sh *shell)
 	if (ptr)
 		return (((char *(*)(t_42sh *))ptr)(shell));
 	varenv = ft_strjoin(var, "=");
-	ptr = ft_getenv(shell->env, varenv, ft_strlen(var));
+	ptr = ft_getenv(shell->env, varenv, ft_strlen(varenv));
 	free(varenv);
 	if (ptr)
 		return (ft_strdup(ptr));

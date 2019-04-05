@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/04 23:59:14 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/05 06:55:16 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,21 +292,21 @@ t_joblist		*ft_get_last_job(t_joblist *jobs)
 
 void			ft_remove_proc(t_proclist *proc)
 {
-	//int			i;
+	int			i;
 
 	free(proc->cmdline);
 	if (proc->path)
 		free(proc->path);
-	// if (proc->args)
-	// {
-	// 	i = 0;
-	// 	while (proc->args[i])
-	// 	{
-	// 		free(proc->args[i]);
-	// 		i++;
-	// 	}
-	// 	free(proc->args);
-	// }
+	if (proc->args)
+	{
+		i = 0;
+		while (proc->args[i])
+		{
+			free(proc->args[i]);
+			i++;
+		}
+		free(proc->args);
+	}
 	free(proc);
 }
 
@@ -848,13 +848,17 @@ int				ft_exe_builtin(t_node *current, t_42sh *shell,
 {
 	t_tmpfd		*tmp;
 
-	if (current->redir
-		&& g_exetab[current->redir->token](current->redir, shell))
-		return (1);
-	tmp = shell->tmp_fds;
-	shell->tmp_fds = NULL;
-	f(shell);
-	ft_reset_tmp_fd(tmp);
+	if (!(current->redir
+		&& g_exetab[current->redir->token](current->redir, shell)))
+	{
+		tmp = shell->tmp_fds;
+		shell->tmp_fds = NULL;
+		f(shell);
+		ft_reset_tmp_fd(tmp);
+	}
+	else
+		shell->retval = 1;
+	ft_free_split(shell->argv->argv);
 	return (shell->retval);
 }
 
@@ -941,6 +945,7 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 {
 	BUCKET_CONTENT	*bucket_entry;
 	void			*exe;
+	struct stat info;
 
 	if (!(shell->argv->argv = ft_command_to_args(current, shell)))
 		return ((shell->retval = 1));
@@ -966,19 +971,34 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 		shell->valide_path = check_access(shell, 0);
 		if (shell->valide_path == NULL)
 		{
-			ft_putendl("donne un binaire gorille");
+			ft_putstr_fd("42sh: ", 2);
+			ft_putstr_fd(shell->argv->argv[0], 2);
+			ft_putstr_fd(": command not found\n", 2);
+			ft_strdel(&shell->valide_path);
+			ft_free_split(shell->argv->argv);
 			return ((shell->retval = 127));
+		}
+		stat(shell->valide_path, &info);
+		if ((S_ISDIR(info.st_mode)) == 1)
+		{
+			ft_putstr_fd("42sh: ", 2);
+			ft_putstr_fd(shell->argv->argv[0], 2);
+			ft_putstr_fd(": is a directory\n", 2);
+			ft_strdel(&shell->valide_path);
+			ft_free_split(shell->argv->argv);
+			return ((shell->retval = 126));
 		}
 		if (shell->argv->argv[0][0] != '/')
 			ht_insert(shell->valide_path, shell->argv->argv[0], &shell->hashtable);
-	}
-	struct stat info;
-	stat(shell->valide_path, &info);
-	if (access(shell->valide_path, X_OK) == -1 || ((S_ISREG(info.st_mode)) != 1))
-	{
-		ft_putendl("t'as pas les droits victimes");
-		ft_strdel(&shell->valide_path);
-		return ((shell->retval = 126));
+		if (access(shell->valide_path, X_OK) == -1 || ((S_ISREG(info.st_mode)) != 1))
+		{
+			ft_putstr_fd("42sh: ", 2);
+			ft_putstr_fd(shell->argv->argv[0], 2);
+			ft_putstr_fd(": Permission denied\n", 2);
+			ft_strdel(&shell->valide_path);
+			ft_free_split(shell->argv->argv);
+			return ((shell->retval = 126));
+		}
 	}
 	return (ft_exe_file(current, shell, shell->valide_path, shell->argv->argv));
 }
@@ -1006,6 +1026,7 @@ void			ft_init(t_42sh *shell)
 	}
 	shell->forked = 0;
 	shell->jobs = NULL;
+	shell->current = NULL;
 	shell->retval = 0;
 	shell->tmp_fds = NULL;
 }

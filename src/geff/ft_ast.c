@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:52:23 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/04 23:20:21 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/05 06:04:56 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,7 @@ int				ft_ast_continue_list(t_node **list, t_42sh *shell)
 	prompt(shell->env, shell);
 	ft_strdel(&(shell->stdin->input));
 	free(shell->stdin);
+	del_history(shell->history_mark);
 	if (get_line(shell) != 1)
 	{
 		ft_putstr_fd("42sh: syntax error: unexpected end of file\n", 2);
@@ -553,6 +554,7 @@ int				ft_build_ast(t_ast *ast, t_42sh *shell)
 				ft_error_unexpected(ast->list);
 			ft_ast_free(ast->begin);
 			ft_ast_free(ast->list);
+			*ast = (t_ast){NULL, NULL, NULL};
 			return (-1);
 		}
 	}
