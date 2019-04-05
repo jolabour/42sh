@@ -5,62 +5,62 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/27 05:36:10 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 05:37:15 by jolabour         ###   ########.fr       */
+/*   Created: 20*pos + 19/0*pos + 3/27 05:*pos + 36:*pos + 10 by jolabour          #+#    #+#             */
+/*   Updated: 2019/04/05 04:27:57 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void		test_equal(t_42sh *sh)
+void		test_equal(t_42sh *sh, int *pos)
 {
-	if (ft_strequ(sh->argv->argv[1], sh->argv->argv[3]) == 1)
+	if (ft_strequ(sh->argv->argv[*pos + 1], sh->argv->argv[*pos + 3]) == *pos + 1)
 		sh->retval = 0;
 	else
 		sh->retval = 1;
 }
 
-void		test_diff(t_42sh *sh)
+void		test_diff(t_42sh *sh, int *pos)
 {
-	if (ft_strequ(sh->argv->argv[1], sh->argv->argv[3]) == 1)
+	if (ft_strequ(sh->argv->argv[*pos + 1], sh->argv->argv[*pos + 3]) == *pos + 1)
 		sh->retval = 1;
 	else
 		sh->retval = 0;
 }
 
-void		test_eq(t_42sh *sh)
+void		test_eq(t_42sh *sh, int *pos)
 {
 	int		tmp;
 	int		tmp2;
 
-	tmp = ft_atoi(sh->argv->argv[1]);
-	tmp2 = ft_atoi(sh->argv->argv[3]);
+	tmp = ft_atoi(sh->argv->argv[*pos + 1]);
+	tmp2 = ft_atoi(sh->argv->argv[*pos + 3]);
 	if (tmp == tmp2)
 		sh->retval = 0;
 	else
 		sh->retval = 1;
 }
 
-void		test_ne(t_42sh *sh)
+void		test_ne(t_42sh *sh, int *pos)
 {
 	int		tmp;
 	int		tmp2;
 
-	tmp = ft_atoi(sh->argv->argv[1]);
-	tmp2 = ft_atoi(sh->argv->argv[3]);
+	tmp = ft_atoi(sh->argv->argv[*pos + 1]);
+	tmp2 = ft_atoi(sh->argv->argv[*pos + 3]);
 	if (tmp != tmp2)
 		sh->retval = 0;
 	else
 		sh->retval = 1;
 }
 
-void		test_ge(t_42sh *sh)
+void		test_ge(t_42sh *sh, int *pos)
 {
 	int		tmp;
 	int		tmp2;
 
-	tmp = ft_atoi(sh->argv->argv[1]);
-	tmp2 = ft_atoi(sh->argv->argv[3]);
+	tmp = ft_atoi(sh->argv->argv[*pos + 1]);
+	tmp2 = ft_atoi(sh->argv->argv[*pos + 3]);
 	if (tmp >= tmp2)
 		sh->retval = 0;
 	else

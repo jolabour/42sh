@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/04 23:20:13 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/05 04:29:38 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -535,7 +535,9 @@ extern char					*g_sigtab[];
 extern char					*g_sigabrevtab[];
 extern char					*(*g_cmdlinetab[])(t_node *command);
 
+
 typedef void				(*t_ak)(t_42sh *sh);
+typedef void				(*t_test_other)(t_42sh *sh, int *pos);
 typedef void				(*t_test)(t_42sh *sh, struct stat info);
 
 /*
@@ -781,14 +783,14 @@ void						test_u(t_42sh *sh, struct stat info);
 void						test_w(t_42sh *sh, struct stat info);
 void						test_x(t_42sh *sh, struct stat info);
 void						test_z(t_42sh *sh, struct stat info);
-void						test_equal(t_42sh *sh);
-void						test_diff(t_42sh *sh);
-void						test_eq(t_42sh *sh);
-void						test_ne(t_42sh *sh);
-void						test_ge(t_42sh *sh);
-void						test_lt(t_42sh *sh);
-void						test_le(t_42sh *sh);
-int							execute_other_opt(t_42sh *sh, char *str);
+void						test_equal(t_42sh *sh, int *pos);
+void						test_diff(t_42sh *sh, int *pos);
+void						test_eq(t_42sh *sh, int *pos);
+void						test_ne(t_42sh *sh, int *pos);
+void						test_ge(t_42sh *sh, int *pos);
+void						test_lt(t_42sh *sh, int *pos);
+void						test_le(t_42sh *sh, int *pos);
+int							execute_other_opt(t_42sh *sh, char *str, int *j);
 
 /*
 **							echo

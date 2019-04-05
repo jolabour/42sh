@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:18 by ttresori          #+#    #+#             */
-/*   Updated: 2019/04/03 04:03:24 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/05 02:35:49 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,11 @@ int		substitute_history(t_42sh *sh, int *i)
 	{
 		ft_putendl_fd("42sh: event not found", 2);
 		return (sh->retval = 1);
+	}
+	if (substitute[0] == '\0')
+	{
+		*i = *i + 1;
+		return (0);
 	}
 	get_substitute(sh, *i, substitute, nb_del);
 	*i += ft_strlen(substitute) - 1;

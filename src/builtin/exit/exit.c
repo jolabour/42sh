@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/02 03:50:31 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/02 04:19:18 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/05 05:09:34 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ void		builtin_exit(t_42sh *sh)
 		ft_putendl_fd("exit: too many arguments", 2);
 		return ;
 	}
-	ft_putendl_fd("exit", 2);
+	if (!sh->pgid)
+		ft_putendl_fd("exit", 2);
 	i = 0;
 	if (sh->argv->size == 1)
 		exit(sh->retval);
