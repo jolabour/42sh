@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 05:37:41 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 05:57:40 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/05 05:25:23 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void		get_type(t_42sh *sh)
 		}
 		else if (check_is_builtin(sh, sh->argv->argv[i]) == 1)
 			print_type_builtin(sh, i);
-		else if ((bucket_entry = ht_lookup(sh->argv->argv[0],
+		else if ((bucket_entry = ht_lookup(sh->argv->argv[i],
 					&sh->hashtable)) != NULL)
 			print_type_hash(sh, i, bucket_entry->path);
 		else if ((to_print = check_access(sh, i)) != NULL)
