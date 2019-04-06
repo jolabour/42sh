@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:52:23 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/05 06:04:56 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/06 14:27:16 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@ t_node			*ft_new_node(void)
 {
 	t_node		*new;
 
-	if (!(new = (t_node *)ft_malloc_exit(sizeof(t_node))))
-		return (NULL);
+	new = (t_node *)ft_malloc_exit(sizeof(t_node));
 	ft_bzero(new, sizeof(t_node));
 	return (new);
 }
@@ -41,6 +40,7 @@ t_node			*ft_toklist_to_node(char *input, t_toklist *list)
 		list = list->next;
 		free(tmp);
 	}
+	free(input);
 	return (begin);
 }
 
@@ -176,18 +176,13 @@ int				ft_ast_isseparator(t_node *current)
 int				ft_ast_continue_list(t_node **list, t_42sh *shell)
 {
 	t_lex		lex;
+	char		*line;
+	int			ret;
 
-	shell->prompt = "> ";
-	prompt(shell->env, shell);
-	ft_strdel(&(shell->stdin->input));
-	free(shell->stdin);
-	del_history(shell->history_mark);
-	if (get_line(shell) != 1)
-	{
-		ft_putstr_fd("42sh: syntax error: unexpected end of file\n", 2);
-		return (-1);
-	}
-	lex = (t_lex){shell->stdin->input, 0, NULL, NULL, true, false, 0};
+	ret = ft_continue_line(shell, &line, "");
+	if (ret != 1)
+		return (ret);
+	lex = (t_lex){line, 0, NULL, NULL, true, false, 0};
 	if (ft_lexer(&lex, shell))
 		return (-1);
 	*list = ft_toklist_to_node(lex.input, lex.begin);
@@ -339,28 +334,27 @@ int				ft_ast_and_or(t_node **begin, t_node **current,
 	return (1);
 }
 
-int				ft_ast_readheredoc(t_node *heredoc, t_42sh *shell)
+int				ft_ast_readheredoc(t_node *heredoc, char *delim, t_42sh *shell)
 {
 	char		*input;
 	int			ret;
 
-	(void)shell;
 	input = NULL;
 	while (!input)
 	{
-		ret = get_next_line(0, &input) == 1;
+		ret = ft_continue_line(shell, &input, NULL);
 		if (ret == -1)
 			return (-1);
 		if (ret == 0)
 		{
 			ft_putstr_fd("42sh: Warning : here-document delimited by "
-				"end-of-file\n", 2);
+				"end-of-file\n", STDERR_FILENO);
 			return (1);
 		}
-		if (ft_strncmp(input, heredoc->right->data, ft_strlen(input) - 1))
+		if (!ft_strnequ(input, delim, ft_strlen(delim)))
 		{
-			if (!(heredoc->right->right->data =
-				ft_strjoinfree(heredoc->right->right->data, input, 3)))
+			if (!(heredoc->data =
+				ft_strjoinfree(heredoc->data, input, 3)))
 				return (-1);
 			input = NULL;
 		}
@@ -372,16 +366,21 @@ int				ft_ast_readheredoc(t_node *heredoc, t_42sh *shell)
 int				ft_ast_heredoc(t_node **begin, t_node **current,
 				t_node **list, t_42sh *shell)
 {
+	char		*delim;
 	t_node		*tmp;
 	int			ret;
 
 	tmp = *list;
 	if ((ret = ft_ast_redir(begin, current, list, shell)) != 1)
 		return (ret);
-	if (!(tmp->right->right = ft_new_node())
-		|| !(tmp->right->right->data = ft_strdup("")))
-		return (-1);
-	return (ft_ast_readheredoc(tmp, shell));
+	delim = ft_strdup(tmp->right->data);
+	ft_rmquotes_word(delim);
+	tmp->right->right = ft_new_node();
+	tmp = tmp->right->right;
+	tmp->data = ft_strdup("");
+	ret = ft_ast_readheredoc(tmp, delim, shell);
+	free(delim);
+	return (ret);
 }
 
 int				ft_ast_closefd(t_node **begin, t_node **current,

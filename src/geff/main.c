@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/05 06:55:16 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/06 14:32:51 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -364,11 +364,46 @@ void			ft_check_jobs(t_42sh *shell)
 	}
 }
 
+int				ft_any_interrupted(t_joblist *job)
+{
+	t_proclist	*proc;
+
+	proc = job->process;
+	while (proc)
+	{
+		if (WIFSIGNALED(proc->status) && WTERMSIG(proc->status) == SIGINT)
+			return (1);
+		proc = proc->next;
+	}
+	return (0);
+}
+
+void			ft_manage_status(t_joblist *job, t_42sh *shell)
+{
+	if (ft_any_interrupted(job))
+	{
+		if (shell->pgid && g_intr)
+		{
+			signal(SIGINT, SIG_DFL);
+			kill(getpid(), SIGINT);
+		}
+		if (!shell->pgid)
+		{
+			shell->stopexe = true;
+			ft_putstr_fd("\n", STDERR_FILENO);
+		}
+	}
+	if (ft_any_stopped(job))
+		job->stopped = true;
+	else
+		ft_remove_job(job, shell);
+}
+
 int				ft_manage_job(t_joblist *job, t_42sh *shell)
 {
 	int			status;
 
-	status = ft_wait_job(job, WUNTRACED, shell);
+	status = ft_wait_job(job, shell->pgid ? 0 : WUNTRACED, shell);
 	tcgetattr(STDIN_FILENO, &(job->term));
 	if (!shell->pgid && shell->foreground)
 	{
@@ -382,14 +417,14 @@ int				ft_manage_job(t_joblist *job, t_42sh *shell)
 			ft_putstr_fd("\n", STDOUT_FILENO);
 			ft_report_job_def(job, shell, STDERR_FILENO);
 		}
-		else if (WIFSIGNALED(status))
+		else if (WIFSIGNALED(status) && WTERMSIG(status) != SIGINT)
 		{
 			ft_putstr_fd(g_sigtab[WTERMSIG(status) > 0 && WTERMSIG(status)
 				< 32 ? WTERMSIG(status) : 0], STDERR_FILENO);
 			ft_putstr_fd("\n", STDERR_FILENO);
 		}
 	}
-	ft_any_stopped(job) ? job->stopped = true : ft_remove_job(job, shell);
+	ft_manage_status(job, shell);
 	return (ft_get_retval(status));
 }
 
@@ -443,7 +478,7 @@ int				ft_exe_semi(t_node *current, t_42sh *shell)
 		shell->forked = 0;
 	if ((ret = g_exetab[current->left->token](current->left, shell)) < 0)
 		return (ret);
-	if (current->right)
+	if (current->right && !shell->stopexe)
 		ret = g_exetab[current->right->token](current->right, shell);
 	return (ret);
 }
@@ -584,6 +619,12 @@ int				ft_exe_less(t_node *current, t_42sh *shell)
 	return (0);
 }
 
+void			ft_handler(int sig)
+{
+	(void)sig;
+	g_intr = 1;
+}
+
 int				ft_exe_rpar(t_node *current, t_42sh *shell)
 {
 	t_joblist	*job;
@@ -600,6 +641,7 @@ int				ft_exe_rpar(t_node *current, t_42sh *shell)
 			tcsetpgrp(STDIN_FILENO, shell->pid);
 		return (shell->retval);
 	}
+	signal(SIGINT, &ft_handler);
 	if (current->redir
 		&& g_exetab[current->redir->token](current->redir, shell))
 		exit(1);
@@ -613,7 +655,9 @@ int				ft_exe_and_if(t_node *current, t_42sh *shell)
 	shell->forked = 0;
 	if ((ret = g_exetab[current->left->token](current->left, shell)))
 		return (ret);
-	return (g_exetab[current->right->token](current->right, shell));
+	if (!shell->stopexe)
+		ret = g_exetab[current->right->token](current->right, shell);
+	return (ret);
 }
 
 int				ft_exe_or_if(t_node *current, t_42sh *shell)
@@ -623,7 +667,9 @@ int				ft_exe_or_if(t_node *current, t_42sh *shell)
 	shell->forked = 0;
 	if ((ret = g_exetab[current->left->token](current->left, shell)) < 1)
 		return (ret);
-	return (g_exetab[current->right->token](current->right, shell));
+	if (!shell->stopexe)
+		ret = g_exetab[current->right->token](current->right, shell);
+	return (ret);
 }
 
 int				ft_exe_dgreat(t_node *current, t_42sh *shell)
@@ -792,6 +838,20 @@ int				ft_exe_lessgreat(t_node *current, t_42sh *shell)
 	return (0);
 }
 
+int				ft_str_isquote(char *str)
+{
+	int			i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\\' || str[i] == '\'' || str[i] == '\"')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int				ft_exe_dless(t_node *current, t_42sh *shell)
 {
 	int			dest;
@@ -802,7 +862,9 @@ int				ft_exe_dless(t_node *current, t_42sh *shell)
 	ft_pipe_exit(pipefd);
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	heredoc = ft_simple_expanse(current->right->right->data, shell);
+	heredoc = ft_str_isquote(current->right->data)
+		? ft_strdup(current->right->right->data)
+		: ft_simple_expanse(current->right->right->data, shell);
 	ft_putstr_fd(heredoc, pipefd[1]);
 	free(heredoc);
 	close(pipefd[1]);
@@ -947,7 +1009,7 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 	void			*exe;
 	struct stat info;
 
-	if (!(shell->argv->argv = ft_command_to_args(current, shell)))
+	if (current->right && !(shell->argv->argv = ft_command_to_args(current, shell)))
 		return ((shell->retval = 1));
 	if (ft_assigns(current, shell))
 		return ((shell->retval = 1));
@@ -1008,6 +1070,7 @@ void			ft_init(t_42sh *shell)
 	shell->pid = getpid();
 	shell->pgid = getpgrp();
 	shell->foreground = 0;
+	signal(SIGINT, &ft_handler);
 	if (isatty(STDIN_FILENO))
 	{
 		while (tcgetpgrp(STDIN_FILENO) != shell->pgid)

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/04 23:19:00 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/06 06:47:07 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,5 +318,7 @@ char				*(*g_cmdlinetab[])(t_node *command) =
 	&ft_cmdline_brace,
 	&ft_cmdline_command
 };
+
+int					g_intr;
 
 #endif

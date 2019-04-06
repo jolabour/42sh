@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/05 05:59:03 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/06 04:53:46 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,7 @@ static void		get_pos_cursor_begin(t_42sh *sh)
 		ft_putstr("\033[6n");
 		buf[read(STDOUT_FILENO, buf, 1023)] = '\0';
 		tmp = ft_strchr(buf, ';');
-		tmp++;
-		sh->prompt_len = ft_atoi(tmp) - 1;
+		sh->prompt_len = tmp ? ft_atoi(tmp + 1) - 1 : sh->prompt_len;
 	}
 	sh->stdin->cursor_pos = sh->prompt_len;
 }

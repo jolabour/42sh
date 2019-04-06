@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/05 06:59:50 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/06 13:50:04 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ void			process(t_42sh *sh)
 	t_ast		ast;
 
 	sh->prompt = NULL;
+	g_intr = 0;
+	sh->stopexe = 0;
 	prompt(sh->env, sh);
 	if (get_line(sh) != 1)
 		return ;
@@ -88,7 +90,7 @@ void			process(t_42sh *sh)
 	if (sh->history_mark->error_code == 0 &&
 		ft_strcmp(sh->stdin->input, "fc\n") != 0)
 		add_history(sh, sh->stdin->input, sh->path_history);
-	lex = (t_lex){sh->stdin->input, 0, NULL, NULL, true, false, 0};
+	lex = (t_lex){ft_strdup(sh->stdin->input), 0, NULL, NULL, true, false, 0};
 	if (!ft_lexer(&lex, sh) && lex.begin)
 	{
 		ast = (t_ast){NULL, NULL, ft_toklist_to_node((lex.input), lex.begin)};

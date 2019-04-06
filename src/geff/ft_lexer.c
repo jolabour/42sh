@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:47:25 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/05 06:04:10 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/06 14:25:18 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,20 +64,76 @@ char		*ft_strjoinfree(char *s1, char *s2, unsigned int which)
 	return (join);
 }
 
-int				ft_continue_line(t_lex *lex, t_42sh *shell)
+int				ft_continue_line_buffer(t_42sh *shell, char **line)
 {
-	shell->prompt = "> ";
-	prompt(shell->env, shell);
+	char		*tmp;
+
+	tmp = ft_strchr(shell->buffer, '\n');
+	*line = tmp ? ft_strsub(shell->buffer, 0, tmp - shell->buffer + 1)
+		: shell->buffer;
+	if (tmp)
+	{
+		tmp = ft_strdup(tmp + 1);
+		free(shell->buffer);
+		shell->buffer = tmp;
+	}
+	else
+		shell->buffer = NULL;
+	return (tmp ? 1 : 0);
+}
+
+int				ft_continue_line_stdin(t_42sh *shell, char **line)
+{
+	int			ret;
+
+	if (!shell->pgid)
+	{
+		shell->prompt = "> ";
+		prompt(shell->env, shell);
+	}
+	else
+		shell->prompt_len = 0;
+	free(shell->stdin->input);
 	free(shell->stdin);
 	del_history(shell->history_mark);
-	if (get_line(shell) != 1)
+	ret = get_line(shell);
+	*line = ret == 1 ? ft_strdup(shell->stdin->input) : NULL;
+	return (ret);
+}
+
+int				ft_continue_line(t_42sh *shell, char **line, char *matching)
+{
+	int			ret;
+
+	if (shell->buffer_mode)
+		ret = ft_continue_line_buffer(shell, line);
+	else
+		ret = ft_continue_line_stdin(shell, line);
+	if (*line == NULL && ret == 0)
 	{
-		ft_putstr_fd("42sh: syntax error: unexpected end of file\n", 2);
-		return (-1);
+		if (matching && *matching)
+		{
+			ft_putstr_fd("42sh: unexpected EOF while looking for matching `",
+				STDERR_FILENO);
+			ft_putstr_fd(matching, STDERR_FILENO);
+			ft_putstr_fd("\'\n", STDERR_FILENO);
+		}
+		else if (matching)
+			ft_putstr_fd("42sh: syntax error: unexpected end of file\n",
+				STDERR_FILENO);
 	}
-	shell->stdin->input = ft_strjoinfree(lex->input, shell->stdin->input, 3);
-	lex->input = shell->stdin->input;
-	return (0);
+	return (ret);
+}
+
+int				ft_lex_continue_line(t_lex *lex, t_42sh *shell, char *matching)
+{
+	char		*line;
+	int			ret;
+
+	ret = ft_continue_line(shell, &line, matching);
+	if (line)
+		lex->input = ft_strjoinfree(lex->input, line, 3);
+	return (ret);
 }
 
 void			ft_free_last_toklist(t_lex *lex)
@@ -251,14 +307,13 @@ int				ft_lex_newline(t_lex *lex, t_42sh *shell)
 
 int				ft_lex_backslash(t_lex *lex, t_42sh *shell)
 {
-	(void)shell;
 	if (lex->input[lex->index] == '\\')
 	{
 		if (lex->input[lex->index + 1] == '\0'
 			|| lex->input[lex->index + 1] == '\n')
 		{
 			lex->input[lex->index] = '\0';
-			if (ft_continue_line(lex, shell) == -1)
+			if (ft_lex_continue_line(lex, shell, "") != 1)
 				return (-1);
 		}
 		else
@@ -300,11 +355,8 @@ int				ft_lex_quote(t_lex *lex, t_42sh *shell)
 		{
 			if (lex->input[lex->index] == '\0')
 			{
-				if (ft_continue_line(lex, shell))
-				{
-					ft_putstr_fd(EOFWHILELOOK"`\''\n", 2);
+				if (ft_lex_continue_line(lex, shell, "\'") != 1)
 					return (-1);
-				}
 			}
 			else
 				ft_lex_word(lex, shell);
@@ -332,7 +384,7 @@ int				ft_lex_quote(t_lex *lex, t_42sh *shell)
 // 		{
 // 			if ((*input)[*index] == '\0')
 // 			{
-// 				if (!(*input = ft_continue_line(*input, shell)))
+// 				if (!(*input = ft_lex_continue_line(*input, shell)))
 // 					return (-1);
 // 			}
 // 			else
@@ -356,7 +408,7 @@ int				ft_lex_quote(t_lex *lex, t_42sh *shell)
 // 	{
 // 		if ((*input)[*index] == '\0')
 // 		{
-// 			if (!(*input = ft_continue_line(*input, shell)))
+// 			if (!(*input = ft_lex_continue_line(*input, shell)))
 // 				return (-1);
 // 		}
 // 		else
@@ -383,11 +435,8 @@ int				ft_lex_dquote_mode(t_lex *lex, t_42sh *shell)
 	{
 		if (lex->input[lex->index] == '\0')
 		{
-			if (ft_continue_line(lex, shell))
-			{
-				ft_putstr_fd(EOFWHILELOOK"`\"'\n", 2);
+			if (ft_lex_continue_line(lex, shell, "\"") != 1)
 				return (-1);
-			}
 		}
 		else
 		{
@@ -445,7 +494,7 @@ int				ft_lex_dquote(t_lex *lex, t_42sh *shell)
 // 	{
 // 		(*index)++;
 // 		if ((*input)[*index] == '\0'
-// 			&& !(*input = ft_continue_line(*input, shell)))
+// 			&& !(*input = ft_lex_continue_line(*input, shell)))
 // 			return (-1);
 // 		if ((*input)[*index] == '{')
 // 			braces++;
@@ -473,7 +522,7 @@ int				ft_lex_dquote(t_lex *lex, t_42sh *shell)
 // 	{
 // 		(*index)++;
 // 		if ((*input)[*index] == '\0'
-// 			&& !(*input = ft_continue_line(*input, shell)))
+// 			&& !(*input = ft_lex_continue_line(*input, shell)))
 // 			return (-1);
 // 		if ((*input)[*index] == '(')
 // 			pars++;
@@ -528,11 +577,8 @@ int				ft_lex_dollar_brace(t_lex *lex, t_42sh *shell)
 	{
 		if (lex->input[lex->index] == '\0')
 		{
-			if (ft_continue_line(lex, shell))
-			{
-				ft_putstr_fd(EOFWHILELOOK"`}'\n", 2);
+			if (ft_lex_continue_line(lex, shell, "}") != 1)
 				return (-1);
-			}
 		}
 		else
 		{
@@ -557,11 +603,8 @@ int				ft_lex_dollar_par(t_lex *lex, t_42sh *shell)
 	{
 		if (lex->input[lex->index] == '\0')
 		{
-			if (ft_continue_line(lex, shell))
-			{
-				ft_putstr_fd(EOFWHILELOOK"`)'\n", 2);
+			if (ft_lex_continue_line(lex, shell, ")") != 1)
 				return (-1);
-			}
 		}
 		else
 		{
@@ -619,7 +662,7 @@ int				ft_lex_dollar(t_lex *lex, t_42sh *shell)
 // 	while ((*input)[*index] != '`')
 // 	{
 // 		if ((*input)[*index] == '\0'
-// 			&& !(*input = ft_continue_line(*input, shell)))
+// 			&& !(*input = ft_lex_continue_line(*input, shell)))
 // 			return (-1);
 // 		i = 0;
 // 		while (g_tokcond[i].sub_mode == 0 ||
@@ -642,11 +685,8 @@ int				ft_lex_bquote_mode(t_lex *lex, t_42sh *shell)
 	{
 		if (lex->input[lex->index] == '\0')
 		{
-			if (ft_continue_line(lex, shell))
-			{
-				ft_putstr_fd(EOFWHILELOOK"``'\n", 2);
+			if (ft_lex_continue_line(lex, shell, "`") != 1)
 				return (-1);
-			}
 		}
 		else
 		{

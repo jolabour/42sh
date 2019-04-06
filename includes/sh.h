@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/05 06:02:58 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/06 14:12:41 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@
 # define SET_FG_RED		"\x1b[38;5;196m"
 # define RESET_COLOR	"\x1b[0m"
 
-# define EOFWHILELOOK "42sh: unexpected EOF while looking for matching "
+# define EOFWHILELOOK "42sh: unexpected EOF while looking for matching `"
 
 # ifdef MINISHELL
 #  define PROG_NAME "minishell"
@@ -326,6 +326,9 @@ typedef struct				s_42sh
 	int						retval;
 	int						foreground;
 	t_tmpfd					*tmp_fds;
+	bool					stopexe;
+	bool					buffer_mode;
+	char					*buffer;
 }							t_42sh;
 
 typedef struct				s_lex
@@ -389,6 +392,8 @@ int							ft_lex_word(t_lex *lex, t_42sh *shell);
 int							ft_lex_newword(t_lex *lex, t_42sh *shell);
 int							ft_lexer(t_lex *lex, t_42sh *shell);
 void						ft_print_toklist(char *input, t_toklist *list);
+int							ft_continue_line(t_42sh *shell, char **line,
+		char *matching);
 
 /*
 **							ast
@@ -486,6 +491,7 @@ int							ft_exp_sub(t_txtlist *txt, t_42sh *shell);
 int							ft_exp_bquote(t_txtlist *txt, t_42sh *shell);
 int							ft_exp_expr(t_txtlist *txt, t_42sh *shell);
 char						*ft_simple_expanse(char *word, t_42sh *shell);
+void						ft_rmquotes_word(char *word);
 
 /*
 **							cmdline_command
@@ -534,7 +540,7 @@ extern int					(*g_exptab[])(t_txtlist *txt, t_42sh *shell);
 extern char					*g_sigtab[];
 extern char					*g_sigabrevtab[];
 extern char					*(*g_cmdlinetab[])(t_node *command);
-
+extern int					g_intr;
 
 typedef void				(*t_ak)(t_42sh *sh);
 typedef void				(*t_test_other)(t_42sh *sh, int *pos);

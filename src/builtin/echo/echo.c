@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/19 21:32:59 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/05 01:36:46 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/06 11:34:40 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@ int			check_opt_echo(t_42sh *sh)
 
 void		builtin_echo(t_42sh *sh)
 {
+	/*
+	**		echo sans argument devrait afficher un \n
+	*/
 	int		i;
 	int		n;
 

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/05 06:59:51 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/06 15:00:39 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -479,21 +479,32 @@ int			ft_exp_brace(t_txtlist *txt, t_42sh *shell)
 		var = ft_strsub(txt->data, txt->start + 2, i);
 	}
 	res = var ? ft_getvar(var, shell) : NULL;
+	free(var);
 	txt->data = res ? ft_backslash_quotes(res) : ft_strdup("");
 	return (0);
 }
 
+char		*ft_cmdsub(char *command, t_42sh *shell)
+{
+	//t_42sh	shcpy;
+
+	(void)shell;
+	return (command);
+}
+
 int			ft_exp_sub(t_txtlist *txt, t_42sh *shell)
 {
-	(void)shell;
-	txt->data = ft_strsub(txt->data, txt->start, txt->len);
+	if (!(txt->data = ft_cmdsub(ft_strsub(txt->data, txt->start + 2,
+		txt->len - 3), shell)))
+		return (-1);
 	return (0);
 }
 
 int			ft_exp_bquote(t_txtlist *txt, t_42sh *shell)
 {
-	(void)shell;
-	txt->data = ft_strsub(txt->data, txt->start, txt->len);
+	if (!(txt->data = ft_cmdsub(ft_strsub(txt->data, txt->start + 1,
+		txt->len - 2), shell)))
+		return (-1);
 	return (0);
 }
 
@@ -638,6 +649,6 @@ char		*ft_simple_expanse(char *word, t_42sh *shell)
 	char	*new;
 
 	new = ft_expanse_word(word, shell);
-	ft_rmquotes_word(word);
+	ft_rmquotes_word(new);
 	return (new);
 }
