@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/06 15:00:39 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/07 10:37:55 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,6 +280,14 @@ void			ft_parse_error(t_txtlist *list)
 	ft_putstr_fd("42sh: unexpected '\\0'\n", 2);
 }
 
+t_txtlist		*ft_parse_check(t_txtlist *list)
+{
+	if (list->token)
+		return (list);
+	free(list);
+	return (NULL);
+}
+
 t_txtlist		*ft_parse_word(char *word)
 {
 	t_txtlist	*list[2];
@@ -304,7 +312,7 @@ t_txtlist		*ft_parse_word(char *word)
 			return (NULL);
 		}
 	}
-	return (list[0]);
+	return (ft_parse_check(list[0]));
 }
 
 void			ft_print_txtlist(char *input, t_txtlist *list)
@@ -484,12 +492,96 @@ int			ft_exp_brace(t_txtlist *txt, t_42sh *shell)
 	return (0);
 }
 
+int			ft_cmdsub_child(t_42sh *shell)
+{
+	char	*line;
+	t_lex	lex;
+	t_ast	ast;
+
+	ast = (t_ast){NULL, NULL, NULL};
+	while (ft_continue_line(shell, &line, NULL))
+	{
+		lex = (t_lex){line, 0, NULL, NULL, true, false, 0};
+		if (ft_lexer(&lex, shell))
+			return (1);
+		ast.list = ft_toklist_to_node(lex.input, lex.begin);
+		if (ft_build_ast(&ast, shell))
+			return (1);
+	}
+	if (ast.begin)
+		g_exetab[ast.begin->token](ast.begin, shell);
+	ft_ast_free(ast.begin);
+	return (0);
+}
+
+char		*ft_del_ending_newlines(char *str)
+{
+	size_t	i;
+	size_t	last;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\n')
+		{
+			last = i;
+			while (str[i] == '\n')
+				i++;
+			if (!str[i])
+				str[last] = '\0';
+		}
+		else
+			i++;
+	}
+	return (str);
+}
+
+char		*ft_cmdsub_read(pid_t pid, int fd)
+{
+	char	*sub;
+	char	buf[BUFF_SIZE + 1];
+	int		status;
+	int		ret;
+
+	sub = NULL;
+	if (waitpid(pid, &status, WUNTRACED) && WIFEXITED(status)
+		&& !WEXITSTATUS(status))
+	{
+		sub = ft_strdup("");
+		while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
+		{
+			buf[ret] = '\0';
+			sub = ft_strjoinfree(sub, buf, 1);
+		}
+		ft_del_ending_newlines(sub);
+	}
+	close(fd);
+	return (sub);
+}
+
 char		*ft_cmdsub(char *command, t_42sh *shell)
 {
-	//t_42sh	shcpy;
+	pid_t	pid;
+	int		pipefd[2];
 
-	(void)shell;
-	return (command);
+	ft_pipe_exit(pipefd);
+	pid = ft_fork_exit();
+	if (pid == 0)
+	{
+		close(pipefd[0]);
+		shell->pgid = getpgrp();
+		shell->buffer_mode = true;
+		shell->buffer = command;
+		if (pipefd[1] != STDOUT_FILENO)
+		{
+			ft_dup2_exit(pipefd[1], STDOUT_FILENO);
+			close(pipefd[1]);
+		}
+		exit(ft_cmdsub_child(shell));
+	}
+	close(pipefd[1]);
+	free(command);
+	return (ft_cmdsub_read(pid, pipefd[0]));
 }
 
 int			ft_exp_sub(t_txtlist *txt, t_42sh *shell)
@@ -515,13 +607,36 @@ int			ft_exp_expr(t_txtlist *txt, t_42sh *shell)
 	return (0);
 }
 
-int			ft_exp(t_txtlist *list, t_42sh *shell)
+int				ft_exp_error(t_txtlist *list, t_txtlist *error)
 {
+	t_txtlist	*tmp;
+
+	while (list != error)
+	{
+		tmp = list;
+		list = list->next;
+		free(tmp->data);
+		free(tmp);
+	}
 	while (list)
 	{
-		if (g_exptab[list->token](list, shell))
-			return (-1);
+		tmp = list;
 		list = list->next;
+		free(tmp);
+	}
+	return (-1);
+}
+
+int				ft_exp(t_txtlist *list, t_42sh *shell)
+{
+	t_txtlist	*tmp;
+
+	tmp = list;
+	while (tmp)
+	{
+		if (g_exptab[tmp->token](tmp, shell))
+			return (ft_exp_error(list, tmp));
+		tmp = tmp->next;
 	}
 	return (0);
 }
@@ -548,6 +663,7 @@ char			*ft_txt_join(t_txtlist *list)
 	size_t		size;
 
 	word = (char *)ft_malloc_exit((ft_txt_len(list) + 1) * sizeof(char));
+	word[0] = '\0';
 	size = 0;
 	while (list)
 	{
@@ -566,14 +682,34 @@ char			*ft_expanse_word(char *word, t_42sh *shell)
 	t_txtlist	*list;
 	char		*result;
 
-	(void)shell;
-	(void)result;
-	if (!(list = ft_parse_word(word)))
+	list = ft_parse_word(word);
+	if (ft_exp(list, shell))
+	{
+		shell->stopexe = true;
 		return (NULL);
-	//ft_print_txtlist(word, list);
-	ft_exp(list, shell);
+	}
 	result = ft_txt_join(list);
 	return (result);
+}
+
+char		**ft_exp_args_error(char **args)
+{
+	int		i;
+
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	i++;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+	return (NULL);
 }
 
 char		**ft_expanse_args(char **args, t_42sh *shell)
@@ -587,6 +723,8 @@ char		**ft_expanse_args(char **args, t_42sh *shell)
 		tmp = args[i];
 		args[i] = ft_expanse_word(args[i], shell);
 		free(tmp);
+		if (!args[i])
+			return (ft_exp_args_error(args));
 		i++;
 	}
 	shell->argv->size = i;
@@ -639,7 +777,8 @@ char		**ft_command_to_args(t_node *current, t_42sh *shell)
 	char	**args;
 
 	args = ft_init_args(current);
-	ft_expanse_args(args, shell);
+	if (!ft_expanse_args(args, shell))
+		return (NULL);
 	ft_rmquotes_args(args);
 	return (args);
 }

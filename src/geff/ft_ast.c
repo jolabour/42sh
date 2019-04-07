@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:52:23 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/06 14:27:16 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/07 04:57:53 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,8 @@ t_node			*ft_toklist_to_node(char *input, t_toklist *list)
 	next = &begin;
 	while (list)
 	{
-		if (!(*next = ft_new_node())
-			|| !((*next)->data = ft_strsub(input, list->start, list->len)))
-			return (NULL);
+		*next = ft_new_node();
+		(*next)->data = ft_strsub(input, list->start, list->len);
 		(*next)->token = list->token;
 		next = &((*next)->right);
 		tmp = list;

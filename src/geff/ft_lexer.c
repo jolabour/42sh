@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:47:25 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/06 14:25:18 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/07 08:07:39 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int				ft_continue_line_buffer(t_42sh *shell, char **line)
 {
 	char		*tmp;
 
-	tmp = ft_strchr(shell->buffer, '\n');
+	tmp = shell->buffer ? ft_strchr(shell->buffer, '\n') : NULL;
 	*line = tmp ? ft_strsub(shell->buffer, 0, tmp - shell->buffer + 1)
 		: shell->buffer;
 	if (tmp)
@@ -79,7 +79,7 @@ int				ft_continue_line_buffer(t_42sh *shell, char **line)
 	}
 	else
 		shell->buffer = NULL;
-	return (tmp ? 1 : 0);
+	return (*line ? 1 : 0);
 }
 
 int				ft_continue_line_stdin(t_42sh *shell, char **line)

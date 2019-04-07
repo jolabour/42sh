@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/06 14:12:41 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/07 10:17:07 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -459,6 +459,10 @@ int							ft_exe_lessgreat(t_node *current, t_42sh *shell);
 int							ft_exe_dless(t_node *current, t_42sh *shell);
 int							ft_exe_rbrace(t_node *current, t_42sh *shell);
 int							ft_exe_command(t_node *current, t_42sh *shell);
+int							ft_pipe_exit(int pipefd[2]);
+pid_t						ft_fork_exit(void);
+int							ft_dup_exit(int fd);
+int							ft_dup2_exit(int fd1, int fd2);
 
 /*
 **							expanse
