@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:52:23 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/07 04:57:53 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/07 10:50:07 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ int				ft_ast_continue_list(t_node **list, t_42sh *shell)
 	char		*line;
 	int			ret;
 
-	ret = ft_continue_line(shell, &line, "");
+	ret = ft_continue_line(shell, &line, NULL);
 	if (ret != 1)
 		return (ret);
 	lex = (t_lex){line, 0, NULL, NULL, true, false, 0};

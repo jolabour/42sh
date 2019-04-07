@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/07 10:37:55 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/07 12:36:20 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -468,6 +468,16 @@ int			ft_exp_var(t_txtlist *txt, t_42sh *shell)
 	return (0);
 }
 
+int			ft_exp_brace_error(t_txtlist *txt, char *var)
+{
+	ft_putstr_fd("42sh: ", STDERR_FILENO);
+	write(STDERR_FILENO, txt->data + txt->start, txt->len);
+	ft_putstr_fd(": bad substitution\n", STDERR_FILENO);
+	if (var)
+		free(var);
+	return (-1);
+}
+
 int			ft_exp_brace(t_txtlist *txt, t_42sh *shell)
 {
 	char	*var;
@@ -476,6 +486,8 @@ int			ft_exp_brace(t_txtlist *txt, t_42sh *shell)
 
 	var = NULL;
 	i = 0;
+	if (txt->len < 4)
+		return (ft_exp_brace_error(txt, NULL));
 	if (ft_get_spparam(txt->data[2]))
 		var = ft_strsub(txt->data, txt->start + 2, (i = 1));
 	else if (ft_isalpha(txt->data[txt->start + 2])
@@ -486,6 +498,8 @@ int			ft_exp_brace(t_txtlist *txt, t_42sh *shell)
 			i++;
 		var = ft_strsub(txt->data, txt->start + 2, i);
 	}
+	if ((unsigned int)i + 3 != txt->len || !var)
+		return (ft_exp_brace_error(txt, var));
 	res = var ? ft_getvar(var, shell) : NULL;
 	free(var);
 	txt->data = res ? ft_backslash_quotes(res) : ft_strdup("");
@@ -536,7 +550,14 @@ char		*ft_del_ending_newlines(char *str)
 	return (str);
 }
 
-char		*ft_cmdsub_read(pid_t pid, int fd)
+void		ft_cmdsub_error(char *command)
+{
+	ft_putstr_fd("42sh: command substitution: `", STDERR_FILENO);
+	ft_putstr_fd(command, STDERR_FILENO);
+	ft_putstr_fd("\'\n", STDERR_FILENO);
+}
+
+char		*ft_cmdsub_read(pid_t pid, int fd, char *command)
 {
 	char	*sub;
 	char	buf[BUFF_SIZE + 1];
@@ -555,7 +576,10 @@ char		*ft_cmdsub_read(pid_t pid, int fd)
 		}
 		ft_del_ending_newlines(sub);
 	}
+	else
+		ft_cmdsub_error(command);
 	close(fd);
+	free(command);
 	return (sub);
 }
 
@@ -580,8 +604,7 @@ char		*ft_cmdsub(char *command, t_42sh *shell)
 		exit(ft_cmdsub_child(shell));
 	}
 	close(pipefd[1]);
-	free(command);
-	return (ft_cmdsub_read(pid, pipefd[0]));
+	return (ft_cmdsub_read(pid, pipefd[0], command));
 }
 
 int			ft_exp_sub(t_txtlist *txt, t_42sh *shell)
