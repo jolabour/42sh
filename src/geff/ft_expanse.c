@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/08 23:49:46 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/09 01:02:37 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -817,10 +817,147 @@ void		ft_rmquotes_args(char **args)
 	}
 }
 
-// char		**ft_field_split(char **args)
-// {
-	
-// }
+size_t		ft_count_field_size(char *word, char *sep)
+{
+	size_t	i;
+	char	quote;
+
+	i = 0;
+	quote = 0;
+	while (word[i] && (quote || !ft_strchr(sep, word[i])))
+	{
+		if (word[i] == '\\' && quote != '\'' && word[i + 1])
+			i++;
+		else if (word[i] == '\"' && quote != '\'')
+			quote = quote ? 0 : '\"';
+		else if (word[i] == '\'' && quote != '\"')
+			quote = quote ? 0 : '\'';
+		i++;
+	}
+	return (i);
+}
+
+int			ft_count_fields(char *word, char *sep)
+{
+	size_t	i;
+	int		fields;
+
+	i = 0;
+	fields = 0;
+	while (word[i])
+	{
+		while (word[i] && ft_strchr(sep, word[i]))
+			i++;
+		if (word[i])
+		{
+			fields++;
+			i = i + ft_count_field_size(word + i, sep);
+		}
+	}
+	return (fields);
+}
+
+char		**ft_field_split_word(char *word, char *sep)
+{
+	char	**split;
+	int		i;
+	int		fields;
+	size_t	field_size;
+
+	split = (char **)ft_malloc_exit((ft_count_fields(word, sep) + 1)
+		* sizeof(char *));
+	i = 0;
+	fields = 0;
+	while (word[i])
+	{
+		while (word[i] && ft_strchr(sep, word[i]))
+			i++;
+		if (word[i])
+		{
+			field_size = ft_count_field_size(word + i, sep);
+			split[fields] = ft_strsub(word, i, field_size);
+			i = i + field_size;
+			fields++;
+		}
+	}
+	split[fields] = NULL;
+	return (split);
+}
+
+int			ft_count_args(char ***splits)
+{
+	int		size;
+	int		i;
+	int		j;
+
+	size = 0;
+	j = 0;
+	while (splits[j])
+	{
+		i = 0;
+		while (splits[j][i])
+		{
+			i++;
+			size++;
+		}
+		j++;
+	}
+	return (size);
+}
+
+char		**ft_gather_splits(char ***splits)
+{
+	char	**args;
+	int		size;
+	int		i;
+	int		j;
+
+	args = (char **)ft_malloc_exit((ft_count_args(splits) + 1)
+		* sizeof(char *));
+	size = 0;
+	j = 0;
+	while (splits[j])
+	{
+		i = 0;
+		while (splits[j][i])
+		{
+			args[size] = splits[j][i];
+			i++;
+			size++;
+		}
+		free(splits[j]);
+		j++;
+	}
+	args[size] = NULL;
+	free(splits);
+	return (args);
+}
+
+char		**ft_field_split(char **args, t_42sh *shell)
+{
+	char	***splits;
+	char	*sep;
+	int		i;
+
+	i = 0;
+	while (args[i])
+		i++;
+	splits = (char ***)ft_malloc_exit((i + 1) * sizeof(char **));
+	sep = ft_getvar("IFS", shell);
+	if (!sep)
+		sep = ft_strdup(" \t\n");
+	i = 0;
+	while (args[i])
+	{
+		splits[i] = ft_field_split_word(args[i], sep);
+		free(args[i]);
+		i++;
+	}
+	splits[i] = NULL;
+	free(args);
+	free(sep);
+	return (ft_gather_splits(splits));
+}
 
 char		**ft_command_to_args(t_node *current, t_42sh *shell)
 {
@@ -829,7 +966,7 @@ char		**ft_command_to_args(t_node *current, t_42sh *shell)
 	args = ft_init_args(current);
 	if (!ft_expanse_args(args, shell))
 		return (NULL);
-	//args = ft_field_split(args);
+	args = ft_field_split(args, shell);
 	ft_rmquotes_args(args);
 	return (args);
 }
