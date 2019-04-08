@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/07 12:36:20 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/08 18:52:18 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -506,26 +506,18 @@ int			ft_exp_brace(t_txtlist *txt, t_42sh *shell)
 	return (0);
 }
 
-int			ft_cmdsub_child(t_42sh *shell)
+int			ft_cmdsub_child(int pipefd[2], t_node *ast, t_42sh *shell)
 {
-	char	*line;
-	t_lex	lex;
-	t_ast	ast;
-
-	ast = (t_ast){NULL, NULL, NULL};
-	while (ft_continue_line(shell, &line, NULL))
+	close(pipefd[0]);
+	shell->pgid = getpgrp();
+	if (pipefd[1] != STDOUT_FILENO)
 	{
-		lex = (t_lex){line, 0, NULL, NULL, true, false, 0};
-		if (ft_lexer(&lex, shell))
-			return (1);
-		ast.list = ft_toklist_to_node(lex.input, lex.begin);
-		if (ft_build_ast(&ast, shell))
-			return (1);
+		ft_dup2_exit(pipefd[1], STDOUT_FILENO);
+		close(pipefd[1]);
 	}
-	if (ast.begin)
-		g_exetab[ast.begin->token](ast.begin, shell);
-	ft_ast_free(ast.begin);
-	return (0);
+	if (ast)
+		g_exetab[ast->token](ast, shell);
+	exit(EXIT_SUCCESS);
 }
 
 char		*ft_del_ending_newlines(char *str)
@@ -557,54 +549,84 @@ void		ft_cmdsub_error(char *command)
 	ft_putstr_fd("\'\n", STDERR_FILENO);
 }
 
-char		*ft_cmdsub_read(pid_t pid, int fd, char *command)
+char		*ft_cmdsub_read(int fd)
 {
 	char	*sub;
 	char	buf[BUFF_SIZE + 1];
-	int		status;
 	int		ret;
 
-	sub = NULL;
-	if (waitpid(pid, &status, WUNTRACED) && WIFEXITED(status)
-		&& !WEXITSTATUS(status))
+	sub = ft_strdup("");
+	while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
-		sub = ft_strdup("");
-		while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
-		{
-			buf[ret] = '\0';
-			sub = ft_strjoinfree(sub, buf, 1);
-		}
-		ft_del_ending_newlines(sub);
+		buf[ret] = '\0';
+		sub = ft_strjoinfree(sub, buf, 1);
 	}
-	else
-		ft_cmdsub_error(command);
+	ft_del_ending_newlines(sub);
 	close(fd);
-	free(command);
 	return (sub);
+}
+
+int			ft_cmdsub_getast(t_ast *ast, t_42sh *shell)
+{
+	t_lex	lex;
+	char	*line;
+
+	while (ft_continue_line(shell, &line, NULL))
+	{
+		lex = (t_lex){line, 0, NULL, NULL, true, false, 0};
+		if (ft_lexer(&lex, shell))
+		{
+			ft_ast_free(ast->begin);
+			return (1);
+		}
+		ast->list = ft_toklist_to_node(lex.input, lex.begin);
+		if (ft_build_ast(ast, shell))
+			return (1);
+	}
+	return (0);
+}
+
+int			ft_cmdsub_parse(t_ast *ast, char *command, t_42sh *shell)
+{
+	char	*tmp_buffer;
+	bool	tmp_buffer_mode;
+	int		ret;
+
+	tmp_buffer = shell->buffer;
+	tmp_buffer_mode = shell->buffer_mode;
+	shell->buffer = ft_strdup(command);
+	shell->buffer_mode = true;
+	ret = ft_cmdsub_getast(ast, shell);
+	if (shell->buffer)
+		free(shell->buffer);
+	shell->buffer = tmp_buffer;
+	shell->buffer_mode = tmp_buffer_mode;
+	return (ret);
 }
 
 char		*ft_cmdsub(char *command, t_42sh *shell)
 {
-	pid_t	pid;
+	t_ast	ast;
 	int		pipefd[2];
+	pid_t	pid;
+	char	*result;
 
-	ft_pipe_exit(pipefd);
-	pid = ft_fork_exit();
-	if (pid == 0)
+	ast = (t_ast){NULL, NULL, NULL};
+	result = NULL;
+	if (ft_cmdsub_parse(&ast, command, shell))
+		ft_cmdsub_error(command);
+	else
 	{
-		close(pipefd[0]);
-		shell->pgid = getpgrp();
-		shell->buffer_mode = true;
-		shell->buffer = command;
-		if (pipefd[1] != STDOUT_FILENO)
-		{
-			ft_dup2_exit(pipefd[1], STDOUT_FILENO);
-			close(pipefd[1]);
-		}
-		exit(ft_cmdsub_child(shell));
+		ft_pipe_exit(pipefd);
+		pid = ft_fork_exit();
+		if (pid == 0)
+			ft_cmdsub_child(pipefd, ast.begin, shell);
+		close(pipefd[1]);
+		result = ft_cmdsub_read(pipefd[0]);
+		ft_ast_free(ast.begin);
 	}
-	close(pipefd[1]);
-	return (ft_cmdsub_read(pid, pipefd[0], command));
+	free(command);
+	return (result ? ft_backslash_quotes(result) : NULL);
 }
 
 int			ft_exp_sub(t_txtlist *txt, t_42sh *shell)
