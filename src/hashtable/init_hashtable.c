@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/25 04:30:08 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/02 04:45:24 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/09 00:54:49 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,7 @@ void		init_hashtable(t_42sh *sh)
 	while ((path = sh->bin_dirs[i++]) != NULL)
 	{
 		if ((dirp = opendir(path)) == NULL)
-		{
-			ft_putstr_fd("42sh: can't open ", 2);
-			ft_putendl_fd(path, 2);
 			continue ;
-		}
 		hash_current_dir(&sh->hashtable, dirp, path);
 		if (closedir(dirp) == -1)
 			return ;

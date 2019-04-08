@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 03:29:36 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/06 05:18:05 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/09 00:33:41 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,14 +75,14 @@ int				check_env(t_env **env, char **split)
 	int			len;
 	char		*new;
 
-	len = ft_strlen(split[0]);
+	new = ft_strjoin(split[0], "=");
+	len = ft_strlen(new);
 	tmp = *env;
 	while (tmp)
 	{
-		if (!ft_strncmp(split[0], tmp->str, len))
+		if (!ft_strncmp(new, tmp->str, len))
 		{
 			free(tmp->str);
-			new = ft_strjoin(split[0], "=");
 			tmp->str = ft_strjoin(new, split[1]);
 			free(new);
 			return (1);

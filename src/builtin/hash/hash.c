@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 04:10:56 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 06:14:57 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/09 00:22:33 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int			check_hash_opt(t_42sh *sh, char *str, int *i)
 	}
 	else if (ft_strequ(str, "-a") == 1)
 	{
+		reset_hashtable(&sh->hashtable);
 		init_hashtable(sh);
 		*i = *i + 1;
 	}

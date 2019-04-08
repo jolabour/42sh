@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/08 21:41:15 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/09 01:43:01 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -778,7 +778,7 @@ int				ft_exe_greatand(t_node *current, t_42sh *shell)
 	int			src;
 	int			ret;
 
-	dest = current->left ? ft_atoi(current->left->data) : 0;
+	dest = current->left ? ft_atoi(current->left->data) : 1;
 	fd = ft_simple_expanse(current->right->data, shell);
 	if (!ft_str_isdigit(fd) || !fd[0])
 		return (ft_ambigous_error(fd, current->right->data));
@@ -930,6 +930,8 @@ void			ft_add_tmp_env(char *var, char *value, t_42sh *shell)
 	int			i;
 
 	i = 0;
+	if (ft_strequ(var, "PATH=") == 1)
+		reset_hashtable(&shell->hashtable);
 	while (shell->copy_env[i] && !ft_strnequ(var, shell->copy_env[i],
 		ft_strlen(var)))
 		i++;
@@ -1007,7 +1009,8 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 {
 	BUCKET_CONTENT	*bucket_entry;
 	void			*exe;
-	struct stat info;
+	struct stat		info;
+	int				i;
 
 	if (current->right && !(shell->argv->argv = ft_command_to_args(current, shell)))
 		return ((shell->retval = 1));
@@ -1020,9 +1023,16 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 		free_tab(shell->bin_dirs);
 		shell->bin_dirs = NULL;
 	}
-	shell->valide_path = ft_getenv(shell->env, "PATH=", sizeof("PATH=") - 1);
+	i = 0;
+	while (shell->copy_env[i])
+	{
+		if (ft_strncmp(shell->copy_env[i], "PATH=", 5) == 0)
+			shell->valide_path = ft_strdup(shell->copy_env[i]);
+		i++;
+	}
 	if (shell->valide_path)
 		shell->bin_dirs = ft_strsplit(shell->valide_path, ':');
+	ft_strdel(&shell->valide_path);
 	exe = ft_isbuiltin(shell->argv->argv[0]);
 	if (exe)
 		return (ft_exe_builtin(current, shell, exe));

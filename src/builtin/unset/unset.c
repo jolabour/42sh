@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 05:57:55 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 06:01:09 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/09 00:17:03 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ void		del_var(t_42sh *sh)
 	i = 1;
 	while (sh->argv->argv[i])
 	{
+		if (ft_strequ(sh->argv->argv[i], "PATH") == 1)
+			reset_hashtable(&sh->hashtable);
 		if ((j = search_var(sh->var, &sh->var->begin, sh->argv->argv[i])) == 0)
 			search_env(&sh->env, sh->argv->argv[i],
 				ft_strlen(sh->argv->argv[i]));
