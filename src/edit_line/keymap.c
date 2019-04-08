@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/19 00:40:38 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/04 02:28:03 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/08 20:36:17 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void				up_input(t_42sh *sh)
 
 void				add_one(t_42sh *sh, long buf)
 {
+	if (!ft_isprint((int)buf))
+		return ;
 	if (sh->stdin->len_line >= sh->stdin->size_of_input - 10)
 		up_input(sh);
 	sh->winsize = get_winsize();

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/06 14:32:51 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/08 21:41:15 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1025,7 +1025,7 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 		shell->bin_dirs = ft_strsplit(shell->valide_path, ':');
 	exe = ft_isbuiltin(shell->argv->argv[0]);
 	if (exe)
-		return ((shell->retval = ft_exe_builtin(current, shell, exe)));
+		return (ft_exe_builtin(current, shell, exe));
 	if ((bucket_entry = ht_lookup(shell->argv->argv[0], &shell->hashtable)) != NULL)
 		shell->valide_path = ft_strdup(bucket_entry->path);
 	else
