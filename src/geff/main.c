@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/09 01:43:01 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/09 02:45:03 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -577,7 +577,8 @@ int				ft_exe_great(t_node *current, t_42sh *shell)
 	dest = current->left ? ft_atoi(current->left->data) : 1;
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	path = ft_simple_expanse(current->right->data, shell);
+	if (!(path = ft_simple_expanse(current->right->data, shell)))
+		return (1);
 	if ((src = open(path, O_WRONLY)) == -1)
 	{
 		if ((src = ft_open_error(path, O_WRONLY | O_CREAT,
@@ -605,7 +606,8 @@ int				ft_exe_less(t_node *current, t_42sh *shell)
 	dest = current->left ? ft_atoi(current->left->data) : 0;
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	path = ft_simple_expanse(current->right->data, shell);
+	if (!(path = ft_simple_expanse(current->right->data, shell)))
+		return (1);
 	if ((src = ft_open_error(path, O_RDONLY, current->right->data)) == -1)
 		return (1);
 	free(path);
@@ -681,7 +683,8 @@ int				ft_exe_dgreat(t_node *current, t_42sh *shell)
 	dest = current->left ? ft_atoi(current->left->data) : 1;
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	path = ft_simple_expanse(current->right->data, shell);
+	if (!(path = ft_simple_expanse(current->right->data, shell)))
+		return (1);
 	if ((src = open(path, O_WRONLY | O_APPEND)) == -1)
 	{
 		if ((src = ft_open_error(path, O_WRONLY | O_APPEND | O_CREAT,
@@ -740,7 +743,8 @@ int				ft_exe_lessand(t_node *current, t_42sh *shell)
 	int			ret;
 
 	dest = current->left ? ft_atoi(current->left->data) : 0;
-	fd = ft_simple_expanse(current->right->data, shell);
+	if (!(fd = ft_simple_expanse(current->right->data, shell)))
+		return (1);
 	if (!ft_str_isdigit(fd) || !fd[0])
 		return (ft_ambigous_error(fd, current->right->data));
 	src = ft_atoi(fd);
@@ -779,7 +783,8 @@ int				ft_exe_greatand(t_node *current, t_42sh *shell)
 	int			ret;
 
 	dest = current->left ? ft_atoi(current->left->data) : 1;
-	fd = ft_simple_expanse(current->right->data, shell);
+	if (!(fd = ft_simple_expanse(current->right->data, shell)))
+		return (1);
 	if (!ft_str_isdigit(fd) || !fd[0])
 		return (ft_ambigous_error(fd, current->right->data));
 	src = ft_atoi(fd);
@@ -816,7 +821,8 @@ int				ft_exe_lessgreat(t_node *current, t_42sh *shell)
 	int			dest;
 	int			src;
 
-	path = ft_simple_expanse(current->right->data, shell);
+	if (!(path = ft_simple_expanse(current->right->data, shell)))
+		return (1);
 	dest = current->left ? ft_atoi(current->left->data) : 0;
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
@@ -862,9 +868,10 @@ int				ft_exe_dless(t_node *current, t_42sh *shell)
 	ft_pipe_exit(pipefd);
 	if (!shell->forked)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
-	heredoc = ft_str_isquote(current->right->data)
+	if (!(heredoc = ft_str_isquote(current->right->data)
 		? ft_strdup(current->right->right->data)
-		: ft_simple_expanse(current->right->right->data, shell);
+		: ft_simple_expanse(current->right->right->data, shell)))
+		return (1);
 	ft_putstr_fd(heredoc, pipefd[1]);
 	free(heredoc);
 	close(pipefd[1]);
@@ -905,23 +912,33 @@ void			(*ft_isbuiltin(char *word))(t_42sh *)
 	return (g_bttab[i].f);
 }
 
+int				ft_count_argvsize(char **args)
+{
+	int			i;
+
+	i = 0;
+	while (args[i])
+		i++;
+	return (i);
+}
+
 int				ft_exe_builtin(t_node *current, t_42sh *shell,
 				void (*f)(t_42sh *))
 {
 	t_tmpfd		*tmp;
+	int			ret;
 
-	if (!(current->redir
-		&& g_exetab[current->redir->token](current->redir, shell)))
-	{
-		tmp = shell->tmp_fds;
-		shell->tmp_fds = NULL;
+	ret = 0;
+	if (current->redir)
+		ret = g_exetab[current->redir->token](current->redir, shell);
+	tmp = shell->tmp_fds;
+	shell->tmp_fds = NULL;
+	shell->argv->size = ft_count_argvsize(shell->argv->argv);
+	if (!ret)
 		f(shell);
-		ft_reset_tmp_fd(tmp);
-	}
-	else
-		shell->retval = 1;
+	ft_reset_tmp_fd(tmp);
 	ft_free_split(shell->argv->argv);
-	return (shell->retval);
+	return (ret ? ret : shell->retval);
 }
 
 void			ft_add_tmp_env(char *var, char *value, t_42sh *shell)
@@ -962,7 +979,8 @@ int				ft_tmp_assigns(t_node *current, t_42sh *shell)
 	while (current)
 	{
 		var = ft_strchr(current->data, '=');
-		value = ft_simple_expanse(var + 1, shell);
+		if (!(value = ft_simple_expanse(var + 1, shell)))
+			return (-1);
 		var = ft_strsub(current->data, 0, var - current->data + 1);
 		ft_add_tmp_env(var, value, shell);
 		free(var);
@@ -981,7 +999,8 @@ int				ft_sustained_assigns(t_node *current, t_42sh *shell)
 	while (current)
 	{
 		var = ft_strchr(current->data, '=');
-		value = ft_simple_expanse(var + 1, shell);
+		if (!(value = ft_simple_expanse(var + 1, shell)))
+			return (-1);
 		var = ft_strsub(current->data, 0, var - current->data + 1);
 		var = ft_strjoinfree(var, value, 3);
 		check_local_variable(shell, var);
@@ -997,7 +1016,7 @@ int				ft_assigns(t_node *current, t_42sh *shell)
 	shell->copy_env = list_to_tab(shell->env, shell->copy_env);
 	if (current->left)
 	{
-		if (!current->right)
+		if (!shell->argv->argv[0])
 			return (ft_sustained_assigns(current, shell));
 		else
 			return (ft_tmp_assigns(current, shell));
@@ -1012,7 +1031,8 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 	struct stat		info;
 	int				i;
 
-	if (current->right && !(shell->argv->argv = ft_command_to_args(current, shell)))
+	if (current->right &&
+		!(shell->argv->argv = ft_command_to_args(current, shell)))
 		return ((shell->retval = 1));
 	if (ft_assigns(current, shell))
 		return ((shell->retval = 1));
@@ -1075,6 +1095,16 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 	return (ft_exe_file(current, shell, shell->valide_path, shell->argv->argv));
 }
 
+void			ft_init_signals(void)
+{
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
+	signal(SIGTTIN, SIG_IGN);
+	signal(SIGTTOU, SIG_IGN);
+	signal(SIGCHLD, SIG_DFL);
+}
+
 void			ft_init(t_42sh *shell)
 {
 	shell->pid = getpid();
@@ -1086,12 +1116,7 @@ void			ft_init(t_42sh *shell)
 		while (tcgetpgrp(STDIN_FILENO) != shell->pgid)
 			kill(-shell->pgid, SIGTTIN);
 		shell->pgid = 0;
-		signal(SIGINT, SIG_IGN);
-  		signal(SIGQUIT, SIG_IGN);
-   		signal(SIGTSTP, SIG_IGN);
-   		signal(SIGTTIN, SIG_IGN);
-   		signal(SIGTTOU, SIG_IGN);
-		signal(SIGCHLD, SIG_DFL);
+		ft_init_signals();
 		setpgid(shell->pid, shell->pid);
 		tcsetpgrp(STDIN_FILENO, shell->pid);
 		tcgetattr(STDIN_FILENO, &(shell->term));

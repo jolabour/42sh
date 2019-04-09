@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/09 01:02:37 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/09 02:42:18 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -772,7 +772,6 @@ char		**ft_expanse_args(char **args, t_42sh *shell)
 			return (ft_exp_args_error(args));
 		i++;
 	}
-	shell->argv->size = i;
 	return (args);
 }
 
@@ -975,7 +974,7 @@ char		*ft_simple_expanse(char *word, t_42sh *shell)
 {
 	char	*new;
 
-	new = ft_expanse_word(word, shell);
-	ft_rmquotes_word(new);
+	if ((new = ft_expanse_word(word, shell)))
+		ft_rmquotes_word(new);
 	return (new);
 }
