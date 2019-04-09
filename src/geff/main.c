@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/09 02:45:03 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/09 04:26:24 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1031,8 +1031,7 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 	struct stat		info;
 	int				i;
 
-	if (current->right &&
-		!(shell->argv->argv = ft_command_to_args(current, shell)))
+	if (!(shell->argv->argv = ft_command_to_args(current, shell)))
 		return ((shell->retval = 1));
 	if (ft_assigns(current, shell))
 		return ((shell->retval = 1));
