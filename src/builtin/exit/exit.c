@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/02 03:50:31 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/05 05:09:34 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/09 02:46:09 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void		builtin_exit(t_42sh *sh)
 	if (sh->argv->size > 2)
 	{
 		ft_putendl_fd("exit: too many arguments", 2);
+		sh->retval = 1;
 		return ;
 	}
 	if (!sh->pgid)
@@ -34,7 +35,7 @@ void		builtin_exit(t_42sh *sh)
 			ft_putstr_fd(sh->argv->argv[1], 2);
 			ft_putendl_fd(": numeric argument required", 2);
 			sh->retval = 2;
-			exit(sh->retval);
+			return ;
 		}
 		i++;
 	}

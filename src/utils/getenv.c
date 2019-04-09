@@ -6,15 +6,16 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:22:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/09 00:53:47 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/09 05:12:20 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-char	*ft_getenv(t_env *list, const char *name, size_t len)
+char	*ft_getenv(t_env *list, const char *name, size_t len, t_var_mark *var)
 {
 	char	*str;
+	t_var	*tmp;
 
 	str = NULL;
 	if (len < 1)
@@ -22,11 +23,17 @@ char	*ft_getenv(t_env *list, const char *name, size_t len)
 	while (list)
 	{
 		if (ft_strncmp(list->str, name, len) == 0)
-		{
-			str = list->str;
-			break ;
-		}
+			return (list->str + len);
 		list = list->next;
 	}
-	return (str ? str + len : str);
+	if (!var)
+		return (NULL);
+	tmp = var->begin;
+	while (tmp)
+	{
+		if (ft_strequ(tmp->to_sub, name) == 1)
+			return (tmp->sub);
+		tmp = tmp->next;
+	}
+	return (NULL);
 }

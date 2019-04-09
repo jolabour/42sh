@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 08:56:10 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/03 03:02:08 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/09 05:00:55 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ void		def_prompt(t_env *list, t_42sh *sh)
 	size_t	len_home;
 
 	ft_strcpy(buf, "\x1B[1;33m| \x1B[1;36m");
-	if ((pwd = ft_getenv(list, "PWD=", 4)) != NULL)
+	if ((pwd = ft_getenv(list, "PWD=", 4, sh->var)) != NULL)
 	{
-		if ((home = ft_getenv(list, "HOME=", 5)) != NULL)
+		if ((home = ft_getenv(list, "HOME=", 5, sh->var)) != NULL)
 		{
 			len_home = ft_strlen(home);
 			if (home[len_home - 1] == '/')

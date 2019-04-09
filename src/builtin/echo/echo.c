@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/19 21:32:59 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/06 11:34:40 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/09 04:17:31 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,11 @@ int			check_opt_echo(t_42sh *sh)
 
 void		builtin_echo(t_42sh *sh)
 {
-	/*
-	**		echo sans argument devrait afficher un \n
-	*/
 	int		i;
 	int		n;
 
 	i = 1;
+	n = 0;
 	if (write(1, NULL, 0) == -1)
 	{
 		ft_putendl_fd("42sh: echo: write error: Bad file descriptor", 2);
@@ -54,8 +52,8 @@ void		builtin_echo(t_42sh *sh)
 				ft_putchar(' ');
 			i++;
 		}
-		if (n != 1)
-			ft_putchar('\n');
 	}
+	if (n != 1)
+		ft_putchar('\n');
 	sh->retval = 0;
 }

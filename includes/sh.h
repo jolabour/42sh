@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/09 00:27:09 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/09 04:58:42 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -699,7 +699,7 @@ t_env						*set_list(char **env);
 */
 
 char						*ft_getenv(t_env *list, const char *name,
-		size_t len);
+		size_t len, t_var_mark *var);
 
 /*
 **							init_shell

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/09 06:30:33 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/09 06:49:01 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -978,7 +978,6 @@ int				ft_exe_builtin(t_node *current, t_42sh *shell,
 	if (!ret)
 		f(shell);
 	ft_reset_tmp_fd(tmp);
-	ft_free_split(shell->argv->argv);
 	return (ret ? ret : shell->retval);
 }
 
@@ -1069,7 +1068,9 @@ int					ft_exe_command_ht(t_node *current, t_42sh *shell)
 {
 	BUCKET_CONTENT	*bucket_entry;
 	int				i;
+	char			*path;
 
+	path = NULL;
 	if (shell->argv->argv[0])
 	{
 		if (shell->bin_dirs)
@@ -1081,16 +1082,20 @@ int					ft_exe_command_ht(t_node *current, t_42sh *shell)
 		while (shell->copy_env[i])
 		{
 			if (ft_strncmp(shell->copy_env[i], "PATH=", 5) == 0)
-				shell->valide_path = ft_strdup(shell->copy_env[i]);
+				path = ft_strdup(shell->copy_env[i] + 5);
 			i++;
 		}
-		if (shell->valide_path)
-			shell->bin_dirs = ft_strsplit(shell->valide_path, ':');
-		ft_strdel(&shell->valide_path);
+		if (path == NULL)
+			path = get_var(shell, "PATH");
+		if (path != NULL)
+		{
+			shell->bin_dirs = ft_strsplit(path, ':');
+			ft_strdel(&path);
+		}
 		if ((bucket_entry = ht_lookup(shell->argv->argv[0],
 			&shell->hashtable)) != NULL)
 			shell->valide_path = ft_strdup(bucket_entry->path);
-		else
+		else if (!(shell->valide_path = check_access(shell, 0)))
 			shell->valide_path = ft_strdup(shell->argv->argv[0]);
 	}
 	else

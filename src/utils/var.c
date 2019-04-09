@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 03:29:36 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/09 00:33:41 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/09 05:40:58 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,6 @@ void			add_to_varlist(t_42sh *sh, char **split)
 
 int				check_env(t_env **env, char **split)
 {
-	/*
-	**			Recherche faite sans le '=' dans l'env...
-	*/
 	t_env		*tmp;
 	int			len;
 	char		*new;
@@ -89,6 +86,7 @@ int				check_env(t_env **env, char **split)
 		}
 		tmp = tmp->next;
 	}
+	free(new);
 	return (0);
 }
 
