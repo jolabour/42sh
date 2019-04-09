@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/09 05:36:42 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/09 08:29:05 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -775,6 +775,13 @@ char		**ft_expanse_args(char **args, t_42sh *shell)
 	return (args);
 }
 
+int			ft_rmquotes_backslash_condition(char *word, int i, char quote)
+{
+	return (word[i] == '\\' && quote != '\'' && word[i + 1] && (quote != '\"'
+			|| word[i + 1] == '\\' || word[i + 1] == '\"' || word[i + 1] == '$'
+			|| word[i + 1] == '`'));
+}
+
 void		ft_rmquotes_word(char *word)
 {
 	int		i;
@@ -784,7 +791,7 @@ void		ft_rmquotes_word(char *word)
 	quote = 0;
 	while (word[i])
 	{
-		if (word[i] == '\\' && quote != '\'')
+		if (ft_rmquotes_backslash_condition(word, i, quote))
 		{
 			ft_strcpy(word + i, word + i + 1);
 			i++;
