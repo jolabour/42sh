@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/09 06:49:01 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/09 07:38:44 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,51 @@ void			ft_reset_signals(void)
     signal (SIGTTOU, SIG_DFL);
 }
 
+void			ft_exe_file_error(char *path, char *error)
+{
+	ft_putstr_fd("42sh: ", STDERR_FILENO);
+	ft_putstr_fd(path, STDERR_FILENO);
+	ft_putstr_fd(error, STDERR_FILENO);
+}
+
+int				ft_exe_file_check(char *path)
+{
+	struct stat	info;
+
+	if (!ft_strchr(path, '/'))
+	{
+		ft_exe_file_error(path, ": command not found\n");
+		return (127);
+	}
+	if (stat(path, &info))
+	{
+		ft_exe_file_error(path, ": no such file or directory\n");
+		return (127);
+	}
+	if ((S_ISDIR(info.st_mode)) == 1)
+	{
+		ft_exe_file_error(path, ": is a directory\n");
+		return (126);
+	}
+	if (access(path, X_OK) == -1 || ((S_ISREG(info.st_mode)) != 1))
+	{
+		ft_exe_file_error(path, ": Permission denied\n");
+		return (126);
+	}
+	return (0);
+}
+
+void			ft_execve_exit(char *path, char **argv, char **envp)
+{
+	execve(path, argv, envp);
+	ft_putstr_fd("42sh: execve: Error\n", STDERR_FILENO);
+	exit(2);
+}
+
 int				ft_exe_file(t_node *current, t_42sh *shell,
 				char *path, char **args)
 {
 	t_joblist	*job;
-	struct stat	info;
 
 	if (!shell->forked)
 	{
@@ -120,45 +160,9 @@ int				ft_exe_file(t_node *current, t_42sh *shell,
 		exit(1);
 	if (!path[0])
 		exit(0);
-	if (!ft_strchr(path, '/'))
-	{
-		ft_putstr_fd("42sh: ", STDERR_FILENO);
-		ft_putstr_fd(path, STDERR_FILENO);
-		ft_putstr_fd(": command not found\n", STDERR_FILENO);
-		exit(127);
-	}
-	execve(path, args, shell->copy_env);
-	if (path == NULL)
-		{
-			ft_putstr_fd("42sh: ", 2);
-			ft_putstr_fd(args[0], 2);
-			ft_putstr_fd(": no such file or directory\n", 2);
-			ft_strdel(&path);
-			ft_free_split(args);
-			exit((shell->retval = 127));
-		}
-		stat(path, &info);
-		if ((S_ISDIR(info.st_mode)) == 1)
-		{
-			ft_putstr_fd("42sh: ", 2);
-			ft_putstr_fd(args[0], 2);
-			ft_putstr_fd(": is a directory\n", 2);
-			ft_strdel(&path);
-			ft_free_split(args);
-			exit((shell->retval = 126));
-		}
-		if (args[0][0] != '/')
-			ht_insert(path, args[0], &shell->hashtable);
-		if (access(path, X_OK) == -1 || ((S_ISREG(info.st_mode)) != 1))
-		{
-			ft_putstr_fd("42sh: ", 2);
-			ft_putstr_fd(args[0], 2);
-			ft_putstr_fd(": Permission denied\n", 2);
-			ft_strdel(&path);
-			ft_free_split(args);
-			exit((shell->retval = 126));
-		}
-	exit((shell->retval = 1));
+	if (!(shell->retval = ft_exe_file_check(path)))
+		ft_execve_exit(path, args, shell->copy_env);
+	exit(shell->retval);
 }
 
 void			ft_launch_process(t_proclist *proc, t_42sh *shell,
@@ -1064,38 +1068,51 @@ int				ft_assigns(t_node *current, t_42sh *shell)
 	return (0);
 }
 
+char				*ft_exe_command_get_path(t_42sh *shell)
+{
+	int				i;
+	char			*path;
+
+	if (shell->bin_dirs)
+	{
+		free_tab(shell->bin_dirs);
+		shell->bin_dirs = NULL;
+	}
+	i = 0;
+	while (shell->copy_env[i])
+	{
+		if (ft_strncmp(shell->copy_env[i], "PATH=", 5) == 0)
+			path = ft_strdup(shell->copy_env[i] + 5);
+		i++;
+	}
+	if (path == NULL)
+		path = get_var(shell, "PATH");
+	if (path != NULL)
+	{
+		shell->bin_dirs = ft_strsplit(path, ':');
+		ft_strdel(&path);
+	}
+	return (path);
+}
+
 int					ft_exe_command_ht(t_node *current, t_42sh *shell)
 {
 	BUCKET_CONTENT	*bucket_entry;
-	int				i;
 	char			*path;
 
 	path = NULL;
 	if (shell->argv->argv[0])
 	{
-		if (shell->bin_dirs)
-		{
-			free_tab(shell->bin_dirs);
-			shell->bin_dirs = NULL;
-		}
-		i = 0;
-		while (shell->copy_env[i])
-		{
-			if (ft_strncmp(shell->copy_env[i], "PATH=", 5) == 0)
-				path = ft_strdup(shell->copy_env[i] + 5);
-			i++;
-		}
-		if (path == NULL)
-			path = get_var(shell, "PATH");
-		if (path != NULL)
-		{
-			shell->bin_dirs = ft_strsplit(path, ':');
-			ft_strdel(&path);
-		}
+		path = ft_exe_command_get_path(shell);
 		if ((bucket_entry = ht_lookup(shell->argv->argv[0],
 			&shell->hashtable)) != NULL)
 			shell->valide_path = ft_strdup(bucket_entry->path);
-		else if (!(shell->valide_path = check_access(shell, 0)))
+		else 
+			shell->valide_path = check_access(shell, 0);
+		if (shell->valide_path)
+			ht_insert(shell->valide_path, shell->argv->argv[0],
+				&shell->hashtable);
+		else
 			shell->valide_path = ft_strdup(shell->argv->argv[0]);
 	}
 	else
