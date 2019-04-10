@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 06:02:54 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/09 04:59:50 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/10 08:11:55 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ void		init_shell(t_42sh *sh, char **env)
 	sh->argv->error_code = 0;
 	sh->argv->argv = NULL;
 	init_alias_list(sh);
+	sh->path = ft_malloc_exit(sizeof(t_path_mark));
 	init_hashtable(sh);
 	get_term(sh);
 }

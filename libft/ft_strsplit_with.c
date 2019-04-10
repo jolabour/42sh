@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsplit.c                                      :+:      :+:    :+:   */
+/*   ft_strsplit_with.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/04/17 15:46:59 by abeauvoi          #+#    #+#             */
-/*   Updated: 2019/04/10 06:10:50 by jolabour         ###   ########.fr       */
+/*   Created: 2019/04/10 06:05:42 by jolabour          #+#    #+#             */
+/*   Updated: 2019/04/10 11:29:45 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdlib.h>
 
 static size_t	ft_word_len(const char *s, char c)
 {
 	size_t		i;
 
-	i = 0;
+	i = 1;
 	while (s[i] && s[i] != c)
 		++i;
 	return (i);
@@ -30,14 +29,17 @@ static	size_t	ft_word_count(const char *s, char c)
 	words = 0;
 	while (*s)
 	{
-		if (*s != c && (*(s + 1) == c || *(s + 1) == 0))
-			++words;
-		++s;
+		while (*s != c && *s)
+			++s;//if (*s != c && (*(s + 1) == c || *(s + 1) == 0))
+		++words;
+		while (*s == c && *s)
+			++s;
+		//++s;
 	}
-	return (words);
+	return (words - 1);
 }
 
-char			**ft_strsplit(char const *s, char c)
+char			**ft_strsplit_with(char const *s, char c)
 {
 	char		**split;
 	size_t		i;
@@ -52,11 +54,13 @@ char			**ft_strsplit(char const *s, char c)
 	j = 0;
 	while (j < words)
 	{
-		while (s[i] && s[i] == c)
-			++i;
+		while (s[i] && s[i + 1] == c)
+			i++;
 		split[j++] = ft_strsub(s, i, ft_word_len(s + i, c));
+		if (s[i])
+			i++;
 		while (s[i] && s[i] != c)
-			++i;
+			i++;
 	}
 	return (split);
 }

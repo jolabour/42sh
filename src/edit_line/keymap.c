@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/19 00:40:38 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/08 20:36:17 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/10 11:33:06 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ int					check_input(t_42sh *sh, long buf)
 			action_tab[i](sh);
 			if (i == 3)
 				return (-1);
+			if (i == 4)
+				return (-2);
 			if (i == 9 || i == 10 || i == 11)
 				return (2);
 			return (1);

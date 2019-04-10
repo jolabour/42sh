@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/10 02:03:54 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/10 08:13:39 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,6 +213,18 @@ typedef struct				s_env
 	struct s_env			*next;
 }							t_env;
 
+typedef struct				s_path
+{
+	char					*str;
+	struct s_path			*next;
+}							t_path;
+
+typedef struct				s_path_mark
+{
+	t_path					*begin;
+	int						size;
+}							t_path_mark;
+
 typedef struct				s_bucket_content
 {
 	struct s_bucket_content	*next;
@@ -329,6 +341,8 @@ typedef struct				s_42sh
 	bool					stopexe;
 	bool					buffer_mode;
 	char					*buffer;
+	t_path_mark				*path;
+	char					*path_cd;
 }							t_42sh;
 
 typedef struct				s_lex
@@ -868,6 +882,7 @@ int							ft_str_isdigit(char *str);
 void						builtin_exit(t_42sh *sh);
 int							check_valid_var(char *str);
 int							check_var(t_var_mark **var, char **split);
+void						builtin_cd(t_42sh *sh);
 
 /*
 **							ft_erase_space.c
