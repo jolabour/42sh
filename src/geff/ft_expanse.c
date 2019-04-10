@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/09 08:29:05 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/10 02:20:15 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,13 @@ t_txtlist		*ft_new_txtlist(void)
 	new->data = NULL;
 	new->start = 0;
 	new->len = 0;
-	new->dquote = 0;
+	new->dquote = false;
 	new->next = NULL;
 	return (new);
 }
 
-t_txtlist		*ft_add_txtlist(char *data, t_txttype token, t_txtlist **to)
+t_txtlist		*ft_add_txtlist(char *data, t_txttype token, t_txtlist **to,
+				bool dquote)
 {
 	if ((*to)->token != TXT_NONE)
 	{
@@ -60,17 +61,18 @@ t_txtlist		*ft_add_txtlist(char *data, t_txttype token, t_txtlist **to)
 	}
 	(*to)->data = data;
 	(*to)->token = token;
+	(*to)->dquote = dquote;
 	return (*to);
 }
 
 int			ft_parse_tilde(char *word, size_t *index,
-			t_txtlist **current, int *dquote)
+			t_txtlist **current, bool *dquote)
 {
 	if (word[*index] == '~' && !(*dquote) && (*index == 0
 		|| word[*index - 1] == ' ' || word[*index - 1] == '\n'
 		|| word[*index - 1] == '\t' || word[*index - 1] == ':'))
 	{
-		ft_add_txtlist(word, TILDE, current);
+		ft_add_txtlist(word, TILDE, current, *dquote);
 		(*current)->start = *index;
 		(*index)++;
 		if (word[*index] == '+' || word[*index] == '-')
@@ -106,7 +108,7 @@ int			ft_parse_brace_var(char *word, size_t *index, t_txtlist **current)
 	return (0);
 }
 
-int			ft_parse_cmd_sub(char *word, size_t *index, t_txtlist **current)
+int			ft_parse_par_var(char *word, size_t *index, t_txtlist **current)
 {
 	int		pars;
 
@@ -168,14 +170,14 @@ char		*(*ft_get_spparam(char c))(t_42sh *)
 }
 
 int			ft_parse_var(char *word, size_t *index,
-			t_txtlist **current, int *dquote)
+			t_txtlist **current, bool *dquote)
 {
 	int		ret;
 
 	if (word[*index] == '$')
 	{
 		ret = 0;
-		ft_add_txtlist(word, VAR, current);
+		ft_add_txtlist(word, VAR, current, *dquote);
 		(*current)->start = *index;
 		(*current)->dquote = *dquote;
 		(*index)++;
@@ -187,7 +189,7 @@ int			ft_parse_var(char *word, size_t *index,
 		else if (word[*index] == '{')
 			ret = ft_parse_brace_var(word, index, current);
 		else if (word[*index] == '(')
-			ret = ft_parse_cmd_sub(word, index, current);
+			ret = ft_parse_par_var(word, index, current);
 		(*current)->len = *index - (*current)->start;
 		return (ret);
 	}
@@ -195,13 +197,13 @@ int			ft_parse_var(char *word, size_t *index,
 }
 
 int			ft_parse_text(char *word, size_t *index,
-			t_txtlist **current, int *dquote)
+			t_txtlist **current, bool *dquote)
 {
 	if (word[*index] == '"')
 		*dquote = !(*dquote);
 	if ((*current)->token != TEXT)
 	{
-		ft_add_txtlist(word, TEXT, current);
+		ft_add_txtlist(word, TEXT, current, *dquote);
 		(*current)->start = *index;
 	}
 	(*current)->len++;
@@ -210,7 +212,7 @@ int			ft_parse_text(char *word, size_t *index,
 }
 
 int			ft_parse_backslash(char *word, size_t *index,
-			t_txtlist **current, int *dquote)
+			t_txtlist **current, bool *dquote)
 {
 	if (word[*index] == '\\')
 	{
@@ -225,7 +227,7 @@ int			ft_parse_backslash(char *word, size_t *index,
 }
 
 int			ft_parse_quote(char *word, size_t *index,
-			t_txtlist **current, int *dquote)
+			t_txtlist **current, bool *dquote)
 {
 	if (word[*index] == '\'' && !(*dquote))
 	{
@@ -244,12 +246,12 @@ int			ft_parse_quote(char *word, size_t *index,
 }
 
 int			ft_parse_bquote(char *word, size_t *index,
-			t_txtlist **current, int *dquote)
+			t_txtlist **current, bool *dquote)
 {
 	(void)dquote;
 	if (word[*index] == '`')
 	{
-		ft_add_txtlist(word, CMD_SUB_BQUOTE, current);
+		ft_add_txtlist(word, CMD_SUB_BQUOTE, current, *dquote);
 		(*current)->start = *index;
 		(*index)++;
 		while (word[*index] != '`')
@@ -292,7 +294,7 @@ t_txtlist		*ft_parse_word(char *word)
 {
 	t_txtlist	*list[2];
 	size_t		index;
-	int			dquote;
+	bool		dquote;
 	int			i;
 	int			ret;
 
@@ -300,7 +302,7 @@ t_txtlist		*ft_parse_word(char *word)
 		return (NULL);
 	list[1] = list[0];
 	index = 0;
-	dquote = 0;
+	dquote = false;
 	while (word[index])
 	{
 		i = 0;
@@ -326,7 +328,11 @@ void			ft_print_txtlist(char *input, t_txtlist *list)
 		ft_putchar('-');
 		ft_putnbr(list->len);
 		ft_putchar('-');
+		if (list->dquote)
+			ft_putchar('\"');
 		write(1, input + list->start, list->len);
+		if (list->dquote)
+			ft_putchar('\"');
 		ft_putchar(']');
 		list = list->next;
 	}
@@ -412,7 +418,7 @@ int			ft_exp_tilde(t_txtlist *txt, t_42sh *shell)
 	return (0);
 }
 
-int			ft_count_quotes(char *word)
+int			ft_count_quotes(char *word, bool dquote)
 {
 	int		i;
 	int		quotes;
@@ -421,20 +427,20 @@ int			ft_count_quotes(char *word)
 	quotes = 0;
 	while (word[i])
 	{
-		if (word[i] == '\\' || word[i] == '\"' || word[i] == '\'')
+		if (word[i] == '\\' || word[i] == '\"' || (word[i] == '\'' && !dquote))
 			quotes++;
 		i++;
 	}
 	return (quotes);
 }
 
-char		*ft_backslash_quotes(char *word)
+char		*ft_backslash_quotes(char *word, bool dquote)
 {
 	char	*res;
 	int		i;
 	int		quotes;
 
-	quotes = ft_count_quotes(word);
+	quotes = ft_count_quotes(word, dquote);
 	if (!quotes)
 		return (word);
 	res = (char *)ft_malloc_exit((ft_strlen(word) + quotes + 1) * sizeof(char));
@@ -442,7 +448,7 @@ char		*ft_backslash_quotes(char *word)
 	quotes = 0;
 	while (word[i])
 	{
-		if (word[i] == '\\' || word[i] == '\"' || word[i] == '\'')
+		if (word[i] == '\\' || word[i] == '\"' || (word[i] == '\'' && !dquote))
 		{
 			res[i + quotes] = '\\';
 			quotes++;
@@ -464,7 +470,8 @@ int			ft_exp_var(t_txtlist *txt, t_42sh *shell)
 	var = ft_strsub(txt->data, txt->start + 1, txt->len - 1);
 	txt->data = ft_getvar(var, shell);
 	free(var);
-	txt->data = txt->data ? ft_backslash_quotes(txt->data) : ft_strdup("");
+	txt->data = txt->data ? ft_backslash_quotes(txt->data, txt->dquote)
+		: ft_strdup("");
 	return (0);
 }
 
@@ -502,7 +509,7 @@ int			ft_exp_brace(t_txtlist *txt, t_42sh *shell)
 		return (ft_exp_brace_error(txt, var));
 	res = var ? ft_getvar(var, shell) : NULL;
 	free(var);
-	txt->data = res ? ft_backslash_quotes(res) : ft_strdup("");
+	txt->data = res ? ft_backslash_quotes(res, txt->dquote) : ft_strdup("");
 	return (0);
 }
 
@@ -604,7 +611,7 @@ int			ft_cmdsub_parse(t_ast *ast, char *command, t_42sh *shell)
 	return (ret);
 }
 
-char		*ft_cmdsub(char *command, t_42sh *shell)
+char		*ft_cmdsub(char *command, t_42sh *shell, bool dquote)
 {
 	t_ast	ast;
 	int		pipefd[2];
@@ -626,13 +633,13 @@ char		*ft_cmdsub(char *command, t_42sh *shell)
 		ft_ast_free(ast.begin);
 	}
 	free(command);
-	return (result ? ft_backslash_quotes(result) : NULL);
+	return (result ? ft_backslash_quotes(result, dquote) : NULL);
 }
 
 int			ft_exp_sub(t_txtlist *txt, t_42sh *shell)
 {
 	if (!(txt->data = ft_cmdsub(ft_strsub(txt->data, txt->start + 2,
-		txt->len - 3), shell)))
+		txt->len - 3), shell, txt->dquote)))
 		return (-1);
 	return (0);
 }
@@ -640,7 +647,7 @@ int			ft_exp_sub(t_txtlist *txt, t_42sh *shell)
 int			ft_exp_bquote(t_txtlist *txt, t_42sh *shell)
 {
 	if (!(txt->data = ft_cmdsub(ft_strsub(txt->data, txt->start + 1,
-		txt->len - 2), shell)))
+		txt->len - 2), shell, txt->dquote)))
 		return (-1);
 	return (0);
 }

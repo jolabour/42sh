@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/06 06:47:07 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/10 02:03:29 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,7 @@ t_spparam				g_spparamtab[] =
 };
 
 int						(*g_txttab[])(char *word, size_t *index,
-						t_txtlist **current, int *dquote) =
+						t_txtlist **current, bool *dquote) =
 {
 	&ft_parse_tilde,
 	&ft_parse_var,

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/09 04:58:42 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/10 02:03:54 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ typedef struct				s_txtlist
 	char					*data;
 	size_t					start;
 	size_t					len;
-	int						dquote;
+	bool					dquote;
 	struct s_txtlist		*next;
 }							t_txtlist;
 
@@ -472,17 +472,17 @@ typedef char *(*t_param)(t_42sh *);
 
 t_param						ft_get_spparam(char c);
 int							ft_parse_tilde(char *word, size_t *index,
-		t_txtlist **current, int *dquote);
+		t_txtlist **current, bool *dquote);
 int							ft_parse_var(char *word, size_t *index,
-		t_txtlist **current, int *dquote);
+		t_txtlist **current, bool *dquote);
 int							ft_parse_bquote(char *word, size_t *index,
-		t_txtlist **current, int *dquote);
+		t_txtlist **current, bool *dquote);
 int							ft_parse_backslash(char *word, size_t *index,
-		t_txtlist **current, int *dquote);
+		t_txtlist **current, bool *dquote);
 int							ft_parse_quote(char *word, size_t *index,
-		t_txtlist **current, int *dquote);
+		t_txtlist **current, bool *dquote);
 int							ft_parse_text(char *word, size_t *index,
-		t_txtlist **current, int *dquote);
+		t_txtlist **current, bool *dquote);
 char						*ft_spparam_dollar(t_42sh *shell);
 char						*ft_spparam_qmark(t_42sh *shell);
 char						*ft_spparam_bang(t_42sh *shell);
@@ -538,7 +538,7 @@ extern int					(*g_exetab[])(t_node *current, t_42sh *shell);
 extern t_bttab				g_bttab[];
 extern t_spparam			g_spparamtab[];
 extern int					(*g_txttab[])(char *word, size_t *index,
-		t_txtlist **current, int *dquote);
+		t_txtlist **current, bool *dquote);
 extern char					*g_txtstr[];
 extern int					(*g_exptab[])(t_txtlist *txt, t_42sh *shell);
 extern char					*g_sigtab[];
