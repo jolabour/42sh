@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/11 05:58:15 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/11 06:31:02 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void		ft_resolve(char *str, int size)
 	ft_strdel(&tmp);
 }
 
-static int	end_ari(char *str)
+/*static int	end_ari(char *str)
 {
 	int	j;
 	int i;
@@ -41,26 +41,15 @@ static int	end_ari(char *str)
 			return (0);
 	}
 	return (i);
-}
+}*/
 
 static char		*ft_exp_ari(char *str, int size)
 {
-	char 	*tmp;
-	char	*end;
 	int		i;
 	int		p;
 
 	i = 0;
 	p = -1;
-	end = NULL;
-	tmp = NULL;
-	size = end_ari(str);
-	end = ft_strdup(&str[size]);
-	tmp = ft_strsub(str, 0, size);
-	free(str);
-	str = NULL;
-	str = tmp;
-	tmp = NULL;
 	while (i < size)
 	{
 		if (str[i] == ')' && p == -1)
@@ -125,9 +114,12 @@ char		*ft_exp_ary(char *str, t_42sh *sh)
 	list_var = NULL;
 	if (!(str = ft_check_var(str, &list_var, sh)))
 		return (NULL);
+	ft_putendl(str);
 	if (!(ft_check_exp_ari(str)))
 		return (NULL);
+	ft_putendl(str);
 	str = ft_erase_space(str);
+	ft_putendl(str);
 	if (!(str = ft_exp_ari(str, ft_strlen(str))))
 		return (NULL);
 	ft_putendl(str);
