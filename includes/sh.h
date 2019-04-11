@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 06:03:26 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/11 10:24:50 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdbool.h>
+# include <dirent.h>
 # include "libft.h"
 # include "histo.h"
 
@@ -311,7 +312,6 @@ typedef struct				s_42sh
 	int						winsize;
 	int						prompt_len;
 	char					*prompt;
-	char					*pwd;
 	char					**bin_dirs;
 	char					**copy_env;
 	char					*path_history;
@@ -344,6 +344,10 @@ typedef struct				s_42sh
 	t_path_mark				*path;
 	char					*path_cd;
 	int						exit_lock;
+	char					**cd_path;
+	int						cd_err;
+	char					*pwd;
+	bool						print_pwd;
 }							t_42sh;
 
 typedef struct				s_lex
@@ -935,5 +939,26 @@ char						*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh);
 char						*ft_exp_ary(char *str, t_42sh *sh);
 
 void						check_local_variable(t_42sh *sh, char *str);
+
+/*
+**							builtin_cd
+*/
+
+int							check_path_opt(char *str, t_42sh *sh, int i);
+void						get_list(char *str, t_42sh *sh);
+void						ft_dot_dot(t_42sh *sh, t_path **path);
+void						join_all(t_42sh *sh);
+void						print_error_cd(char *curpath);
+int							check_opt_cd(t_42sh *sh, int *i);
+char						*cd_exec(t_42sh *sh, int i);
+void						exec_cd_path(char *curpath, t_42sh *sh, int opt,
+		int i);
+void						del_all_path(t_path_mark *path);
+void						get_path(char *path, t_42sh *sh, int i);
+void						get_dir_cd(char *path, t_42sh *sh, int opt, int i);
+void						lst_del_path(t_path **path, t_path *to_del, 
+							t_path *prev);
+char						*getenv_cd(char **env, const char *name,
+		size_t len, t_var_mark *var);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 06:02:54 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/10 08:11:55 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/11 07:15:22 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,17 +77,17 @@ void		init_alias_list(t_42sh *sh)
 void		init_shell(t_42sh *sh, char **env)
 {
 	char	*path;
-	char	*pwd;
+	char	cwd[4096];
 
+	ft_bzero(cwd, 4096);
+	sh->pwd = ft_strdup(getcwd(cwd, 4095));
 	sh->env = set_list(env);
 	sh->var = (t_var_mark*)ft_malloc_exit(sizeof(t_var_mark));
 	sh->var->size = 0;
+	sh->var->begin = NULL;
 	path = ft_getenv(sh->env, "PATH=", sizeof("PATH=") - 1, sh->var);
 	if (path)
 		sh->bin_dirs = ft_strsplit(path, ':');
-	pwd = ft_getenv(sh->env, "PWD=", sizeof("PWD=") - 1, sh->var);
-	if (pwd)
-		sh->pwd = ft_strdup(pwd);
 	sh->copy_env = list_to_tab(sh->env, sh->copy_env);
 	sh->path_history = ft_strdup(".42sh_history");
 	init_builtin_tab(sh);
@@ -98,6 +98,7 @@ void		init_shell(t_42sh *sh, char **env)
 	sh->argv->argv = NULL;
 	init_alias_list(sh);
 	sh->path = ft_malloc_exit(sizeof(t_path_mark));
+	sh->cd_path = NULL;
 	init_hashtable(sh);
 	get_term(sh);
 }

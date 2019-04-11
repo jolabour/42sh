@@ -38,7 +38,8 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  armand/ft_logic_op.c armand/ft_true_op.c armand/ft_check_var.c armand/ft_itoa_exp_ari.c \
 			  armand/ft_math_op.c armand/exp_ari.c builtin/unset/list_unset.c \
 			  builtin/jobs/jobs.c builtin/exit/exit.c utils/var.c utils/check.c histo/list_history.c histo/search_history.c \
-			  builtin/cd/builtin_cd.c
+			  builtin/cd/builtin_cd.c builtin/cd/cd_exec.c builtin/cd/dot_cd.c builtin/cd/list_cd.c builtin/cd/opt_cd.c \
+			  builtin/cd/utils_cd.c
 
 #
 # Build

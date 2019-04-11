@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 08:56:10 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/10 03:07:36 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/11 07:28:13 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,24 +27,22 @@ void		def_prompt(t_env *list, t_42sh *sh)
 	size_t	len_home;
 
 	ft_strcpy(buf, "\x1B[1;33m| \x1B[1;36m");
-	if ((pwd = ft_getenv(list, "PWD=", 4, sh->var)) != NULL)
+	pwd = sh->pwd;
+	if ((home = ft_getenv(list, "HOME=", 5, sh->var)) != NULL)
 	{
-		if ((home = ft_getenv(list, "HOME=", 5, sh->var)) != NULL)
-		{
-			len_home = ft_strlen(home);
-			if (home[len_home - 1] == '/')
-				--len_home;
-		}
-		if (home && ft_strncmp(pwd, home, len_home) == 0)
-		{
-			pwd += len_home;
-			ft_strcat(buf, "~");
-			if (pwd[0] == '/' && pwd[1] != '\0')
-				ft_strcat(buf, pwd);
-		}
-		else
+		len_home = ft_strlen(home);
+		if (home[len_home - 1] == '/')
+			--len_home;
+	}
+	if (home && ft_strncmp(pwd, home, len_home) == 0)
+	{
+		pwd += len_home;
+		ft_strcat(buf, "~");
+		if (pwd[0] == '/' && pwd[1] != '\0')
 			ft_strcat(buf, pwd);
 	}
+	else
+		ft_strcat(buf, pwd);
 	prompt2(sh, buf);
 }
 
