@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/11 06:31:02 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/11 07:48:14 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,22 +81,56 @@ static char		*ft_exp_ari(char *str, int size)
 	return (str);
 }
 
-/*static void		ft_replace_var(t_list_ari *tmp, t_42sh *sh)
+static void		ft_replace_var(t_list_ari *tmp, t_42sh *sh)
 {
-		
+	char	*str;
+	t_var	*var;
+	t_env	*env;
 
-}*/
+	env = sh->env;
+	var = sh->var->begin;
+	while (env)
+	{
+		if ((0 == ft_strncmp(tmp->name, env->str, ft_strlen(tmp->name))))
+		{
+			str = ft_strjoin(tmp->name,"=");
+			free(env->str);
+			env->str = NULL;
+			free(tmp->var);
+			tmp->var = NULL;
+			tmp->var = ft_itoa(tmp->nbr);
+			env->str = ft_strjoin(str, tmp->var);
+			free(tmp);
+			return ;
+		}
+		env = env->next;
+	}
+	while (var)
+	{
+		if ((0 == ft_strncmp(tmp->name, var->to_sub, ft_strlen(tmp->name))))
+		{
+			free(var->sub);
+			var->sub = NULL;
+			var->sub = ft_itoa(tmp->nbr);
+			return ;
+		}
+		var = var->next;
+	}
+}
 
-void			ft_modif_var(t_list_ari *list_var)
+void			ft_modif_var(t_list_ari *list_var, t_42sh *sh)
 {
 	t_list_ari *tmp;
 	
 	tmp = list_var;
 	while (tmp)
 	{
-		ft_putendl(tmp->name);
-		ft_putnbr(tmp->nbr);
-		ft_putchar('\n');
+		if (tmp->opt == 3)
+			tmp->nbr = tmp->nbr + 1;
+		if (tmp->opt == 4)
+			tmp->nbr = tmp->nbr - 1;
+		if (tmp->opt)
+			ft_replace_var(tmp, sh);
 		free(tmp->name);
 		free(tmp->var);
 		list_var = tmp;
@@ -114,15 +148,18 @@ char		*ft_exp_ary(char *str, t_42sh *sh)
 	list_var = NULL;
 	if (!(str = ft_check_var(str, &list_var, sh)))
 		return (NULL);
-	ft_putendl(str);
+//	ft_putendl(str);
 	if (!(ft_check_exp_ari(str)))
+	{
+		free(str);
 		return (NULL);
-	ft_putendl(str);
+	}
+//	ft_putendl(str);
 	str = ft_erase_space(str);
-	ft_putendl(str);
+//	ft_putendl(str);
 	if (!(str = ft_exp_ari(str, ft_strlen(str))))
 		return (NULL);
-	ft_putendl(str);
-	ft_modif_var(list_var);
+//	ft_putendl(str);
+	ft_modif_var(list_var, sh);
 	return (str);
 }
