@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/11 05:58:47 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/11 07:48:17 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static int 		ft_var_modif(char *str, int i, int j, t_list_ari *new)
 	{
 		if (str[i - 1] == '+' && str[i - 2]	== '+')
 		{
-			ft_putendl("++*");	
 			str[i - 1] = ' ';
 			str[i - 2] = ' ';
 			new->nbr = new->nbr + 1;
@@ -36,7 +35,6 @@ static int 		ft_var_modif(char *str, int i, int j, t_list_ari *new)
 		}
 		if (str[i - 1] == '-' && str[i - 2] == '-')
 		{
-			ft_putendl("--*");
 			str[i - 1] = ' ';
 			str[i - 2] = ' ';
 			new->nbr = new->nbr - 1;
@@ -50,14 +48,12 @@ static int 		ft_var_modif(char *str, int i, int j, t_list_ari *new)
 	{
 		if (str[j] == '+' && str[j + 1] == '+')
 		{
-			ft_putendl("*++");
 			str[j] = ' ';
 			str[j + 1] = ' ';
 			return (3);
 		}
 		if (str[j] == '-' && str[j + 1] == '-')
 		{
-			ft_putendl("*--");
 			str[j] = ' ';
 			str[j + 1] = ' ';
 			return (4);
@@ -68,19 +64,24 @@ static int 		ft_var_modif(char *str, int i, int j, t_list_ari *new)
 
 static char *my_get_var(t_42sh *sh, char *name)
 {
+	int		i;
 	char	*ret;
 	t_var	*tmp;
 
+	i = 0;
 	tmp = sh->var->begin;
 	ret = NULL;
+	ft_putendl(name);
 	if ((ret = ft_getenv(sh->env, name, ft_strlen(name), NULL)))
 		return (ft_strdup(&ret[1]));
-	while (tmp)
+	//ft_putstr(name);
+	while (i < sh->var->size)
 	{
 		if (((ft_strcmp(name, tmp->to_sub)) == 0))
 			return (ft_strdup(tmp->sub));
-		if (!tmp->next)
-			break ;
+		i++;
+		tmp = tmp->next;
+		ft_putchar('a');
 	}
 	tmp->next = ft_malloc_exit(sizeof(t_var));
 	tmp = tmp->next;
@@ -91,7 +92,7 @@ static char *my_get_var(t_42sh *sh, char *name)
 	return (ft_strdup("0"));
 }
 
-static char	*ft_replace_var(char *str, t_list_ari **list_var, int *i, t_42sh *sh)
+static char	*ft_replace_var(char *str, t_list_ari **list_var, size_t *i, t_42sh *sh)
 {
 	t_list_ari	*l_tmp;	
 	char		*tmp;
@@ -106,6 +107,8 @@ static char	*ft_replace_var(char *str, t_list_ari **list_var, int *i, t_42sh *sh
 	tmp = NULL;
 	name = NULL;
 	l_tmp = NULL;
+	ft_putstr("bgn=");
+	ft_putendl(str);
 	while (ft_isalnum(str[j + *i]) || str[j + *i] == '_')
 		j++;
 	name = ft_strsub(str, *i , j);
@@ -162,18 +165,15 @@ static char	*ft_replace_var(char *str, t_list_ari **list_var, int *i, t_42sh *sh
 
 char 			*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh)
 {
-	int i;
+	size_t i;
 
 	i = 0;
-	while (str[i])
+	while (i < ft_strlen(str))
 	{
 		if ((ft_isalpha(str[i])) || (str[i] == '_'))
-		{
 			str = ft_replace_var(str, list_var, &i, sh);
-			if (!str)
-				return (NULL);
-		}
-		i++;
+		else
+			i++;
 	}
 	return (str);
 }
