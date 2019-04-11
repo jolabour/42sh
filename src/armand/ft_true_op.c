@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:20:31 by achavy            #+#    #+#             */
-/*   Updated: 2019/01/21 04:54:21 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/11 03:18:20 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,7 @@ char	*ft_true_op(char *str, int size)
 			p = ft_count_prev_num(str, i) - i ;
 			ft_check_true(str, p, nb, n, i);
 			i = -1;
-			if (!(str = ft_erase_space(str)))
-				ft_exp_ari_error("malloc error");
+			str = ft_erase_space(str);
 			size = ft_strlen(str);
 			nb = 0;
 		}
