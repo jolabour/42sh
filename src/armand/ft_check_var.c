@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/11 04:31:21 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/11 05:58:47 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,14 +66,14 @@ static int 		ft_var_modif(char *str, int i, int j, t_list_ari *new)
 	return (0);
 }
 
-static char *get_var(t_42sh *sh, char *name)
+static char *my_get_var(t_42sh *sh, char *name)
 {
 	char	*ret;
 	t_var	*tmp;
 
 	tmp = sh->var->begin;
 	ret = NULL;
-	if (ret = ft_getenv(sh->env, name, ft_strlen(name)))
+	if ((ret = ft_getenv(sh->env, name, ft_strlen(name), NULL)))
 		return (ft_strdup(&ret[1]));
 	while (tmp)
 	{
@@ -83,11 +83,11 @@ static char *get_var(t_42sh *sh, char *name)
 			break ;
 	}
 	tmp->next = ft_malloc_exit(sizeof(t_var));
-	tmp = tmp->next
+	tmp = tmp->next;
 	tmp->next = NULL;
 	tmp->to_sub = ft_strdup(name);
 	tmp->sub = ft_strdup("0");
-	var->size = var->size + 1;
+	sh->var->size = sh->var->size + 1;
 	return (ft_strdup("0"));
 }
 
@@ -108,8 +108,8 @@ static char	*ft_replace_var(char *str, t_list_ari **list_var, int *i, t_42sh *sh
 	l_tmp = NULL;
 	while (ft_isalnum(str[j + *i]) || str[j + *i] == '_')
 		j++;
-	name = ft_strsub(str, i , j);
-	nb = get_var(sh, name);
+	name = ft_strsub(str, *i , j);
+	nb = my_get_var(sh, name);
 	free(name);
 	name = NULL;
 	l_tmp = *list_var;
@@ -133,16 +133,16 @@ static char	*ft_replace_var(char *str, t_list_ari **list_var, int *i, t_42sh *sh
 	else
 	{
 			*list_var = (t_list_ari*)malloc(sizeof(t_list_ari));
-			*list_var->var = ft_strdup(nb);
-			*list_var->name = ft_strsub(str, *i, j);
-			*list_var->next = NULL;
-			*list_var->nbr = ft_atoi(nb);
-			*list_var->opt = ft_var_modif(str, *i, j, *list_var);
- 			if (*list_var->opt == 1 || *list_var->opt == 2)
+			(*list_var)->var = ft_strdup(nb);
+			(*list_var)->name = ft_strsub(str, *i, j);
+			(*list_var)->next = NULL;
+			(*list_var)->nbr = ft_atoi(nb);
+			(*list_var)->opt = ft_var_modif(str, *i, j, *list_var);
+ 			if ((*list_var)->opt == 1 || (*list_var)->opt == 2)
 			{
 				free(nb);
 				nb = NULL;
-				nb = ft_strdup(*list_var->var);
+				nb = ft_strdup((*list_var)->var);
 			}
 	}
 	tmp = ft_strjoin(nb, &str[j + *i]);

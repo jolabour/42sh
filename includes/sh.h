@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/10 08:13:39 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/11 05:56:59 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -917,12 +917,6 @@ int							ft_count_next_num(char *str);
 void						ft_itoa_exp_ari(char *str, int nbr, int n);
 
 /*
-**							ft_exp_ari_error.c
-*/
-
-void						ft_exp_ari_error(char *str);
-
-/*
 **							ft_check_exp_ari.c
 */
 
@@ -932,8 +926,9 @@ int							ft_check_exp_ari(char *str);
 **							ft_check_var.c
 */
 
-char						*ft_check_var(char *str, t_list_ari *list_var);
-char						*ft_exp_ari(char *str, int len);
+char						*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh);
+
+char						*ft_exp_ary(char *str, t_42sh *sh);
 
 void						check_local_variable(t_42sh *sh, char *str);
 

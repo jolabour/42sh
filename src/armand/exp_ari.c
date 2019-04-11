@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/11 04:31:17 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/11 05:58:15 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static int	end_ari(char *str)
 	return (i);
 }
 
-char		*ft_exp_ari(char *str, int size)
+static char		*ft_exp_ari(char *str, int size)
 {
 	char 	*tmp;
 	char	*end;
@@ -98,7 +98,7 @@ char		*ft_exp_ari(char *str, int size)
 
 }*/
 
-void			ft_modif_var(t_list_ari *list_var, t_42sh *sh)
+void			ft_modif_var(t_list_ari *list_var)
 {
 	t_list_ari *tmp;
 	
@@ -106,7 +106,7 @@ void			ft_modif_var(t_list_ari *list_var, t_42sh *sh)
 	while (tmp)
 	{
 		ft_putendl(tmp->name);
-		ft_putnbr(tmp);
+		ft_putnbr(tmp->nbr);
 		ft_putchar('\n');
 		free(tmp->name);
 		free(tmp->var);
@@ -116,14 +116,14 @@ void			ft_modif_var(t_list_ari *list_var, t_42sh *sh)
 	}
 }
 
-char		*exp(char *str, t_42sh *sh)
+char		*ft_exp_ary(char *str, t_42sh *sh)
 {
 	t_list_ari	*list_var;
 
 	if (!str)
 		return (ft_itoa(0));
 	list_var = NULL;
-	if (!(str = ft_check_var(&str, &list_var, sh)))
+	if (!(str = ft_check_var(str, &list_var, sh)))
 		return (NULL);
 	if (!(ft_check_exp_ari(str)))
 		return (NULL);
