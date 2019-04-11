@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 05:56:59 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/11 06:03:26 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -343,6 +343,7 @@ typedef struct				s_42sh
 	char					*buffer;
 	t_path_mark				*path;
 	char					*path_cd;
+	int						exit_lock;
 }							t_42sh;
 
 typedef struct				s_lex
@@ -451,6 +452,7 @@ int							ft_build_ast(t_ast *ast, t_42sh *shell);
 
 int							check_builtin(t_42sh *sh);
 void						free_tab(char **str);
+void						ft_reset_signals(void);
 void						ft_launch_job(t_joblist *job, t_42sh *shell);
 int							ft_manage_job(t_joblist *job, t_42sh *shell);
 int							ft_wait_job(t_joblist *job, int options,
@@ -508,6 +510,7 @@ int							ft_exp_brace(t_txtlist *txt, t_42sh *shell);
 int							ft_exp_sub(t_txtlist *txt, t_42sh *shell);
 int							ft_exp_bquote(t_txtlist *txt, t_42sh *shell);
 int							ft_exp_expr(t_txtlist *txt, t_42sh *shell);
+char						*ft_expanse_word(char *word, t_42sh *shell);
 char						*ft_simple_expanse(char *word, t_42sh *shell);
 void						ft_rmquotes_word(char *word);
 
@@ -879,6 +882,7 @@ void						print_type_hash(t_42sh *sh, int i, char *str);
 void						lst_del_var(t_var **var, t_var *to_del,
 		t_var *prev);
 int							ft_str_isdigit(char *str);
+void						ft_exit(t_42sh *sh);
 void						builtin_exit(t_42sh *sh);
 int							check_valid_var(char *str);
 int							check_var(t_var_mark **var, char **split);

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/09 07:38:44 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/11 04:56:45 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ int				ft_exe_file(t_node *current, t_42sh *shell,
 	if (current->redir
 		&& g_exetab[current->redir->token](current->redir, shell))
 		exit(1);
-	if (!path[0])
+	if (!path)
 		exit(0);
 	if (!(shell->retval = ft_exe_file_check(path)))
 		ft_execve_exit(path, args, shell->copy_env);
@@ -1101,7 +1101,7 @@ int					ft_exe_command_ht(t_node *current, t_42sh *shell)
 	char			*path;
 
 	path = NULL;
-	if (shell->argv->argv[0])
+	if (shell->argv->argv[0] && shell->argv->argv[0][0])
 	{
 		path = ft_exe_command_get_path(shell);
 		if ((bucket_entry = ht_lookup(shell->argv->argv[0],
@@ -1115,8 +1115,10 @@ int					ft_exe_command_ht(t_node *current, t_42sh *shell)
 		else
 			shell->valide_path = ft_strdup(shell->argv->argv[0]);
 	}
-	else
+	else if (shell->argv->argv[0])
 		shell->valide_path = ft_strdup("");
+	else
+		shell->valide_path = NULL;
 	return (ft_exe_file(current, shell, shell->valide_path, shell->argv->argv));
 }
 
@@ -1172,4 +1174,6 @@ void			ft_init(t_42sh *shell)
 	shell->current = NULL;
 	shell->retval = 0;
 	shell->tmp_fds = NULL;
+	shell->last_bg = 0;
+	shell->exit_lock = 0;
 }

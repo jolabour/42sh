@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:21:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/09 05:25:40 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/11 04:34:58 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int			main(int argc, char **argv, char **env)
 		ft_strdel(&sh.stdin->input);
 		free(sh.stdin);
 		del_history(sh.history_mark);
-		//sh.argv->argv = ft_free_split(sh.argv->argv);
 	}
 	free(sh.argv);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/10 03:12:16 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/11 03:50:56 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char					*g_tokstr[] =
 	"NAME",
 	"NEWLINE",
 	"IO_NUMBER",
-	"OPP",
+	"OP",
 	"PIPE",
 	"AND",
 	"SEMI",

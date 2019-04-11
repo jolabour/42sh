@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/10 02:20:15 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/11 06:17:11 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,9 @@ char		*ft_spparam_qmark(t_42sh *shell)
 
 char		*ft_spparam_bang(t_42sh *shell)
 {
-	return (ft_itoa(shell->last_bg));
+	if (shell->last_bg)
+		return (ft_itoa(shell->last_bg));
+	return (NULL);
 }
 
 char		*ft_spparam_zero(t_42sh *shell)
@@ -475,46 +477,690 @@ int			ft_exp_var(t_txtlist *txt, t_42sh *shell)
 	return (0);
 }
 
-int			ft_exp_brace_error(t_txtlist *txt, char *var)
+typedef struct	s_expparam
+{
+	char		*param;
+	int			(*f)(t_txtlist *txt, t_42sh *shell,
+				struct s_expparam *expparam);
+	char		*word;
+}				t_expparam;
+
+typedef struct	s_expparamfunc
+{
+	char		*str;
+	int			(*f)(t_txtlist *txt, t_42sh *shell, t_expparam *expparam);
+}				t_expparamfunc;
+
+int			ft_exp_brace_error(t_txtlist *txt)
 {
 	ft_putstr_fd("42sh: ", STDERR_FILENO);
 	write(STDERR_FILENO, txt->data + txt->start, txt->len);
 	ft_putstr_fd(": bad substitution\n", STDERR_FILENO);
-	if (var)
-		free(var);
 	return (-1);
 }
 
-int			ft_exp_brace(t_txtlist *txt, t_42sh *shell)
+int				ft_expparam_getvar(char *exp, t_expparam *expparam)
 {
-	char	*var;
-	char	*res;
-	int		i;
+	int			i;
 
-	var = NULL;
 	i = 0;
-	if (txt->len < 4)
-		return (ft_exp_brace_error(txt, NULL));
-	if (ft_get_spparam(txt->data[2]))
-		var = ft_strsub(txt->data, txt->start + 2, (i = 1));
-	else if (ft_isalpha(txt->data[txt->start + 2])
-		|| txt->data[txt->start + 2] == '_')
+	if (ft_get_spparam(exp[0]))
+		expparam->param = ft_strsub(exp, 0, (i = 1));
+	else if (ft_isalpha(exp[0]) || exp[0] == '_')
 	{
-		while (ft_isalnum(txt->data[txt->start + i + 2])
-			|| txt->data[txt->start + i + 2] == '_')
+		while (ft_isalnum(exp[i]) || exp[i] == '_')
 			i++;
-		var = ft_strsub(txt->data, txt->start + 2, i);
+		expparam->param = ft_strsub(exp, 0, i);
 	}
-	if ((unsigned int)i + 3 != txt->len || !var)
-		return (ft_exp_brace_error(txt, var));
-	res = var ? ft_getvar(var, shell) : NULL;
-	free(var);
-	txt->data = res ? ft_backslash_quotes(res, txt->dquote) : ft_strdup("");
+	return (i);
+}
+
+void			ft_expparam_free(t_expparam *expparam)
+{
+	if (expparam->param)
+		free(expparam->param);
+	if (expparam->word)
+		free(expparam->word);
+}
+
+int				ft_expparam_cnminus(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*word;
+
+	if (!expparam->param || !(word = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = word;
+	txt->data = ft_getvar(expparam->param, shell);
+	if (txt->data && !txt->data[0])
+	{
+		free(txt->data);
+		txt->data = NULL;
+	}
+	if (txt->data)
+		txt->data = ft_backslash_quotes(txt->data, txt->dquote);
+	else
+	{
+		txt->data = ft_backslash_quotes(expparam->word, txt->dquote);
+		expparam->word = NULL;
+	}
+	ft_expparam_free(expparam);
 	return (0);
+}
+
+int				ft_expparam_minus(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*word;
+
+	if (!expparam->param || !(word = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = word;
+	txt->data = ft_getvar(expparam->param, shell);
+	if (txt->data)
+		txt->data = ft_backslash_quotes(txt->data, txt->dquote);
+	else
+	{
+		txt->data = ft_backslash_quotes(expparam->word, txt->dquote);
+		expparam->word = NULL;
+	}
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+void			ft_expparam_assign(t_expparam *expparam, t_42sh *shell)
+{
+	char		*assign;
+	size_t		param_len;
+
+	if (ft_isalpha(expparam->param[0]) || expparam->param[0] == '_')
+	{
+		param_len = ft_strlen(expparam->param);
+		assign = (char *)ft_malloc_exit((param_len + ft_strlen(expparam->word)
+			+ 2) * sizeof(char));
+		ft_strcpy(assign, expparam->param);
+		assign[param_len] = '=';
+		ft_strcpy(assign + param_len + 1, expparam->word);
+		check_local_variable(shell, assign);
+		free(assign);
+	}
+}
+
+int				ft_expparam_cnequal(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*word;
+
+	if (!expparam->param || !(word = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = word;
+	txt->data = ft_getvar(expparam->param, shell);
+	if (txt->data && !txt->data[0])
+	{
+		free(txt->data);
+		txt->data = NULL;
+	}
+	if (txt->data)
+		txt->data = ft_backslash_quotes(txt->data, txt->dquote);
+	else
+	{
+		ft_expparam_assign(expparam, shell);
+		txt->data = ft_backslash_quotes(expparam->word, txt->dquote);
+		expparam->word = NULL;
+	}
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+int				ft_expparam_equal(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*word;
+
+	if (!expparam->param || !(word = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = word;
+	txt->data = ft_getvar(expparam->param, shell);
+	if (txt->data)
+		txt->data = ft_backslash_quotes(txt->data, txt->dquote);
+	else
+	{
+		ft_expparam_assign(expparam, shell);
+		txt->data = ft_backslash_quotes(expparam->word, txt->dquote);
+		expparam->word = NULL;
+	}
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+int				ft_expparam_qmark_error(t_expparam *expparam, char *error)
+{
+	ft_putstr_fd("42sh: ", STDERR_FILENO);
+	ft_putstr_fd(expparam->param, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	if (expparam->word && expparam->word[0])
+		ft_putstr_fd(expparam->word, STDERR_FILENO);
+	else
+		ft_putstr_fd(error, STDERR_FILENO);
+	ft_putstr_fd("\n", STDERR_FILENO);
+	ft_expparam_free(expparam);
+	return (-1);
+}
+
+int				ft_expparam_cnqmark(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*word;
+
+	if (!expparam->param || !(word = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = word;
+	txt->data = ft_getvar(expparam->param, shell);
+	if (txt->data && !txt->data[0])
+	{
+		free(txt->data);
+		txt->data = NULL;
+	}
+	if (txt->data)
+		txt->data = ft_backslash_quotes(txt->data, txt->dquote);
+	else
+		return (ft_expparam_qmark_error(expparam,
+			"parameter null or not set"));
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+int				ft_expparam_qmark(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*word;
+
+	if (!expparam->param || !(word = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = word;
+	txt->data = ft_getvar(expparam->param, shell);
+	if (txt->data)
+		txt->data = ft_backslash_quotes(txt->data, txt->dquote);
+	else
+		return (ft_expparam_qmark_error(expparam, "parameter not set"));
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+int				ft_expparam_cnplus(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*word;
+
+	if (!expparam->param || !(word = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = word;
+	txt->data = ft_getvar(expparam->param, shell);
+	if (txt->data && !txt->data[0])
+	{
+		free(txt->data);
+		txt->data = NULL;
+	}
+	if (txt->data)
+	{
+		free(txt->data);
+		txt->data = ft_backslash_quotes(expparam->word, txt->dquote);
+		expparam->word = NULL;
+	}
+	else
+		txt->data = ft_strdup("");
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+int				ft_expparam_plus(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*word;
+
+	if (!expparam->param || !(word = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = word;
+	txt->data = ft_getvar(expparam->param, shell);
+	if (txt->data)
+	{
+		free(txt->data);
+		txt->data = ft_backslash_quotes(expparam->word, txt->dquote);
+		expparam->word = NULL;
+	}
+	else
+		txt->data = ft_strdup("");
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+int				ft_expparam_sharp_noparam(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*var;
+	size_t		param_len;
+	int			i;
+
+	param_len = ft_strlen(expparam->word);
+	i = 0;
+	if (!expparam->word || param_len != 1 || !ft_get_spparam(expparam->word[0]))
+	{
+		if (expparam->word && (ft_isalpha(expparam->word[0])
+			|| expparam->word[0] == '_'))
+			while (ft_isalpha(expparam->word[i]) || expparam->word[i] == '_')
+				i++;
+		if (i == 0 || i != (int)param_len)
+		{
+			ft_expparam_free(expparam);
+			return (ft_exp_brace_error(txt));
+		}
+	}
+	var = ft_getvar(expparam->word, shell);
+	param_len = var ? ft_strlen(var) : 0;
+	txt->data = ft_itoa((int)param_len);
+	free(var);
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+typedef enum			e_matchtok
+{
+	MATCH_NONE = 0,
+	MATCH_TEXT,
+	MATCH_WCARD,
+	MATCH_QMARK,
+	MATCH_HOOK,
+	MATCH_RHOOK
+}						t_matchtok;
+
+typedef struct			s_matchlist
+{
+	t_matchtok			token;
+	bool				hparam[128];
+	char				tparam;
+	struct s_matchlist	*next;
+}						t_matchlist;
+
+t_matchlist		*ft_getmatch_list(char *word);
+
+t_matchlist		*ft_new_match(t_matchtok token)
+{
+	t_matchlist	*new;
+	
+	new = (t_matchlist *)ft_malloc_exit(sizeof(t_matchlist));
+	ft_bzero(new, sizeof(t_matchlist));
+	new->token = token;
+	return (new);
+}
+
+t_matchlist			*ft_getmatch_wcard(char *word)
+{
+	t_matchlist		*new;
+
+	new = NULL;
+	if (*word == '*')
+	{
+		new = ft_new_match(MATCH_WCARD);
+		new->next = ft_getmatch_list(word + 1);
+	}
+	return (new);
+}
+
+t_matchlist			*ft_getmatch_qmark(char *word)
+{
+	t_matchlist		*new;
+
+	new = NULL;
+	if (*word == '?')
+	{
+		new = ft_new_match(MATCH_QMARK);
+		new->next = ft_getmatch_list(word + 1);
+	}
+	return (new);
+}
+
+int					ft_getmatch_hookdash(char *word, t_matchlist *match)
+{
+	int				i;
+
+	if (word[1] == '-' && word[2] && word[2] != ']')
+	{
+		if (word[0] < word[2])
+		{
+			i = word[0];
+			while (i <= word[2])
+			{
+				match->hparam[i] = true;
+				i++;
+			}
+		}
+		return (3);
+	}
+	return (0);
+}
+
+typedef struct		s_class
+{
+	char			*name;
+	char			*chars;
+}					t_class;
+
+t_class				g_classestab[] =
+{
+	{"[:alnum:]",
+		"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"},
+	{"[:alpha:]", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"},
+	{"[:blank:]", " \t"},
+	{"[:cntrl:]", "\x0\x1\x2\x3\x4\x5\x6\x7\x8\x9\xA\xB\xC\xD\xE\xF\x10\x11"
+		"\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F\x7F"},
+	{"[:digit:]", "0123456789"},
+	{"[:graph:]", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		"abcdefghijklmnopqrstuvwxyz!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"},
+	{"[:lower:]", "abcdefghijklmnopqrstuvwxyz"},
+	{"[:print:]", " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		"abcdefghijklmnopqrstuvwxyz!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"},
+	{"[:punct:]", "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"},
+	{"[:space:]", " \t\n\r\v\f"},
+	{"[:upper:]", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"},
+	{"[:xdigit:]", "0123456789ABCDEFabcdef"},
+	{NULL, NULL}
+};
+
+int					ft_getmatch_hookhook(char *word, t_matchlist *match)
+{
+	int				class;
+	int				i;
+
+	class = 0;
+	while (g_classestab[class].name
+		&& !ft_strnequ(g_classestab[class].name, word,
+		ft_strlen(g_classestab[class].name)))
+		class++;
+	if (!g_classestab[class].name)
+		return (0);
+	i = 0;
+	while (g_classestab[class].chars[i])
+	{
+		match->hparam[(int)g_classestab[class].chars[i]] = true;
+		i++;
+	}
+	return (ft_strlen(g_classestab[class].name));
+}
+
+int					ft_getmatch_hooknormal(char *word, t_matchlist *match)
+{
+	match->hparam[(int)*word] = true;
+	return (1);
+}
+
+t_matchlist			*ft_getmatch_text(char *word);
+
+int					ft_getmatch_hook_init(t_matchlist *match, char *word)
+{
+	int				i;
+
+	i = 1;
+	i = 1;
+	if (word[i] == '!')
+	{
+		match->token = MATCH_RHOOK;
+		i++;
+	}
+	if (word[i] == ']')
+	{
+		match->hparam[']'] = true;
+		i++;
+	}
+	return (i);
+}
+
+t_matchlist			*ft_getmatch_hook(char *word)
+{
+	t_matchlist		*new;
+	int				i;
+	int				ret;
+
+	new = NULL;
+	if (*word == '[')
+	{
+		new = ft_new_match(MATCH_HOOK);
+		i = ft_getmatch_hook_init(new, word);
+		while (word[i] > 0 && word[i] != ']')
+		{
+			if (!(ret = ft_getmatch_hookdash(word + i, new)))
+				if (!(ret = ft_getmatch_hookhook(word + i, new)))
+					ret = ft_getmatch_hooknormal(word + i, new);
+			i = i + ret;
+		}
+		if (word[i] < 1)
+		{
+			new->tparam = '[';
+			new->token = MATCH_TEXT;
+		}
+		new->next = word[i] > 1 ? ft_getmatch_list(word + i + 1)
+			: ft_getmatch_list(word + 1);
+	}
+	return (new);
+}
+
+t_matchlist			*ft_getmatch_text(char *word)
+{
+	t_matchlist		*new;
+
+	new = ft_new_match(MATCH_TEXT);
+	new->tparam = *word;
+	new->next = ft_getmatch_list(word + 1);
+	return (new);
+}
+
+typedef t_matchlist *(*t_getmatch)(char *);
+
+t_getmatch			g_getmatchtab[] =
+{
+	&ft_getmatch_wcard,
+	&ft_getmatch_qmark,
+	&ft_getmatch_hook,
+	&ft_getmatch_text
+};
+
+t_matchlist		*ft_getmatch_list(char *word)
+{
+	t_matchlist	*new;
+	int			i;
+
+	if (word[0] < 1)
+		new = ft_new_match(MATCH_NONE);
+	else
+	{
+		i = 0;
+		while (!(new = g_getmatchtab[i](word)))
+			i++;
+	}
+	return (new);
+}
+
+char			*g_matchstr[] =
+{
+	"MATCH_NONE",
+	"MATCH_TEXT",
+	"MATCH_WCARD",
+	"MATCH_QMARK",
+	"MATCH_HOOK",
+	"MATCH_RHOOK"
+};
+
+void			ft_getmatch_print(t_matchlist *list)
+{
+	int			i;
+
+	while (list)
+	{
+		ft_putstr("[");
+		ft_putstr(g_matchstr[list->token]);
+		if (list->token == MATCH_HOOK || list->token == MATCH_RHOOK)
+		{
+			ft_putstr("|");
+			i = 0;
+			while (i < 128)
+			{
+				if (list->hparam[i])
+				{
+					if (i >= ' ' && i <= '~')
+						ft_putchar((char)i);
+					else
+					{
+						ft_putstr("[");
+						ft_putnbr(i);
+						ft_putstr("]");
+					}
+				}
+				i++;
+			}
+		}
+		else if (list->token == MATCH_TEXT)
+		{
+			ft_putstr("|");
+			if (list->tparam >= ' ' && list->tparam <= '~')
+				ft_putchar(list->tparam);
+			else
+			{
+				ft_putstr("[");
+				ft_putnbr(list->tparam);
+				ft_putstr("]");
+			}
+		}
+		ft_putstr("]");
+		list = list->next;
+	}
+	ft_putstr("\n");
+}
+
+typedef bool	(*t_match)(char *str, t_matchlist *match);
+
+int				ft_expparam_sharp(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*word;
+	t_matchlist	*list;
+
+	if (!expparam->param)
+		return (ft_expparam_sharp_noparam(txt, shell, expparam));
+	if (!expparam->param || !(word = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = word;
+	txt->data = ft_getvar(expparam->param, shell);
+	if (!txt->data)
+		txt->data = ft_strdup("");
+	list = ft_getmatch_list(expparam->word);
+	ft_getmatch_print(list);
+	return (0);
+}
+
+int				ft_expparam_nofunc(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	if (!expparam->param || expparam->word[0])
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	txt->data = ft_getvar(expparam->param, shell);
+	txt->data = txt->data ? ft_backslash_quotes(txt->data, txt->dquote)
+		: ft_strdup("");
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+t_expparamfunc	g_expparamtab[] =
+{
+	{":-", &ft_expparam_cnminus},
+	{"-", &ft_expparam_minus},
+	{":=", &ft_expparam_cnequal},
+	{"=", &ft_expparam_equal},
+	{":?", &ft_expparam_cnqmark},
+	{"?", &ft_expparam_qmark},
+	{":+", &ft_expparam_cnplus},
+	{"+", &ft_expparam_plus},
+	{"#", &ft_expparam_sharp},
+	{"", &ft_expparam_nofunc},
+	{NULL, NULL}
+};
+
+int				ft_expparam_getfunc(char *exp, t_expparam *expparam)
+{
+	int			i;
+	int			op;
+
+	i = 0;
+	op = -1;
+	while (g_expparamtab[i].str)
+	{
+		while (g_expparamtab[i].str && !ft_strnequ(g_expparamtab[i].str,
+			exp, ft_strlen(g_expparamtab[i].str)))
+			i++;
+		if (g_expparamtab[i].str && (op == -1
+			|| ft_strlen(g_expparamtab[i].str)
+			> ft_strlen(g_expparamtab[op].str)))
+			op = i;
+		if (g_expparamtab[i].str)
+			i++;
+	}
+	expparam->f = g_expparamtab[op].f;
+	return (ft_strlen(g_expparamtab[op].str));
+}
+
+int				ft_exp_brace(t_txtlist *txt, t_42sh *shell)
+{
+	t_expparam	expparam;
+	int			i;
+
+	ft_bzero(&expparam, sizeof(t_expparam));
+	i = 2;
+	i = i + ft_expparam_getvar(txt->data + txt->start + i, &expparam);
+	i = i + ft_expparam_getfunc(txt->data + txt->start + i, &expparam);
+	expparam.word = ft_strsub(txt->data, txt->start + i, txt->len - i - 1);
+	return (expparam.f(txt, shell, &expparam));
 }
 
 int			ft_cmdsub_child(int pipefd[2], t_node *ast, t_42sh *shell)
 {
+	ft_reset_signals();
 	close(pipefd[0]);
 	shell->pgid = getpgrp();
 	if (pipefd[1] != STDOUT_FILENO)
@@ -654,8 +1300,13 @@ int			ft_exp_bquote(t_txtlist *txt, t_42sh *shell)
 
 int			ft_exp_expr(t_txtlist *txt, t_42sh *shell)
 {
-	(void)shell;
-	txt->data = ft_strsub(txt->data, txt->start, txt->len);
+	char	*exp;
+
+	txt->data = ft_strsub(txt->data, txt->start + 3, txt->len - 5);
+	exp = ft_simple_expanse(txt->data, shell);
+	free(txt->data);
+	if (!(txt->data = ft_exp_ary(exp, shell)))
+		return (-1);
 	return (0);
 }
 
