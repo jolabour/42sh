@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/11 04:56:45 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/11 10:54:23 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,11 @@ t_joblist		*ft_get_job(t_node *current, t_42sh *shell)
 
 void			ft_reset_signals(void)
 {
-	signal (SIGINT, SIG_DFL);
-    signal (SIGQUIT, SIG_DFL);
-    signal (SIGTSTP, SIG_DFL);
-    signal (SIGTTIN, SIG_DFL);
-    signal (SIGTTOU, SIG_DFL);
+	signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
+    signal(SIGTSTP, SIG_DFL);
+    signal(SIGTTIN, SIG_DFL);
+    signal(SIGTTOU, SIG_DFL);
 }
 
 void			ft_exe_file_error(char *path, char *error)
@@ -1135,7 +1135,7 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 	else if (shell->argv->argv[0] && ft_strchr(shell->argv->argv[0], '/'))
 		shell->retval = ft_exe_file(current, shell,
 			ft_strdup(shell->argv->argv[0]), shell->argv->argv);
-	else
+	else if (shell->argv->argv[0])
 		shell->retval = ft_exe_command_ht(current, shell);
 	if (shell->argv->argv)
 		ft_free_split(shell->argv->argv);
@@ -1144,7 +1144,6 @@ int				ft_exe_command(t_node *current, t_42sh *shell)
 
 void			ft_init_signals(void)
 {
-	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGTSTP, SIG_IGN);
 	signal(SIGTTIN, SIG_IGN);

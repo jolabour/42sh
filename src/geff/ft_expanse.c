@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/11 06:17:11 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/11 18:45:24 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -477,20 +477,6 @@ int			ft_exp_var(t_txtlist *txt, t_42sh *shell)
 	return (0);
 }
 
-typedef struct	s_expparam
-{
-	char		*param;
-	int			(*f)(t_txtlist *txt, t_42sh *shell,
-				struct s_expparam *expparam);
-	char		*word;
-}				t_expparam;
-
-typedef struct	s_expparamfunc
-{
-	char		*str;
-	int			(*f)(t_txtlist *txt, t_42sh *shell, t_expparam *expparam);
-}				t_expparamfunc;
-
 int			ft_exp_brace_error(t_txtlist *txt)
 {
 	ft_putstr_fd("42sh: ", STDERR_FILENO);
@@ -795,26 +781,6 @@ int				ft_expparam_sharp_noparam(t_txtlist *txt, t_42sh *shell,
 	return (0);
 }
 
-typedef enum			e_matchtok
-{
-	MATCH_NONE = 0,
-	MATCH_TEXT,
-	MATCH_WCARD,
-	MATCH_QMARK,
-	MATCH_HOOK,
-	MATCH_RHOOK
-}						t_matchtok;
-
-typedef struct			s_matchlist
-{
-	t_matchtok			token;
-	bool				hparam[128];
-	char				tparam;
-	struct s_matchlist	*next;
-}						t_matchlist;
-
-t_matchlist		*ft_getmatch_list(char *word);
-
 t_matchlist		*ft_new_match(t_matchtok token)
 {
 	t_matchlist	*new;
@@ -871,33 +837,6 @@ int					ft_getmatch_hookdash(char *word, t_matchlist *match)
 	return (0);
 }
 
-typedef struct		s_class
-{
-	char			*name;
-	char			*chars;
-}					t_class;
-
-t_class				g_classestab[] =
-{
-	{"[:alnum:]",
-		"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"},
-	{"[:alpha:]", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"},
-	{"[:blank:]", " \t"},
-	{"[:cntrl:]", "\x0\x1\x2\x3\x4\x5\x6\x7\x8\x9\xA\xB\xC\xD\xE\xF\x10\x11"
-		"\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F\x7F"},
-	{"[:digit:]", "0123456789"},
-	{"[:graph:]", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		"abcdefghijklmnopqrstuvwxyz!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"},
-	{"[:lower:]", "abcdefghijklmnopqrstuvwxyz"},
-	{"[:print:]", " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		"abcdefghijklmnopqrstuvwxyz!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"},
-	{"[:punct:]", "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"},
-	{"[:space:]", " \t\n\r\v\f"},
-	{"[:upper:]", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"},
-	{"[:xdigit:]", "0123456789ABCDEFabcdef"},
-	{NULL, NULL}
-};
-
 int					ft_getmatch_hookhook(char *word, t_matchlist *match)
 {
 	int				class;
@@ -931,7 +870,6 @@ int					ft_getmatch_hook_init(t_matchlist *match, char *word)
 {
 	int				i;
 
-	i = 1;
 	i = 1;
 	if (word[i] == '!')
 	{
@@ -985,16 +923,6 @@ t_matchlist			*ft_getmatch_text(char *word)
 	return (new);
 }
 
-typedef t_matchlist *(*t_getmatch)(char *);
-
-t_getmatch			g_getmatchtab[] =
-{
-	&ft_getmatch_wcard,
-	&ft_getmatch_qmark,
-	&ft_getmatch_hook,
-	&ft_getmatch_text
-};
-
 t_matchlist		*ft_getmatch_list(char *word)
 {
 	t_matchlist	*new;
@@ -1010,16 +938,6 @@ t_matchlist		*ft_getmatch_list(char *word)
 	}
 	return (new);
 }
-
-char			*g_matchstr[] =
-{
-	"MATCH_NONE",
-	"MATCH_TEXT",
-	"MATCH_WCARD",
-	"MATCH_QMARK",
-	"MATCH_HOOK",
-	"MATCH_RHOOK"
-};
 
 void			ft_getmatch_print(t_matchlist *list)
 {
@@ -1067,28 +985,288 @@ void			ft_getmatch_print(t_matchlist *list)
 	ft_putstr("\n");
 }
 
-typedef bool	(*t_match)(char *str, t_matchlist *match);
+bool			ft_match_end(char *str, t_matchlist *match)
+{
+	(void)match;
+	if (!*str)
+		return (true);
+	return (false);
+}
 
-int				ft_expparam_sharp(t_txtlist *txt, t_42sh *shell,
+bool			ft_match_text(char *str, t_matchlist *match)
+{
+	if (*str != match->tparam)
+		return (false);
+	return (g_matchtab[match->next->token](str + 1, match->next));
+}
+
+bool			ft_match_wcard(char *str, t_matchlist *match)
+{
+	return ((*str && g_matchtab[match->token](str + 1, match)) ||
+		g_matchtab[match->next->token](str, match->next));
+}
+
+bool			ft_match_qmark(char *str, t_matchlist *match)
+{
+	if (!*str)
+		return (false);
+	return (g_matchtab[match->next->token](str + 1, match->next));
+}
+
+bool			ft_match_hook(char *str, t_matchlist *match)
+{
+	if (!match->hparam[(int)*str])
+		return (false);
+	return (g_matchtab[match->next->token](str + 1, match->next));
+}
+
+bool			ft_match_rhook(char *str, t_matchlist *match)
+{
+	if (!*str || match->hparam[(int)*str])
+		return (false);
+	return (g_matchtab[match->next->token](str + 1, match->next));
+}
+
+t_matchlist		*ft_revmatch_rev(t_matchlist *l1)
+{
+	t_matchlist *ret;
+	t_matchlist	*l2;
+
+	l2 = l1->next;
+	if (l2)
+	{
+		ret = ft_revmatch_rev(l2);
+		l1->next = NULL;
+		l2->next = l1;
+		return (ret);
+	}
+	return (l1);
+}
+
+t_matchlist		*ft_revmatch(t_matchlist *list)
+{
+	t_matchlist	*ret;
+	t_matchlist	*tmp;
+
+	ret = ft_revmatch_rev(list);
+	tmp = ret;
+	ret = ret->next;
+	tmp->next = NULL;
+	list->next = tmp;
+	return (ret);
+}
+
+char			*ft_strrev(char *str)
+{
+	char		tmp;
+	int			len;
+	int			i;
+
+	len = 0;
+	while (str[len])
+		len++;
+	i = 0;
+	while (i < len - i - 1)
+	{
+		tmp = str[i];
+		str[i] = str[len - i - 1];
+		str[len - i - 1] = tmp;
+		i++;
+	}
+	return (str);
+}
+
+void			ft_getmatch_free(t_matchlist *list)
+{
+	t_matchlist	*tmp;
+
+	while (list)
+	{
+		tmp = list;
+		list = list->next;
+		free(tmp);
+	}
+}
+
+char			*ft_match_rmslsuffix(char *param, char *word)
+{
+	t_matchlist	*list;
+	char		*ret;
+	int			i;
+
+	list = ft_getmatch_list(word);
+	ret = NULL;
+	i = 0;
+	while (param[i])
+		i++;
+	while (!ret)
+	{
+		if (g_matchtab[list->token](param + i, list))
+			ret = ft_strsub(param, 0, i);
+		else if (!i)
+			ret = ft_strdup(param);
+		i--;
+	}
+	ft_getmatch_free(list);
+	return (ret);
+}
+
+int				ft_expparam_pcent(t_txtlist *txt, t_42sh *shell,
 				t_expparam *expparam)
 {
-	char		*word;
-	t_matchlist	*list;
+	char		*tmp;
 
-	if (!expparam->param)
-		return (ft_expparam_sharp_noparam(txt, shell, expparam));
-	if (!expparam->param || !(word = ft_expanse_word(expparam->word, shell)))
+	if (!expparam->param || !(tmp = ft_expanse_word(expparam->word, shell)))
 	{
 		ft_expparam_free(expparam);
 		return (ft_exp_brace_error(txt));
 	}
 	free(expparam->word);
-	expparam->word = word;
-	txt->data = ft_getvar(expparam->param, shell);
-	if (!txt->data)
-		txt->data = ft_strdup("");
-	list = ft_getmatch_list(expparam->word);
-	ft_getmatch_print(list);
+	expparam->word = tmp;
+	tmp = ft_getvar(expparam->param, shell);
+	if (!tmp)
+		tmp = ft_strdup("");
+	free(expparam->param);
+	expparam->param = tmp;
+	txt->data = ft_match_rmslsuffix(expparam->param, expparam->word);
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+char			*ft_match_rmlgsuffix(char *param, char *word)
+{
+	t_matchlist	*list;
+	char		*ret;
+	int			i;
+
+	list = ft_getmatch_list(word);
+	ret = NULL;
+	i = 0;
+	while (!ret)
+	{
+		if (g_matchtab[list->token](param + i, list))
+			ret = ft_strsub(param, 0, i);
+		else if (!param[i])
+			ret = ft_strdup(param);
+		i++;
+	}
+	ft_getmatch_free(list);
+	return (ret);
+}
+
+int				ft_expparam_dpcent(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*tmp;
+
+	if (!expparam->param || !(tmp = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = tmp;
+	tmp = ft_getvar(expparam->param, shell);
+	if (!tmp)
+		tmp = ft_strdup("");
+	free(expparam->param);
+	expparam->param = tmp;
+	txt->data = ft_match_rmlgsuffix(expparam->param, expparam->word);
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+char			*ft_match_rmslprefix(char *param, char *word)
+{
+	t_matchlist	*list;
+	char		*ret;
+	int			i;
+
+	list = ft_revmatch(ft_getmatch_list(word));
+	ft_strrev(param);
+	ret = NULL;
+	i = 0;
+	while (param[i])
+		i++;
+	while (!ret)
+	{
+		if (g_matchtab[list->token](param + i, list))
+			ret = ft_strsub(param, 0, i);
+		else if (!i)
+			ret = ft_strdup(param);
+		i--;
+	}
+	ft_strrev(ret);
+	ft_getmatch_free(list);
+	return (ret);
+}
+
+int				ft_expparam_sharp(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*tmp;
+
+	if (!expparam->param)
+		return (ft_expparam_sharp_noparam(txt, shell, expparam));
+	if (!(tmp = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = tmp;
+	tmp = ft_getvar(expparam->param, shell);
+	if (!tmp)
+		tmp = ft_strdup("");
+	free(expparam->param);
+	expparam->param = tmp;
+	txt->data = ft_match_rmslprefix(expparam->param, expparam->word);
+	ft_expparam_free(expparam);
+	return (0);
+}
+
+char			*ft_match_rmlgprefix(char *param, char *word)
+{
+	t_matchlist	*list;
+	char		*ret;
+	int			i;
+
+	list = ft_revmatch(ft_getmatch_list(word));
+	ft_strrev(param);
+	ret = NULL;
+	i = 0;
+	while (!ret)
+	{
+		if (g_matchtab[list->token](param + i, list))
+			ret = ft_strsub(param, 0, i);
+		else if (!param[i])
+			ret = ft_strdup(param);
+		i++;
+	}
+	ft_strrev(ret);
+	ft_getmatch_free(list);
+	return (ret);
+}
+
+int				ft_expparam_dsharp(t_txtlist *txt, t_42sh *shell,
+				t_expparam *expparam)
+{
+	char		*tmp;
+
+	if (!expparam->param || !(tmp = ft_expanse_word(expparam->word, shell)))
+	{
+		ft_expparam_free(expparam);
+		return (ft_exp_brace_error(txt));
+	}
+	free(expparam->word);
+	expparam->word = tmp;
+	tmp = ft_getvar(expparam->param, shell);
+	if (!tmp)
+		tmp = ft_strdup("");
+	free(expparam->param);
+	expparam->param = tmp;
+	txt->data = ft_match_rmlgprefix(expparam->param, expparam->word);
+	ft_expparam_free(expparam);
 	return (0);
 }
 
@@ -1117,7 +1295,10 @@ t_expparamfunc	g_expparamtab[] =
 	{"?", &ft_expparam_qmark},
 	{":+", &ft_expparam_cnplus},
 	{"+", &ft_expparam_plus},
+	{"%", &ft_expparam_pcent},
+	{"%%", &ft_expparam_dpcent},
 	{"#", &ft_expparam_sharp},
+	{"##", &ft_expparam_dsharp},
 	{"", &ft_expparam_nofunc},
 	{NULL, NULL}
 };
@@ -1158,11 +1339,12 @@ int				ft_exp_brace(t_txtlist *txt, t_42sh *shell)
 	return (expparam.f(txt, shell, &expparam));
 }
 
-int			ft_cmdsub_child(int pipefd[2], t_node *ast, t_42sh *shell)
+void		ft_cmdsub_child(int pipefd[2], t_node *ast, t_42sh *shell)
 {
-	ft_reset_signals();
+	signal(SIGSTOP, SIG_DFL);
 	close(pipefd[0]);
-	shell->pgid = getpgrp();
+	if (!(shell->pgid))
+		shell->pgid = shell->pid;
 	if (pipefd[1] != STDOUT_FILENO)
 	{
 		ft_dup2_exit(pipefd[1], STDOUT_FILENO);

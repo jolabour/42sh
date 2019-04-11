@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/11 03:50:56 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/11 07:13:11 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,5 +321,54 @@ char				*(*g_cmdlinetab[])(t_node *command) =
 };
 
 int					g_intr;
+
+t_class				g_classestab[] =
+{
+	{"[:alnum:]",
+		"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"},
+	{"[:alpha:]", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"},
+	{"[:blank:]", " \t"},
+	{"[:cntrl:]", "\x0\x1\x2\x3\x4\x5\x6\x7\x8\x9\xA\xB\xC\xD\xE\xF\x10\x11"
+		"\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F\x7F"},
+	{"[:digit:]", "0123456789"},
+	{"[:graph:]", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		"abcdefghijklmnopqrstuvwxyz!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"},
+	{"[:lower:]", "abcdefghijklmnopqrstuvwxyz"},
+	{"[:print:]", " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		"abcdefghijklmnopqrstuvwxyz!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"},
+	{"[:punct:]", "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"},
+	{"[:space:]", " \t\n\r\v\f"},
+	{"[:upper:]", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"},
+	{"[:xdigit:]", "0123456789ABCDEFabcdef"},
+	{NULL, NULL}
+};
+
+t_getmatch			g_getmatchtab[] =
+{
+	&ft_getmatch_wcard,
+	&ft_getmatch_qmark,
+	&ft_getmatch_hook,
+	&ft_getmatch_text
+};
+
+char			*g_matchstr[] =
+{
+	"MATCH_NONE",
+	"MATCH_TEXT",
+	"MATCH_WCARD",
+	"MATCH_QMARK",
+	"MATCH_HOOK",
+	"MATCH_RHOOK"
+};
+
+t_match				g_matchtab[] =
+{
+	&ft_match_end,
+	&ft_match_text,
+	&ft_match_wcard,
+	&ft_match_qmark,
+	&ft_match_hook,
+	&ft_match_rhook
+};
 
 #endif
