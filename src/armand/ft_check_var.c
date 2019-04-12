@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/11 07:48:17 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/12 04:27:06 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,16 +64,22 @@ static int 		ft_var_modif(char *str, int i, int j, t_list_ari *new)
 
 static char *my_get_var(t_42sh *sh, char *name)
 {
+	char	*str;
 	int		i;
 	char	*ret;
-	t_var	*tmp;
 
 	i = 0;
-	tmp = sh->var->begin;
 	ret = NULL;
-	ft_putendl(name);
-	if ((ret = ft_getenv(sh->env, name, ft_strlen(name), NULL)))
-		return (ft_strdup(&ret[1]));
+
+	str = ft_strjoin(name, "=");
+	if ((ret = ft_getenv(sh->env, str, ft_strlen(str), sh->var)))
+	{
+		free(str);
+		return (ft_strdup(ret));
+	}
+	free(str);
+	
+	/*
 	//ft_putstr(name);
 	while (i < sh->var->size)
 	{
@@ -81,14 +87,14 @@ static char *my_get_var(t_42sh *sh, char *name)
 			return (ft_strdup(tmp->sub));
 		i++;
 		tmp = tmp->next;
-		ft_putchar('a');
 	}
 	tmp->next = ft_malloc_exit(sizeof(t_var));
 	tmp = tmp->next;
 	tmp->next = NULL;
 	tmp->to_sub = ft_strdup(name);
 	tmp->sub = ft_strdup("0");
-	sh->var->size = sh->var->size + 1;
+	sh->var->size = sh->var->size + 1;*/
+
 	return (ft_strdup("0"));
 }
 
@@ -107,8 +113,6 @@ static char	*ft_replace_var(char *str, t_list_ari **list_var, size_t *i, t_42sh 
 	tmp = NULL;
 	name = NULL;
 	l_tmp = NULL;
-	ft_putstr("bgn=");
-	ft_putendl(str);
 	while (ft_isalnum(str[j + *i]) || str[j + *i] == '_')
 		j++;
 	name = ft_strsub(str, *i , j);
