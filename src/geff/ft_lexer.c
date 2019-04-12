@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:47:25 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/09 00:12:26 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 03:25:58 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ void			ft_free_last_toklist(t_lex *lex)
 			lex->current = lex->current->next;
 }
 
-void			ft_lex_replace_alias(t_lex *lex, char *alias, t_42sh *shell)
+void			ft_lex_replace_alias(t_lex *lex, char *alias)
 {
 	char		*new;
 
@@ -165,7 +165,6 @@ void			ft_lex_replace_alias(t_lex *lex, char *alias, t_42sh *shell)
 		lex->input + lex->current->start + lex->current->len);
 	free(lex->input);
 	lex->input = new;
-	shell->stdin->input = new;
 	lex->index = lex->current->start;
 	ft_free_last_toklist(lex);
 }
@@ -202,7 +201,7 @@ int				ft_lex_delimiter(t_lex *lex, t_42sh *shell)
 		lex->current->len), shell);
 	if (alias)
 	{
-		ft_lex_replace_alias(lex, alias, shell);
+		ft_lex_replace_alias(lex, alias);
 		free(alias);
 		return (1);
 	}
