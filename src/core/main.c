@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:21:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 04:34:58 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 02:49:12 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int			main(int argc, char **argv, char **env)
 	{
 		sh.need_get_line = true;
 		process(&sh);
+		//if (sh.stdin->input)
 		ft_strdel(&sh.stdin->input);
 		free(sh.stdin);
 		del_history(sh.history_mark);

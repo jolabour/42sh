@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/10 11:32:29 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 02:56:00 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ static void		get_pos_cursor_begin(t_42sh *sh)
 
 static void		init_stdin(t_42sh *sh)
 {
+	sh->ctrld = 0;
 	sh->stdin = (t_stdin*)ft_malloc_exit(sizeof(t_stdin));
 	sh->stdin->size_of_input = 1000;
 	sh->stdin->input = (char*)ft_malloc_exit(
@@ -109,7 +110,7 @@ int				get_line(t_42sh *sh)
 			}
 			if ((i = check_input(sh, buf)) != 1)
 			{
-				if (i == -2)
+				if (sh->ctrld == 1)
 					return (0);
 				if (i == -1 || (sh->stdin->ctrlc == 1 && i == 2))
 					return (-1);
