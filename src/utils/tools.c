@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:09:16 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 07:09:25 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 11:30:38 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,45 @@ char		*ft_strjoinfree(char *s1, char *s2, unsigned int which)
 	if (which > 1)
 		free(s2);
 	return (join);
+}
+
+int				ft_str_isdigit(char *str)
+{
+	int			i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int				ft_str_isquote(char *str)
+{
+	int			i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\\' || str[i] == '\'' || str[i] == '\"')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int				ft_chars_in_int(int nbr)
+{
+	int			count;
+
+	count = (nbr < 0) ? 2 : 1;
+	while (nbr > 9 || nbr < -9)
+	{
+		count++;
+		nbr = nbr / 10;
+	}
+	return (count);
 }

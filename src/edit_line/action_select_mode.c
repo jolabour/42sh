@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 22:49:28 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/04 03:10:39 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 07:30:16 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void				del_select(t_42sh *sh)
 	{
 		if (sh->stdin->end_und == sh->stdin->len_line)
 			tmp = ft_strdup(sh->stdin->input + sh->stdin->end_und);
-		else		
+		else
 			tmp = ft_strdup(sh->stdin->input + sh->stdin->end_und + 1);
 		ft_strcpy(sh->stdin->input + sh->stdin->start_und, tmp);
 		free(tmp);

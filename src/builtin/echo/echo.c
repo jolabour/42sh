@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/19 21:32:59 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/09 04:17:31 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 08:25:18 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void		builtin_echo(t_42sh *sh)
 	int		i;
 	int		n;
 
-	i = 1;
+	i = 0;
 	n = 0;
 	if (write(1, NULL, 0) == -1)
 	{
@@ -45,12 +45,11 @@ void		builtin_echo(t_42sh *sh)
 	{
 		if ((n = check_opt_echo(sh)) == 1)
 			i++;
-		while (sh->argv->argv[i])
+		while (sh->argv->argv[++i])
 		{
 			ft_putstr(sh->argv->argv[i]);
 			if (sh->argv->argv[i + 1] != NULL)
 				ft_putchar(' ');
-			i++;
 		}
 	}
 	if (n != 1)

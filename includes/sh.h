@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 07:31:03 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 12:33:14 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,16 @@
 # include "libft.h"
 # include "histo.h"
 # include "lexer.h"
+# include "ast.h"
+# include "jobs.h"
+# include "exe.h"
 
 # define INITIAL_HASHTABLE_SIZE (1U << 9)
 # define BUCKET t_bucket
 # define BUCKET_CONTENT t_bucket_content
 # define OPTION_TEST 15
 # define NB_INPUT_SELECT 8
-# define NB_INPUT 17
+# define NB_INPUT 16
 # define RIGHT_KEY 4414235
 # define LEFT_KEY 4479771
 # define HOME 4741915
@@ -58,8 +61,6 @@
 # define SET_FG_RED		"\x1b[38;5;196m"
 # define RESET_COLOR	"\x1b[0m"
 
-# define EOFWHILELOOK "42sh: unexpected EOF while looking for matching `"
-
 # ifdef MINISHELL
 #  define PROG_NAME "minishell"
 # elif defined _21SH
@@ -67,16 +68,6 @@
 # else
 #  define PROG_NAME "21sh"
 # endif
-
-typedef struct				s_node
-{
-	t_tok					token;
-	char					*data;
-	struct s_node			*left;
-	struct s_node			*right;
-	struct s_node			*parent;
-	struct s_node			*redir;
-}							t_node;
 
 typedef enum				e_txttype
 {
@@ -108,37 +99,6 @@ typedef struct				s_list_ari
 	char					*var;
 	char					*name;
 }							t_list_ari;
-
-typedef struct				s_proclist
-{
-	pid_t					pid;
-	t_node					*command;
-	char					*cmdline;
-	int						status;
-	bool					complete;
-	char					*path;
-	char					**args;
-	struct s_proclist		*next;
-}							t_proclist;
-
-typedef struct				s_joblist
-{
-	pid_t					pgid;
-	t_proclist				*process;
-	char					*cmdline;
-	int						num;
-	bool					stopped;
-	struct termios			term;
-	struct s_joblist		*next;
-}							t_joblist;
-
-typedef struct				s_tmpfd
-{
-	int						initial;
-	int						tmp;
-	int						cloexec;
-	struct s_tmpfd			*next;
-}							t_tmpfd;
 
 typedef enum				e_errno_val
 {
@@ -304,19 +264,6 @@ typedef struct				s_42sh
 	bool					print_pwd;
 }							t_42sh;
 
-typedef struct				s_ast
-{
-	t_node					*begin;
-	t_node					*current;
-	t_node					*list;
-}							t_ast;
-
-typedef struct				s_bttab
-{
-	char					*name;
-	void					(*f)(t_42sh *);
-}							t_bttab;
-
 typedef struct				s_spparam
 {
 	char					c;
@@ -363,12 +310,22 @@ typedef struct				s_class
 }							t_class;
 
 void						ft_init(t_42sh *shell);
-char						*ft_strjoinfree(char *s1, char *s2,
-		unsigned int which);
 
 /*
 **							<--UTILS-->
 */
+
+/*
+**-->						struct
+*/
+
+typedef struct				s_opt
+{
+	char					**argv;
+	char					**after_opts;
+	bool					available[256];
+	bool					set[256];
+}							t_opt;
 
 /*
 **-->						ft_continue_line.c
@@ -380,71 +337,22 @@ int							ft_continue_line(t_42sh *shell, char **line,
 		char *matching);
 
 /*
-**							ast
+**-->						tools.c
 */
 
-int							ft_ast_word(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_newline(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_io_number(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_pipe(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_separator(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_redir(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_lpar(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_rpar(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_and_or(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_heredoc(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_closefd(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_lbrace(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_rbrace(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-t_node						*ft_toklist_to_node(char *input, t_toklist *list);
-void						ft_ast_free(t_node *ast);
-int							ft_build_ast(t_ast *ast, t_42sh *shell);
+char						*ft_strjoinfree(char *s1, char *s2,
+		unsigned int which);
+int							ft_str_isdigit(char *str);
+int							ft_str_isquote(char *str);
+int							ft_chars_in_int(int nbr);
 
 /*
-**							exe
+**-->						ft_get_opts.c
 */
 
-int							check_builtin(t_42sh *sh);
-void						free_tab(char **str);
-void						ft_reset_signals(void);
-void						ft_launch_job(t_joblist *job, t_42sh *shell);
-int							ft_manage_job(t_joblist *job, t_42sh *shell);
-int							ft_wait_job(t_joblist *job, int options,
-		t_42sh *shell);
-int							ft_exe_pipe(t_node *current, t_42sh *shell);
-int							ft_exe_and(t_node *current, t_42sh *shell);
-int							ft_exe_semi(t_node *current, t_42sh *shell);
-int							ft_exe_great(t_node *current, t_42sh *shell);
-int							ft_exe_less(t_node *current, t_42sh *shell);
-int							ft_exe_rpar(t_node *current, t_42sh *shell);
-int							ft_exe_and_if(t_node *current, t_42sh *shell);
-int							ft_exe_or_if(t_node *current, t_42sh *shell);
-int							ft_exe_dgreat(t_node *current, t_42sh *shell);
-int							ft_exe_lessand(t_node *current, t_42sh *shell);
-int							ft_exe_lessanddash(t_node *current, t_42sh *shell);
-int							ft_exe_greatand(t_node *current, t_42sh *shell);
-int							ft_exe_greatanddash(t_node *current, t_42sh *shell);
-int							ft_exe_lessgreat(t_node *current, t_42sh *shell);
-int							ft_exe_dless(t_node *current, t_42sh *shell);
-int							ft_exe_rbrace(t_node *current, t_42sh *shell);
-int							ft_exe_command(t_node *current, t_42sh *shell);
-int							ft_pipe_exit(int pipefd[2]);
-pid_t						ft_fork_exit(void);
-int							ft_dup_exit(int fd);
-int							ft_dup2_exit(int fd1, int fd2);
+void						ft_init_opts(t_opt *opt, char *available);
+int							ft_bad_opt(char *head, char opt);
+int							ft_get_opts(t_opt *opt, char **argv, char *error);
 
 /*
 **							expanse
@@ -492,49 +400,14 @@ char						*ft_simple_expanse(char *word, t_42sh *shell);
 void						ft_rmquotes_word(char *word);
 
 /*
-**							cmdline_command
-*/
-
-char						*ft_cmdline_sep(t_node *command);
-char						*ft_cmdline_redir(t_node *command);
-char						*ft_cmdline_par(t_node *command);
-char						*ft_cmdline_redir_and(t_node *command);
-char						*ft_cmdline_redir_close(t_node *command);
-char						*ft_cmdline_brace(t_node *command);
-char						*ft_cmdline_command(t_node *command);
-
-/*
-**							jobs
-*/
-
-int							ft_any_stopped(t_joblist *job);
-int							ft_any_running(t_joblist *job);
-void						ft_report_job_def(t_joblist *job, t_42sh *sh,
-		int fd);
-void						ft_check_jobs(t_42sh *shell);
-void						builtin_jobs(t_42sh *sh);
-void						ft_remove_job(t_joblist *job, t_42sh *shell);
-int							ft_manage_job(t_joblist *job, t_42sh *shell);
-void						builtin_fg(t_42sh *sh);
-void						builtin_bg(t_42sh *sh);
-
-/*
 **							globals
 */
 
-extern int					(*g_asttab[])(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-extern int					(*g_exetab[])(t_node *current, t_42sh *shell);
-extern t_bttab				g_bttab[];
 extern t_spparam			g_spparamtab[];
 extern int					(*g_txttab[])(char *word, size_t *index,
 		t_txtlist **current, bool *dquote);
 extern char					*g_txtstr[];
 extern int					(*g_exptab[])(t_txtlist *txt, t_42sh *shell);
-extern char					*g_sigtab[];
-extern char					*g_sigabrevtab[];
-extern char					*(*g_cmdlinetab[])(t_node *command);
-extern int					g_intr;
 extern t_class				g_classestab[];
 typedef t_matchlist			*(*t_getmatch)(char *);
 extern t_getmatch			g_getmatchtab[];
@@ -689,6 +562,7 @@ char						**list_to_tab(t_env *env, char **copy_env);
 t_env						*create_node(char *str);
 void						lst_push(t_env **head, t_env *new);
 t_env						*set_list(char **env);
+void						free_tab(char **str);
 
 /*
 **							getenv
@@ -909,10 +783,9 @@ int							ft_check_exp_ari(char *str);
 **							ft_check_var.c
 */
 
-char						*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh);
-
+char						*ft_check_var(char *str, t_list_ari **list_var,
+		t_42sh *sh);
 char						*ft_exp_ary(char *str, t_42sh *sh);
-
 void						check_local_variable(t_42sh *sh, char *str);
 
 /*
@@ -931,9 +804,13 @@ void						exec_cd_path(char *curpath, t_42sh *sh, int opt,
 void						del_all_path(t_path_mark *path);
 void						get_path(char *path, t_42sh *sh, int i);
 void						get_dir_cd(char *path, t_42sh *sh, int opt, int i);
-void						lst_del_path(t_path **path, t_path *to_del, 
+void						lst_del_path(t_path **path, t_path *to_del,
 							t_path *prev);
 char						*getenv_cd(char **env, const char *name,
 		size_t len, t_var_mark *var);
+void						print_error_alias(char *str, t_42sh *sh, int mode);
+int							check_reverse(t_42sh *sh, int *i);
+void						check_reverse_end(int reverse, t_42sh *sh);
+void						init_path_histo(t_42sh *sh);
 
 #endif

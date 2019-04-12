@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 06:05:42 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 05:40:59 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 08:55:05 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,10 @@ static	size_t	ft_word_count(const char *s, char c)
 	while (*s)
 	{
 		while (*s != c && *s)
-			++s;//if (*s != c && (*(s + 1) == c || *(s + 1) == 0))
+			++s;
 		++words;
 		while (*s == c && *s)
 			++s;
-		//++s;
 	}
 	return (words - 1);
 }
