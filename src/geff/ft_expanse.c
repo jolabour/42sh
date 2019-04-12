@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/11 18:45:24 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 05:02:05 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1384,7 +1384,7 @@ void		ft_cmdsub_error(char *command)
 	ft_putstr_fd("\'\n", STDERR_FILENO);
 }
 
-char		*ft_cmdsub_read(int fd)
+char		*ft_cmdsub_read(int fd, pid_t pid)
 {
 	char	*sub;
 	char	buf[BUFF_SIZE + 1];
@@ -1395,6 +1395,12 @@ char		*ft_cmdsub_read(int fd)
 	{
 		buf[ret] = '\0';
 		sub = ft_strjoinfree(sub, buf, 1);
+	}
+	if (waitpid(pid, &ret, 0) && WIFSIGNALED(ret) && WTERMSIG(ret) == SIGINT)
+	{
+		free(sub);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+		return (NULL);
 	}
 	ft_del_ending_newlines(sub);
 	close(fd);
@@ -1457,7 +1463,7 @@ char		*ft_cmdsub(char *command, t_42sh *shell, bool dquote)
 		if (pid == 0)
 			ft_cmdsub_child(pipefd, ast.begin, shell);
 		close(pipefd[1]);
-		result = ft_cmdsub_read(pipefd[0]);
+		result = ft_cmdsub_read(pipefd[0], pid);
 		ft_ast_free(ast.begin);
 	}
 	free(command);

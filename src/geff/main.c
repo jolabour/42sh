@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/11 10:54:23 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 05:17:08 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1073,6 +1073,7 @@ char				*ft_exe_command_get_path(t_42sh *shell)
 	int				i;
 	char			*path;
 
+	path = NULL;
 	if (shell->bin_dirs)
 	{
 		free_tab(shell->bin_dirs);
