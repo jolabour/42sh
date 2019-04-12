@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/12 04:30:13 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/12 04:34:54 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,6 @@ static void		ft_resolve(char *str, int size)
 	ft_strdel(&tmp);
 }
 
-/*static int	end_ari(char *str)
-{
-	int	j;
-	int i;
-
-	i = 2;
-	j = 2;
-	while (j != 0)
-	{
-		if (str[i] == '(')
-			j++;
-		if (str[i] == ')')
-			j--;
-		i++;
-		if (str[i] == '\0')
-			return (0);
-	}
-	return (i);
-}*/
-
 static char		*ft_exp_ari(char *str, int size)
 {
 	int		i;
@@ -54,7 +34,6 @@ static char		*ft_exp_ari(char *str, int size)
 	{
 		if (str[i] == ')' && p == -1)
 		{
-
 			ft_putendl_fd("parenthese error", 2);
 			return (NULL);
 		}
@@ -98,7 +77,7 @@ static void		ft_replace_var(t_list_ari *tmp, t_42sh *sh)
 void			ft_modif_var(t_list_ari *list_var, t_42sh *sh)
 {
 	t_list_ari *tmp;
-	
+
 	tmp = list_var;
 	while (tmp)
 	{
@@ -150,21 +129,17 @@ char		*ft_exp_ary(char *str, t_42sh *sh)
 		ft_free_ari(list_var, str);
 		return (NULL);
 	}
-//	ft_putendl(str);
 	if (!(ft_check_exp_ari(str)))
 	{
 		ft_free_ari(list_var, str);
 		return (NULL);
 	}
-//	ft_putendl(str);
 	str = ft_erase_space(str);
-//	ft_putendl(str);
 	if (!(str = ft_exp_ari(str, ft_strlen(str))))
 	{
 		ft_free_ari(list_var, str);
 		return (NULL);
 	}
-//	ft_putendl(str);
 	ft_modif_var(list_var, sh);
 	return (str);
 }

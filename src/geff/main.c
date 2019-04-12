@@ -6,19 +6,11 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:15 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/11 10:54:23 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 06:28:47 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
-
-
-int				ft_exe_badtoken(t_node *current, t_42sh *shell)
-{
-	(void)current;
-	(void)shell;
-	return (-1);
-}
 
 t_proclist		*ft_get_pipeline(t_node *current)
 {
@@ -267,29 +259,6 @@ void			ft_launch_job(t_joblist *job, t_42sh *shell)
 	}
 }
 
-void			ft_write_status(int status)
-{
-	ft_putstr("WIFEXITED: ");
-	ft_putnbr(WIFEXITED(status));
-	ft_putstr(" - WEXITSTATUS: ");
-	ft_putnbr(WEXITSTATUS(status));
-	ft_putstr("\nWIFSIGNALED: ");
-	ft_putnbr(WIFSIGNALED(status));
-	ft_putstr(" - WTERMSIG: ");
-	ft_putnbr(WTERMSIG(status));
-	ft_putstr("\nWIFSTOPPED: ");
-	ft_putnbr(WIFSTOPPED(status));
-	ft_putstr(" - WSTOPSIG: ");
-	ft_putnbr(WSTOPSIG(status));
-	ft_putstr("\nWIFCONTINUED: ");
-	ft_putnbr(WIFCONTINUED(status));
-	ft_putstr("\nWCOREDUMP: ");
-	ft_putnbr(WCOREDUMP(status));
-	ft_putstr("\nisatty: ");
-	ft_putnbr(isatty(1));
-	ft_putstr("\n");
-}
-
 int				ft_get_retval(int status)
 {
 	if (WIFEXITED(status))
@@ -487,11 +456,11 @@ int				ft_exe_pipe(t_node *current, t_42sh *shell)
 
 void			ft_print_bg(t_joblist *job, t_42sh *shell)
 {
-	ft_putstr_fd("[", 2);
-	ft_putnbr_fd(job->num, 2);
-	ft_putstr_fd("] ", 2);
-	ft_putnbr_fd(shell->last_bg, 2);
-	ft_putstr_fd("\n", 2);
+	ft_putstr_fd("[", STDERR_FILENO);
+	ft_putnbr_fd(job->num, STDERR_FILENO);
+	ft_putstr_fd("] ", STDERR_FILENO);
+	ft_putnbr_fd(shell->last_bg, STDERR_FILENO);
+	ft_putstr_fd("\n", STDERR_FILENO);
 }
 
 int				ft_exe_and(t_node *current, t_42sh *shell)
@@ -499,8 +468,6 @@ int				ft_exe_and(t_node *current, t_42sh *shell)
 	t_joblist	*job;
 	int			foreground;
 
-	// if (shell->pgid)
-	// 	return (ft_exe_semi(current, shell));
 	shell->forked = 0;
 	job = ft_get_job(current->left, shell);
 	foreground = shell->foreground;
@@ -1073,6 +1040,7 @@ char				*ft_exe_command_get_path(t_42sh *shell)
 	int				i;
 	char			*path;
 
+	path = NULL;
 	if (shell->bin_dirs)
 	{
 		free_tab(shell->bin_dirs);
@@ -1175,4 +1143,5 @@ void			ft_init(t_42sh *shell)
 	shell->tmp_fds = NULL;
 	shell->last_bg = 0;
 	shell->exit_lock = 0;
+	shell->buffer_mode = false;
 }

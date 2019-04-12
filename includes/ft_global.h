@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/11 07:13:11 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 05:45:14 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,13 +91,13 @@ t_tokcond				g_tokcond[] =
 int						(*g_asttab[])(t_node **begin, t_node **current,
 						t_node **list, t_42sh *shell) =
 {
-	&ft_ast_badtoken,
+	NULL,
 	&ft_ast_word,
-	&ft_ast_badtoken,
-	&ft_ast_badtoken,
+	NULL,
+	NULL,
 	&ft_ast_newline,
 	&ft_ast_io_number,
-	&ft_ast_badtoken,
+	NULL,
 	&ft_ast_pipe,
 	&ft_ast_separator,
 	&ft_ast_separator,
@@ -118,24 +118,24 @@ int						(*g_asttab[])(t_node **begin, t_node **current,
 	&ft_ast_redir,
 	&ft_ast_lbrace,
 	&ft_ast_rbrace,
-	&ft_ast_badtoken
+	NULL
 };
 
 int						(*g_exetab[])(t_node *current, t_42sh *shell) =
 {
-	ft_exe_badtoken,
-	ft_exe_badtoken,
-	ft_exe_badtoken,
-	ft_exe_badtoken,
-	ft_exe_badtoken,
-	ft_exe_badtoken,
-	ft_exe_badtoken,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	ft_exe_pipe,
 	ft_exe_and,
 	ft_exe_semi,
 	ft_exe_great,
 	ft_exe_less,
-	ft_exe_badtoken,
+	NULL,
 	ft_exe_rpar,
 	ft_exe_and_if,
 	ft_exe_or_if,
@@ -148,7 +148,7 @@ int						(*g_exetab[])(t_node *current, t_42sh *shell) =
 	ft_exe_lessgreat,
 	ft_exe_dless,
 	ft_exe_great,
-	ft_exe_badtoken,
+	NULL,
 	ft_exe_rbrace,
 	ft_exe_command
 };
@@ -290,19 +290,19 @@ char			*g_sigabrevtab[] =
 
 char				*(*g_cmdlinetab[])(t_node *command) =
 {
-	&ft_cmdline_badtoken,
-	&ft_cmdline_badtoken,
-	&ft_cmdline_badtoken,
-	&ft_cmdline_badtoken,
-	&ft_cmdline_badtoken,
-	&ft_cmdline_badtoken,
-	&ft_cmdline_badtoken,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	&ft_cmdline_sep,
 	&ft_cmdline_sep,
 	&ft_cmdline_sep,
 	&ft_cmdline_redir,
 	&ft_cmdline_redir,
-	&ft_cmdline_badtoken,
+	NULL,
 	&ft_cmdline_par,
 	&ft_cmdline_sep,
 	&ft_cmdline_sep,
@@ -315,7 +315,7 @@ char				*(*g_cmdlinetab[])(t_node *command) =
 	&ft_cmdline_redir,
 	&ft_cmdline_redir,
 	&ft_cmdline_redir,
-	&ft_cmdline_badtoken,
+	NULL,
 	&ft_cmdline_brace,
 	&ft_cmdline_command
 };

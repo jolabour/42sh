@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 16:28:32 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 07:31:03 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # include <dirent.h>
 # include "libft.h"
 # include "histo.h"
+# include "lexer.h"
 
 # define INITIAL_HASHTABLE_SIZE (1U << 9)
 # define BUCKET t_bucket
@@ -66,54 +67,6 @@
 # else
 #  define PROG_NAME "21sh"
 # endif
-
-typedef enum				e_tok
-{
-	NONE = 0,
-	WORD,
-	ASSIGNMENT_WORD,
-	NAME,
-	NEWLINE,
-	IO_NUMBER,
-	OPP,
-	PIPE,
-	AND,
-	SEMI,
-	GREAT,
-	LESS,
-	LPAR,
-	RPAR,
-	AND_IF,
-	OR_IF,
-	DLESS,
-	DGREAT,
-	LESSAND,
-	LESSANDDASH,
-	GREATAND,
-	GREATANDDASH,
-	LESSGREAT,
-	DLESSDASH,
-	CLOBBER,
-	LBRACE,
-	RBRACE,
-	COMMAND
-}							t_tok;
-
-typedef struct				s_toktab
-{
-	char					*str;
-	t_tok					token;
-	bool					alias_recognition;
-	bool					redir_op;
-}							t_toktab;
-
-typedef struct				s_toklist
-{
-	t_tok					token;
-	size_t					start;
-	size_t					len;
-	struct s_toklist		*next;
-}							t_toklist;
 
 typedef struct				s_node
 {
@@ -304,6 +257,7 @@ typedef struct				s_argv
 
 typedef struct				s_42sh
 {
+	int						ctrld;
 	char					**tokens;
 	char					**builtin;
 	char					**args;
@@ -347,26 +301,8 @@ typedef struct				s_42sh
 	char					**cd_path;
 	int						cd_err;
 	char					*pwd;
-	bool						print_pwd;
+	bool					print_pwd;
 }							t_42sh;
-
-typedef struct				s_lex
-{
-	char					*input;
-	size_t					index;
-	t_toklist				*begin;
-	t_toklist				*current;
-	bool					alias_recognition;
-	bool					redir_op;
-	size_t					ignore_alias;
-}							t_lex;
-
-typedef struct				s_tokcond
-{
-	int						(*cond)(t_lex *, t_42sh *);
-	int						dquote_mode;
-	int						sub_mode;
-}							t_tokcond;
 
 typedef struct				s_ast
 {
@@ -431,25 +367,15 @@ char						*ft_strjoinfree(char *s1, char *s2,
 		unsigned int which);
 
 /*
-**							lexer
+**							<--UTILS-->
 */
 
-int							ft_lex_operator(t_lex *lex, t_42sh *shell);
-int							ft_lex_notoperator(t_lex *lex, t_42sh *shell);
-int							ft_lex_newline(t_lex *lex, t_42sh *shell);
-int							ft_lex_backslash(t_lex *lex, t_42sh *shell);
-int							ft_lex_quote(t_lex *lex, t_42sh *shell);
-int							ft_lex_dquote(t_lex *lex, t_42sh *shell);
-int							ft_lex_dollar(t_lex *lex, t_42sh *shell);
-int							ft_lex_bquote(t_lex *lex, t_42sh *shell);
-int							ft_lex_ionumber(t_lex *lex, t_42sh *shell);
-int							ft_lex_newoperator(t_lex *lex, t_42sh *shell);
-int							ft_lex_blank(t_lex *lex, t_42sh *shell);
-int							ft_lex_sharp(t_lex *lex, t_42sh *shell);
-int							ft_lex_word(t_lex *lex, t_42sh *shell);
-int							ft_lex_newword(t_lex *lex, t_42sh *shell);
-int							ft_lexer(t_lex *lex, t_42sh *shell);
-void						ft_print_toklist(char *input, t_toklist *list);
+/*
+**-->						ft_continue_line.c
+*/
+
+int							ft_continue_line_buffer(t_42sh *shell, char **line);
+int							ft_continue_line_stdin(t_42sh *shell, char **line);
 int							ft_continue_line(t_42sh *shell, char **line,
 		char *matching);
 
@@ -462,8 +388,6 @@ int							ft_ast_word(t_node **begin, t_node **current,
 int							ft_ast_newline(t_node **begin, t_node **current,
 		t_node **list, t_42sh *shell);
 int							ft_ast_io_number(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_badtoken(t_node **begin, t_node **current,
 		t_node **list, t_42sh *shell);
 int							ft_ast_pipe(t_node **begin, t_node **current,
 		t_node **list, t_42sh *shell);
@@ -500,7 +424,6 @@ void						ft_launch_job(t_joblist *job, t_42sh *shell);
 int							ft_manage_job(t_joblist *job, t_42sh *shell);
 int							ft_wait_job(t_joblist *job, int options,
 		t_42sh *shell);
-int							ft_exe_badtoken(t_node *current, t_42sh *shell);
 int							ft_exe_pipe(t_node *current, t_42sh *shell);
 int							ft_exe_and(t_node *current, t_42sh *shell);
 int							ft_exe_semi(t_node *current, t_42sh *shell);
@@ -572,7 +495,6 @@ void						ft_rmquotes_word(char *word);
 **							cmdline_command
 */
 
-char						*ft_cmdline_badtoken(t_node *command);
 char						*ft_cmdline_sep(t_node *command);
 char						*ft_cmdline_redir(t_node *command);
 char						*ft_cmdline_par(t_node *command);
@@ -600,9 +522,6 @@ void						builtin_bg(t_42sh *sh);
 **							globals
 */
 
-extern char					*g_tokstr[];
-extern t_toktab				g_toktab[];
-extern t_tokcond			g_tokcond[];
 extern int					(*g_asttab[])(t_node **begin, t_node **current,
 		t_node **list, t_42sh *shell);
 extern int					(*g_exetab[])(t_node *current, t_42sh *shell);

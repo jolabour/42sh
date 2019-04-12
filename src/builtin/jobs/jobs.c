@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/30 12:26:36 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/04 02:19:01 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 06:41:34 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,12 +222,6 @@ int				ft_running(int status, int fd)
 	return (1);
 }
 
-char			*ft_cmdline_badtoken(t_node *command)
-{
-	(void)command;
-	return (ft_strdup(""));
-}
-
 char			*ft_cmdline_sep(t_node *command)
 {
 	char		*line;
@@ -436,7 +430,7 @@ void			ft_report_job(t_opt *opt, t_joblist *job, t_42sh *sh)
 	else
 		ft_report_job_def(job, sh, STDOUT_FILENO);
 	if (!(ft_any_running(job) || ft_any_stopped(job)))
-					ft_remove_job(job, sh);
+		ft_remove_job(job, sh);
 }
 
 void			ft_report_all_jobs(t_opt *opt, t_42sh *sh)

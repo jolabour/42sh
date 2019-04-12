@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 04:04:26 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/05 06:01:05 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 07:18:45 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,20 @@ void	spacing_fd(int line, int fd)
 		ft_put_space_fd(2, fd);
 }
 
+int		check_line(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (ft_isprint(str[i]) != 1)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 void	init_history(t_42sh *sh, char *path)
 {
 	char	*line;
@@ -54,8 +68,11 @@ void	init_history(t_42sh *sh, char *path)
 		fd = open(path, O_RDWR);
 		while (get_next_line(fd, &line) != 0)
 		{
-			add_to_list(sh, line);
-			free(line);
+			if (check_line(line) == 1)
+			{
+				add_to_list(sh, line);
+				free(line);
+			}
 		}
 		close(fd);
 	}
