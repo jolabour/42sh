@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 08:27:45 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 08:32:54 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 20:59:36 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_node			*ft_new_node(void)
 	return (new);
 }
 
-t_node			*ft_toklist_to_node(char *input, t_toklist *list)
+t_node			*ft_toklist_to_node(t_lex *lex)
 {
 	t_node		*begin;
 	t_node		**next;
@@ -29,17 +29,19 @@ t_node			*ft_toklist_to_node(char *input, t_toklist *list)
 
 	begin = NULL;
 	next = &begin;
-	while (list)
+	while (lex->begin)
 	{
 		*next = ft_new_node();
-		(*next)->data = ft_strsub(input, list->start, list->len);
-		(*next)->token = list->token;
+		(*next)->data = ft_strsub(lex->input, lex->begin->start,
+			lex->begin->len);
+		(*next)->token = lex->begin->token;
 		next = &((*next)->right);
-		tmp = list;
-		list = list->next;
+		tmp = lex->begin;
+		lex->begin = lex->begin->next;
 		free(tmp);
 	}
-	free(input);
+	free(lex->input);
+	ft_free_alias_lock(&(lex->lock));
 	return (begin);
 }
 
@@ -72,6 +74,6 @@ int				ft_ast_continue_list(t_node **list, t_42sh *shell)
 	lex = (t_lex){line, 0, NULL, NULL, true, false, 0};
 	if (ft_lexer(&lex, shell))
 		return (-1);
-	*list = ft_toklist_to_node(lex.input, lex.begin);
+	*list = ft_toklist_to_node(&lex);
 	return (1);
 }

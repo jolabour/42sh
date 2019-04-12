@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 05:11:37 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 20:54:42 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,12 @@ char			*substitute_alias(char *name, t_42sh *sh)
 	{
 		if (ft_strequ(tmp->to_sub, name) == 1)
 		{
-			ft_strdel(&name);
 			res = ft_strdup(tmp->sub);
 			return (res);
 		}
 		tmp = tmp->next;
 		i++;
 	}
-	ft_strdel(&name);
 	return (NULL);
 }
 
@@ -89,7 +87,7 @@ void			process(t_42sh *sh)
 	lex = (t_lex){ft_strdup(sh->stdin->input), 0, NULL, NULL, true, false, 0};
 	if (!ft_lexer(&lex, sh) && lex.begin)
 	{
-		ast = (t_ast){NULL, NULL, ft_toklist_to_node((lex.input), lex.begin)};
+		ast = (t_ast){NULL, NULL, ft_toklist_to_node(&lex)};
 		ft_build_ast(&ast, sh);
 		if (ast.begin && sh->exit_lock)
 			sh->exit_lock--;

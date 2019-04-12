@@ -6,7 +6,7 @@
 #    By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/12 09:19:56 by jolabour          #+#    #+#              #
-#    Updated: 2019/04/12 19:49:38 by geargenc         ###   ########.fr        #
+#    Updated: 2019/04/12 21:00:57 by geargenc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,7 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  hashtable/init_hashtable.c utils/ft_joinpath.c utils/env.c \
 			  edit_line/select_mode.c edit_line/move_select_mode.c \
 			  edit_line/action_select_mode.c edit_line/move_line.c edit_line/utils_stdin.c \
+			  ft_lexer/ft_alias_lock.c \
 			  ft_lexer/ft_lex_bquote.c ft_lexer/ft_lex_delimiter.c \
 			  ft_lexer/ft_lex_dollar.c ft_lexer/ft_lex_operator.c \
 			  ft_lexer/ft_lex_other_rules.c ft_lexer/ft_lex_quoting.c \

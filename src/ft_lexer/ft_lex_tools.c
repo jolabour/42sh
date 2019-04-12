@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:06:58 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 07:08:09 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 20:59:08 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,5 @@ void			ft_lex_free(t_lex *lex)
 		free(tmp);
 	}
 	free(lex->input);
+	ft_free_alias_lock(&(lex->lock));
 }

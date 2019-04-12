@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:38:19 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 08:42:37 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 20:52:40 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ int							ft_ast_and_or(t_node **begin, t_node **current,
 */
 
 t_node						*ft_new_node(void);
-t_node						*ft_toklist_to_node(char *input, t_toklist *list);
+t_node						*ft_toklist_to_node(t_lex *lex);
 void						ft_ast_insert_parent(t_node **begin,
 		t_node **current, t_node **list);
 int							ft_ast_continue_list(t_node **list, t_42sh *shell);

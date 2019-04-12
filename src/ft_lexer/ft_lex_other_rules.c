@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:03:05 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 07:05:37 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 21:35:28 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ int			ft_lex_blank(t_lex *lex, t_42sh *shell)
 	{
 		if (ft_lex_delimiter(lex, shell))
 			return (0);
+		if (ft_match_alias_lock(lex->lock, lex->index))
+			lex->alias_recognition = true;
 		lex->index++;
 		return (0);
 	}

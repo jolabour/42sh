@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 14:23:33 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 14:23:42 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 21:00:02 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int			ft_cmdsub_getast(t_ast *ast, t_42sh *shell)
 			ft_ast_free(ast->begin);
 			return (1);
 		}
-		ast->list = ft_toklist_to_node(lex.input, lex.begin);
+		ast->list = ft_toklist_to_node(&lex);
 		if (ft_build_ast(ast, shell))
 			return (1);
 	}

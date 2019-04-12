@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:17:54 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 19:22:20 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 21:27:15 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,13 @@ typedef struct				s_toklist
 	struct s_toklist		*next;
 }							t_toklist;
 
+typedef struct				s_alias_lock
+{
+	char					*alias;
+	size_t					ignore;
+	struct s_alias_lock		*next;
+}							t_alias_lock;
+
 typedef struct				s_lex
 {
 	char					*input;
@@ -84,7 +91,7 @@ typedef struct				s_lex
 	t_toklist				*current;
 	bool					alias_recognition;
 	bool					redir_op;
-	size_t					ignore_alias;
+	t_alias_lock			*lock;
 }							t_lex;
 
 typedef struct				s_tokcond
@@ -101,10 +108,18 @@ extern t_toktab				g_toktab[];
 extern t_tokcond			g_tokcond[];
 
 /*
-**							ft_lexer.c
+**							ft_alias_lock.c
 */
 
-int							ft_lexer(t_lex *lex, t_42sh *shell);
+bool						ft_check_alias_lock(t_alias_lock **list,
+		size_t min, char *alias);
+void						ft_add_len_alias_lock(t_alias_lock *list,
+		int size);
+void						ft_add_alias_lock(t_alias_lock **list, char *name,
+		size_t size);
+bool						ft_match_alias_lock(t_alias_lock *list,
+		size_t index);
+void						ft_free_alias_lock(t_alias_lock **list);
 
 /*
 **							ft_lex_bquote.c
@@ -167,5 +182,11 @@ void						ft_add_toklist(t_lex *lex, t_tok token);
 int							ft_lex_continue_line(t_lex *lex, t_42sh *shell,
 		char *matching);
 void						ft_lex_free(t_lex *lex);
+
+/*
+**							ft_lexer.c
+*/
+
+int							ft_lexer(t_lex *lex, t_42sh *shell);
 
 #endif
