@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:47 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/11 03:26:53 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/12 13:40:29 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	ft_check_op(char *str)
 	return (0);
 }
 
-static void ft_check_logic(char *str, int p, int nb, int n, int i)
+static void	ft_check_logic(char *str, int p, int nb, int n, int i)
 {
 	if (nb == 1)
 	{
@@ -60,7 +60,7 @@ char		*ft_logic_op(char *str, int size)
 		{
 			n = i + ft_count_next_num(&str[i + 2]) + 2;
 			p = ft_count_prev_num(str, i) - i;
-			ft_check_logic(str, p, nb, n , i);
+			ft_check_logic(str, p, nb, n, i);
 			i = -1;
 			str = ft_erase_space(str);
 			size = ft_strlen(str);

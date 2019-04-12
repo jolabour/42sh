@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/12 04:34:54 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/12 10:28:47 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,30 @@ static void		ft_resolve(char *str, int size)
 	ft_strdel(&tmp);
 }
 
+static char		*ft_exp_parenthese(char *str, int *i, int *p, int *size)
+{
+	if (str[*i] == ')' && *p == -1)
+	{
+		free(str);
+		ft_putendl_fd("parenthese error", 2);
+		return (NULL);
+	}
+	if (str[*i] == '(')
+		*p = *i;
+	if (*p != -1 && str[*i] == ')')
+	{
+		ft_resolve(&str[*p + 1], *i - *p - 1);
+		str[*p] = ' ';
+		str[*i] = ' ';
+		*p = -1;
+		*i = -1;
+		str = ft_erase_space(str);
+		*size = ft_strlen(str);
+	}
+	*i = *i + 1;
+	return (str);
+}
+
 static char		*ft_exp_ari(char *str, int size)
 {
 	int		i;
@@ -32,27 +56,12 @@ static char		*ft_exp_ari(char *str, int size)
 	p = -1;
 	while (i < size)
 	{
-		if (str[i] == ')' && p == -1)
-		{
-			ft_putendl_fd("parenthese error", 2);
+		if (!(str = ft_exp_parenthese(str, &i, &p, &size)))
 			return (NULL);
-		}
-		if (str[i] == '(')
-			p = i;
-		if (p != -1 && str[i] == ')')
-		{
-			ft_resolve(&str[p + 1], i - p - 1);
-			str[p] = ' ';
-			str[i] = ' ';
-			p = -1;
-			i = -1;
-			str = ft_erase_space(str);
-			size = ft_strlen(str);
-		}
-		i++;
 	}
 	if (p != -1)
 	{
+		free(str);
 		ft_putendl_fd("parenthese error", 2);
 		return (NULL);
 	}
