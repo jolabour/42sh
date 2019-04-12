@@ -6,7 +6,7 @@
 #    By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/12 09:19:56 by jolabour          #+#    #+#              #
-#    Updated: 2019/04/12 15:08:25 by geargenc         ###   ########.fr        #
+#    Updated: 2019/04/12 19:49:38 by geargenc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,9 +61,10 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  ft_exp/ft_cmdsub_parse.c ft_exp/ft_cmdsub_read.c \
 			  ft_exp/ft_exp.c ft_exp/ft_exp_args.c ft_exp/ft_exp_brace.c \
 			  ft_exp/ft_exp_cmdsub.c ft_exp/ft_exp_others.c \
-			  ft_exp/ft_exp_parse.c ft_exp/ft_exp_parse_exp.c \
-			  ft_exp/ft_exp_parse_text.c ft_exp/ft_exp_parse_tools.c \
+			  ft_exp/ft_exp_parse.c ft_exp/ft_exp_parse_text.c \
+			  ft_exp/ft_exp_parse_tilde.c ft_exp/ft_exp_parse_tools.c \
 			  ft_exp/ft_exp_spparam.c ft_exp/ft_exp_tilde.c \
+			  ft_exp/ft_exp_parse_var.c \
 			  ft_exp/ft_expanse.c ft_exp/ft_expparam_equal.c \
 			  ft_exp/ft_expparam_minus.c ft_exp/ft_expparam_nofunc.c \
 			  ft_exp/ft_expparam_pcent.c ft_exp/ft_expparam_plus.c \

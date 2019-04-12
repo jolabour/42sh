@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 14:17:45 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 18:59:43 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,17 @@ t_toktab				g_toktab[] =
 
 t_tokcond				g_tokcond[] =
 {
-	{&ft_lex_newline, 0, 0},
-	{&ft_lex_backslash, 1, 1},
-	{&ft_lex_quote, 0, 0},
-	{&ft_lex_dquote, 0, 0},
-	{&ft_lex_dollar, 1, 0},
-	{&ft_lex_bquote, 1, 0},
-	{&ft_lex_ionumber, 0, 0},
-	{&ft_lex_operator, 0, 0},
-	{&ft_lex_blank, 0, 0},
-	{&ft_lex_sharp, 0, 0},
-	{&ft_lex_word, 1, 1},
+	{&ft_lex_newline, false},
+	{&ft_lex_backslash, true},
+	{&ft_lex_quote, false},
+	{&ft_lex_dquote, false},
+	{&ft_lex_dollar, true},
+	{&ft_lex_bquote, true},
+	{&ft_lex_ionumber, false},
+	{&ft_lex_operator, false},
+	{&ft_lex_blank, false},
+	{&ft_lex_sharp, false},
+	{&ft_lex_word, true},
 };
 
 int						(*g_asttab[])(t_node **begin, t_node **current,

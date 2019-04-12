@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:17:54 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 14:19:25 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 19:22:20 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ typedef struct				s_tokcond
 {
 	int						(*cond)(t_lex *, t_42sh *);
 	int						dquote_mode;
-	int						sub_mode;
 }							t_tokcond;
 
 /*
@@ -127,7 +126,8 @@ int							ft_lex_delimiter(t_lex *lex, t_42sh *shell);
 **							ft_lex_dollar.c
 */
 
-int							ft_lex_sub_mode(t_lex *lex, t_42sh *shell);
+int							ft_lex_sub_mode(t_lex *lex, t_42sh *shell,
+		char *quote);
 int							ft_lex_dollar_brace(t_lex *lex, t_42sh *shell);
 int							ft_lex_dollar_par(t_lex *lex, t_42sh *shell);
 int							ft_lex_dollar(t_lex *lex, t_42sh *shell);

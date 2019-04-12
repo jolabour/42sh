@@ -6,29 +6,38 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 06:54:33 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 06:54:57 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 19:23:55 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-int			ft_lex_sub_mode(t_lex *lex, t_42sh *shell)
+int			ft_lex_sub_mode(t_lex *lex, t_42sh *shell, char *quote)
 {
-	int		i;
 	int		ret;
 
-	i = 0;
-	while (g_tokcond[i].sub_mode == 0
-		|| (ret = g_tokcond[i].cond(lex, shell)) > 0)
-		i++;
+	ret = 0;
+	if (*quote != '\"' && lex->input[lex->index] == '\'')
+		*quote = *quote  ? 0 : '\'';
+	else if (*quote != '\'' && lex->input[lex->index] == '\"')
+		*quote = *quote  ? 0 : '\"';
+	if (lex->input[lex->index] == '\\' && (lex->input[lex->index] == '\n'
+		|| lex->input[lex->index] == '\0'))
+		ret = ft_lex_backslash(lex, shell);
+	else if (*quote != '\'' && lex->input[lex->index] == '\\')
+		lex->index += 2;
+	else
+		ft_lex_word(lex, shell);
 	return (ret);
 }
 
 int			ft_lex_dollar_brace(t_lex *lex, t_42sh *shell)
 {
 	int		braces;
+	char	quote;
 
 	braces = 1;
+	quote = 0;
 	ft_lex_word(lex, shell);
 	while (braces)
 	{
@@ -39,11 +48,11 @@ int			ft_lex_dollar_brace(t_lex *lex, t_42sh *shell)
 		}
 		else
 		{
-			if (lex->input[lex->index] == '{')
+			if (!quote && lex->input[lex->index] == '{')
 				braces++;
-			if (lex->input[lex->index] == '}')
+			if (!quote && lex->input[lex->index] == '}')
 				braces--;
-			if (ft_lex_sub_mode(lex, shell))
+			if (ft_lex_sub_mode(lex, shell, &quote))
 				return (-1);
 		}
 	}
@@ -53,8 +62,10 @@ int			ft_lex_dollar_brace(t_lex *lex, t_42sh *shell)
 int			ft_lex_dollar_par(t_lex *lex, t_42sh *shell)
 {
 	int		pars;
+	char	quote;
 
 	pars = 1;
+	quote = 0;
 	ft_lex_word(lex, shell);
 	while (pars)
 	{
@@ -65,11 +76,11 @@ int			ft_lex_dollar_par(t_lex *lex, t_42sh *shell)
 		}
 		else
 		{
-			if (lex->input[lex->index] == '(')
+			if (!quote && lex->input[lex->index] == '(')
 				pars++;
-			if (lex->input[lex->index] == ')')
+			if (!quote && lex->input[lex->index] == ')')
 				pars--;
-			if (ft_lex_sub_mode(lex, shell))
+			if (ft_lex_sub_mode(lex, shell, &quote))
 				return (-1);
 		}
 	}

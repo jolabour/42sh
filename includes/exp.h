@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 12:34:36 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 15:06:08 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 19:49:38 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,17 +185,6 @@ t_txtlist					*ft_parse_check(t_txtlist *list);
 t_txtlist					*ft_parse_word(char *word);
 
 /*
-**							ft_exp_parse_exp.c
-*/
-
-int							ft_parse_tilde(char *word, size_t *index,
-		t_txtlist **current, bool *dquote);
-int							ft_parse_brace_var(char *word, size_t *index,
-		t_txtlist **current);
-int							ft_parse_par_var(char *word, size_t *index,
-		t_txtlist **current);
-
-/*
 **							ft_exp_parse_text.c
 */
 
@@ -207,12 +196,34 @@ int							ft_parse_text(char *word, size_t *index,
 		t_txtlist **current, bool *dquote);
 
 /*
+**							ft_exp_parse_tilde.c
+*/
+
+int							ft_parse_tilde(char *word, size_t *index,
+		t_txtlist **current, bool *dquote);
+
+/*
 **							ft_exp_parse_tools.c
 */
 
 t_txtlist					*ft_new_txtlist(void);
 t_txtlist					*ft_add_txtlist(char *data, t_txttype token,
 		t_txtlist **to, bool dquote);
+
+/*
+**							ft_exp_parse_var.c
+*/
+
+int							ft_parse_sub_mode(char *word, size_t *index,
+		char *quote);
+int							ft_parse_brace_var(char *word, size_t *index,
+		t_txtlist **current);
+int							ft_parse_par_var(char *word, size_t *index,
+		t_txtlist **current);
+int							ft_parse_var(char *word, size_t *index,
+		t_txtlist **current, bool *dquote);
+int							ft_parse_bquote(char *word, size_t *index,
+		t_txtlist **current, bool *dquote);
 
 /*
 **							ft_exp_spparam.c
