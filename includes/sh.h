@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 03:24:00 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 03:26:08 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -388,6 +388,45 @@ typedef struct				s_spparam
 	char					*(*f)(t_42sh *);
 }							t_spparam;
 
+typedef struct				s_expparam
+{
+	char					*param;
+	int						(*f)(t_txtlist *txt, t_42sh *shell,
+							struct s_expparam *expparam);
+	char					*word;
+}							t_expparam;
+
+typedef struct				s_expparamfunc
+{
+	char					*str;
+	int						(*f)(t_txtlist *txt, t_42sh *shell,
+							t_expparam *expparam);
+}							t_expparamfunc;
+
+typedef enum				e_matchtok
+{
+	MATCH_NONE = 0,
+	MATCH_TEXT,
+	MATCH_WCARD,
+	MATCH_QMARK,
+	MATCH_HOOK,
+	MATCH_RHOOK
+}							t_matchtok;
+
+typedef struct				s_matchlist
+{
+	t_matchtok				token;
+	bool					hparam[128];
+	char					tparam;
+	struct s_matchlist		*next;
+}							t_matchlist;
+
+typedef struct				s_class
+{
+	char					*name;
+	char					*chars;
+}							t_class;
+
 void						ft_init(t_42sh *shell);
 char						*ft_strjoinfree(char *s1, char *s2,
 		unsigned int which);
@@ -515,6 +554,17 @@ int							ft_exp_brace(t_txtlist *txt, t_42sh *shell);
 int							ft_exp_sub(t_txtlist *txt, t_42sh *shell);
 int							ft_exp_bquote(t_txtlist *txt, t_42sh *shell);
 int							ft_exp_expr(t_txtlist *txt, t_42sh *shell);
+t_matchlist					*ft_getmatch_wcard(char *word);
+t_matchlist					*ft_getmatch_qmark(char *word);
+t_matchlist					*ft_getmatch_hook(char *word);
+t_matchlist					*ft_getmatch_text(char *word);
+t_matchlist					*ft_getmatch_list(char *word);
+bool						ft_match_end(char *str, t_matchlist *match);
+bool						ft_match_text(char *str, t_matchlist *match);
+bool						ft_match_wcard(char *str, t_matchlist *match);
+bool						ft_match_qmark(char *str, t_matchlist *match);
+bool						ft_match_hook(char *str, t_matchlist *match);
+bool						ft_match_rhook(char *str, t_matchlist *match);
 char						*ft_expanse_word(char *word, t_42sh *shell);
 char						*ft_simple_expanse(char *word, t_42sh *shell);
 void						ft_rmquotes_word(char *word);
@@ -533,7 +583,7 @@ char						*ft_cmdline_brace(t_node *command);
 char						*ft_cmdline_command(t_node *command);
 
 /*
-**						jobs
+**							jobs
 */
 
 int							ft_any_stopped(t_joblist *job);
@@ -548,7 +598,7 @@ void						builtin_fg(t_42sh *sh);
 void						builtin_bg(t_42sh *sh);
 
 /*
-**						globals
+**							globals
 */
 
 extern char					*g_tokstr[];
@@ -567,13 +617,19 @@ extern char					*g_sigtab[];
 extern char					*g_sigabrevtab[];
 extern char					*(*g_cmdlinetab[])(t_node *command);
 extern int					g_intr;
+extern t_class				g_classestab[];
+typedef t_matchlist			*(*t_getmatch)(char *);
+extern t_getmatch			g_getmatchtab[];
+extern char					*g_matchstr[];
+typedef bool				(*t_match)(char *str, t_matchlist *match);
+extern t_match				g_matchtab[];
 
 typedef void				(*t_ak)(t_42sh *sh);
 typedef void				(*t_test_other)(t_42sh *sh, int *pos);
 typedef void				(*t_test)(t_42sh *sh, struct stat info);
 
 /*
-**						select_mode
+**							select_mode
 */
 
 void						select_mode(t_42sh *sh);

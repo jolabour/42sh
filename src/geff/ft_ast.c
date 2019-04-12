@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:52:23 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/07 10:50:07 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/11 15:11:58 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -556,7 +556,7 @@ int				ft_build_ast(t_ast *ast, t_42sh *shell)
 			return (-1);
 		}
 	}
-	// if (begin)
-	// 	ft_print_ast(begin, 0);
+	// if (ast->begin)
+	// 	ft_print_ast(ast->begin, 0);
 	return (0);
 }
