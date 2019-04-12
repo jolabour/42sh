@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:17:54 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 09:23:17 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 12:19:38 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include "sh.h"
 
 typedef struct s_42sh		t_42sh;
+
+# define EOFWHILELOOK "42sh: unexpected EOF while looking for matching `"
 
 /*
 **							enum

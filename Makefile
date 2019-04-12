@@ -6,7 +6,7 @@
 #    By: jolabour <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/12 09:19:56 by jolabour          #+#    #+#              #
-#    Updated: 2019/04/12 11:36:26 by jolabour         ###   ########.fr        #
+#    Updated: 2019/04/12 12:33:48 by jolabour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,7 +44,20 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  ft_ast/ft_ast_is.c ft_ast/ft_ast_push_one_back.c \
 			  ft_ast/ft_ast_redir.c ft_ast/ft_ast_separators.c \
 			  ft_ast/ft_ast_tools.c \
-			  geff/main.c geff/ft_expanse.c \
+			  ft_exe/ft_exe_assigns.c ft_exe/ft_exe_builtin.c \
+			  ft_exe/ft_exe_command.c ft_exe/ft_exe_compound.c \
+			  ft_exe/ft_exe_exit.c ft_exe/ft_exe_file.c \
+			  ft_exe/ft_exe_redir.c ft_exe/ft_exe_redirand.c \
+			  ft_exe/ft_exe_redirerror.c ft_exe/ft_exe_separators.c \
+			  ft_exe/ft_exe_tmpfd.c \
+			  ft_jobs/ft_jobs_any.c ft_jobs/ft_jobs_check.c \
+			  ft_jobs/ft_jobs_cmdline1.c ft_jobs/ft_jobs_cmdline2.c \
+			  ft_jobs/ft_jobs_error.c ft_jobs/ft_jobs_get.c \
+			  ft_jobs/ft_jobs_launch.c ft_jobs/ft_jobs_manage.c \
+			  ft_jobs/ft_jobs_remove.c ft_jobs/ft_jobs_report.c \
+			  ft_jobs/ft_jobs_signals.c ft_jobs/ft_jobs_status.c \
+			  ft_jobs/ft_jobs_tools.c \
+			  geff/ft_expanse.c \
 			  histo/init_file_history.c histo/parser_history.c \
 			  edit_line/move_histo.c histo/substitute_history.c \
 			  builtin/test/test.c builtin/test/test_bcdef.c builtin/test/test_glprs.c \
@@ -54,7 +67,8 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  builtin/hash/hash.c builtin/type/type.c builtin/type/print_type.c builtin/set/set.c builtin/unset/unset.c builtin/export/export.c armand/ft_check_exp_ari.c armand/ft_erase_space.c builtin/export/print_export.c \
 			  armand/ft_logic_op.c armand/ft_true_op.c armand/ft_check_var.c armand/ft_itoa_exp_ari.c \
 			  armand/ft_math_op.c armand/exp_ari.c builtin/unset/list_unset.c \
-			  builtin/jobs/jobs.c builtin/exit/exit.c utils/ft_continue_line.c \
+			  builtin/jobs/jobs.c builtin/jobs/fg.c builtin/jobs/bg.c \
+			  builtin/exit/exit.c utils/ft_continue_line.c utils/ft_get_opts.c \
 			  utils/tools.c utils/var.c utils/check.c histo/list_history.c histo/search_history.c \
 			  builtin/cd/builtin_cd.c builtin/cd/cd_exec.c builtin/cd/dot_cd.c builtin/cd/list_cd.c builtin/cd/opt_cd.c \
 			  builtin/cd/utils_cd.c builtin/test/reverse.c core/init_path_histo.c
@@ -95,8 +109,10 @@ $(OBJS_DIR)/%.o: %.c
 	@mkdir -p $(OBJS_DIR)/core
 	@mkdir -p $(OBJS_DIR)/edit_line
 	@mkdir -p $(OBJS_DIR)/histo
-	@mkdir -p $(OBJS_DIR)/ft_lexer
 	@mkdir -p $(OBJS_DIR)/ft_ast
+	@mkdir -p $(OBJS_DIR)/ft_exe
+	@mkdir -p $(OBJS_DIR)/ft_jobs
+	@mkdir -p $(OBJS_DIR)/ft_lexer
 	@mkdir -p $(OBJS_DIR)/hashtable
 	@mkdir -p $(OBJS_DIR)/utils
 	@mkdir -p $(OBJS_DIR)/parser
