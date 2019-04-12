@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:22:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 09:57:13 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 07:35:30 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,24 @@
 
 char	*ft_getenv(t_env *list, const char *name, size_t len, t_var_mark *var)
 {
-	char	*str;
 	t_var	*tmp;
 
-	str = NULL;
 	if (len < 1)
-		return (str);
+		return (NULL);
 	while (list)
 	{
 		if (ft_strncmp(list->str, name, len) == 0)
 			return (list->str + len);
 		list = list->next;
 	}
-	if (!var)// || !var->begin)
+	if (!var)
 		return (NULL);
 	tmp = var->begin;
-	str = ft_strsub(name, 0, len - 1);
 	while (tmp)
 	{
-		if (ft_strequ(tmp->to_sub, str) == 1)
-		{
-			free(str);
+		if (ft_strnequ(tmp->to_sub, name, len - 1) == 1)
 			return (tmp->sub);
-		}
 		tmp = tmp->next;
 	}
-	free(str);
 	return (NULL);
 }

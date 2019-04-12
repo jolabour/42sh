@@ -1,39 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_l.c                                           :+:      :+:    :+:   */
+/*   init_path_histo.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/12 08:28:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 08:28:35 by jolabour         ###   ########.fr       */
+/*   Created: 2019/04/12 09:04:57 by jolabour          #+#    #+#             */
+/*   Updated: 2019/04/12 09:17:00 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void		test_lt(t_42sh *sh, int *pos)
+void		init_path_histo(t_42sh *sh)
 {
-	int		tmp;
-	int		tmp2;
+	char	*name;
+	char	*tmp;
 
-	tmp = ft_atoi(sh->argv->argv[*pos + 1]);
-	tmp2 = ft_atoi(sh->argv->argv[*pos + 3]);
-	if (tmp < tmp2)
-		sh->retval = 0;
-	else
-		sh->retval = 1;
-}
-
-void		test_le(t_42sh *sh, int *pos)
-{
-	int		tmp;
-	int		tmp2;
-
-	tmp = ft_atoi(sh->argv->argv[*pos + 1]);
-	tmp2 = ft_atoi(sh->argv->argv[*pos + 3]);
-	if (tmp <= tmp2)
-		sh->retval = 0;
-	else
-		sh->retval = 1;
+	name = getlogin();
+	tmp = ft_strjoin("/Users/", name);
+	sh->path_history = ft_strjoin(tmp, "/.42sh_history");
+	ft_putendl(sh->path_history);
+	free(tmp);
+	free(name);
 }

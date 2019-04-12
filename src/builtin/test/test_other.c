@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 20*pos + 19/0*pos + 3/27 05:*pos + 36:*pos + 10 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/05 04:27:57 by jolabour         ###   ########.fr       */
+/*   Created: 2019/04/12 08:29:01 by jolabour          #+#    #+#             */
+/*   Updated: 2019/04/12 08:29:36 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 void		test_equal(t_42sh *sh, int *pos)
 {
-	if (ft_strequ(sh->argv->argv[*pos + 1], sh->argv->argv[*pos + 3]) == *pos + 1)
+	if (ft_strequ(sh->argv->argv[*pos + 1],
+				sh->argv->argv[*pos + 3]) == *pos + 1)
 		sh->retval = 0;
 	else
 		sh->retval = 1;
@@ -22,7 +23,8 @@ void		test_equal(t_42sh *sh, int *pos)
 
 void		test_diff(t_42sh *sh, int *pos)
 {
-	if (ft_strequ(sh->argv->argv[*pos + 1], sh->argv->argv[*pos + 3]) == *pos + 1)
+	if (ft_strequ(sh->argv->argv[*pos + 1],
+				sh->argv->argv[*pos + 3]) == *pos + 1)
 		sh->retval = 1;
 	else
 		sh->retval = 0;

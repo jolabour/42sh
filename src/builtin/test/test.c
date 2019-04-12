@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 05:02:51 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/05 05:08:14 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 08:44:34 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,7 @@ int			check_option(t_42sh *sh, int *i)
 	if (sh->argv->argv[*i + 1][0] == '-' && sh->argv->size > 3)
 	{
 		ft_putendl_fd("test: too many arguments", 2);
-		sh->retval = 2;
-		return (1);
+		return ((sh->retval = 2) - 1);
 	}
 	if (sh->argv->argv[*i + 1][0] != '-' && sh->argv->size == 3)
 	{
@@ -82,55 +81,28 @@ int			check_option(t_42sh *sh, int *i)
 	return (0);
 }
 
-int			check_reverse(t_42sh *sh, int *i)
-{
-	if (sh->argv->size > 2)
-	{
-		if (ft_strequ(sh->argv->argv[*i + 1], "!") == 1)
-		{
-			sh->argv->size--;
-			*i = *i + 1;
-			return (1);
-		}
-	}
-	return (0);
-}
-
 void		builtin_test(t_42sh *sh)
 {
 	int		reverse;
 	int		i;
 
 	i = 0;
-	if (sh->argv->size == 1)
+	if (sh->argv->size == 1 || sh->argv->size == 2)
 	{
-		sh->retval = 1;
-		return ;
-	}
-	if (sh->argv->size == 2)
-	{
-		sh->retval = 0;
+		if (sh->argv->size == 2)
+			sh->retval = 0;
+		else
+			sh->retval = 1;
 		return ;
 	}
 	reverse = check_reverse(sh, &i);
 	if (check_option(sh, &i) == 0)
-	{
 		if (sh->argv->size == 4)
 			execute_other_opt(sh, sh->argv->argv[i + 2], &i);
-	}
 	if (sh->argv->size > 4)
 	{
 		ft_putendl_fd("test: too many arguments", 2);
 		sh->retval = 2;
 	}
-	if (reverse == 1)
-	{
-		sh->argv->size++;
-		if (sh->retval == 0)
-		{
-			sh->retval = 1;
-			return ;
-		}
-		sh->retval = 0;
-	}
+	check_reverse_end(reverse, sh);
 }

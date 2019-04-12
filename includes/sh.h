@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 07:31:03 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 09:15:35 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -909,7 +909,8 @@ int							ft_check_exp_ari(char *str);
 **							ft_check_var.c
 */
 
-char						*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh);
+char						*ft_check_var(char *str, t_list_ari **list_var,
+		t_42sh *sh);
 
 char						*ft_exp_ary(char *str, t_42sh *sh);
 
@@ -931,9 +932,13 @@ void						exec_cd_path(char *curpath, t_42sh *sh, int opt,
 void						del_all_path(t_path_mark *path);
 void						get_path(char *path, t_42sh *sh, int i);
 void						get_dir_cd(char *path, t_42sh *sh, int opt, int i);
-void						lst_del_path(t_path **path, t_path *to_del, 
+void						lst_del_path(t_path **path, t_path *to_del,
 							t_path *prev);
 char						*getenv_cd(char **env, const char *name,
 		size_t len, t_var_mark *var);
+void						print_error_alias(char *str, t_42sh *sh, int mode);
+int							check_reverse(t_42sh *sh, int *i);
+void						check_reverse_end(int reverse, t_42sh *sh);
+void						init_path_histo(t_42sh *sh);
 
 #endif

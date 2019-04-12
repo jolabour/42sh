@@ -33,18 +33,17 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  builtin/test/test.c builtin/test/test_bcdef.c builtin/test/test_glprs.c \
 			  builtin/test/test_suwxz.c builtin/test/test_l.c builtin/echo/echo.c  \
 			  builtin/alias/alias.c  builtin/alias/list_alias.c \
-			  builtin/test/exec_other.c builtin/test/test_other.c builtin/alias/unalias.c \
+			  builtin/test/exec_other.c builtin/test/test_other.c builtin/alias/unalias.c builtin/alias/error_alias.c \
 			  builtin/hash/hash.c builtin/type/type.c builtin/type/print_type.c histo/ctrlr_action/utils_ctrlr.c \
 			  histo/ctrlr_action/get_line_ctrlr.c histo/ctrlr_action/place_curs_ctrlr.c \
 			  histo/ctrlr_action/prompt_ctrlr.c  histo/ctrlr_action/back_in_history.c \
-			  builtin/fc/builtin_fc.c builtin/fc/check_int_char.c builtin/fc/edit_last_command.c \
 			  histo/ctrlr_action/ctrlr_action.c builtin/set/set.c builtin/unset/unset.c builtin/export/export.c armand/ft_check_exp_ari.c armand/ft_erase_space.c builtin/export/print_export.c \
 			  armand/ft_logic_op.c armand/ft_true_op.c armand/ft_check_var.c armand/ft_itoa_exp_ari.c \
 			  armand/ft_math_op.c armand/exp_ari.c builtin/unset/list_unset.c \
 			  builtin/jobs/jobs.c builtin/exit/exit.c utils/ft_continue_line.c \
 			  utils/tools.c utils/var.c utils/check.c histo/list_history.c histo/search_history.c \
 			  builtin/cd/builtin_cd.c builtin/cd/cd_exec.c builtin/cd/dot_cd.c builtin/cd/list_cd.c builtin/cd/opt_cd.c \
-			  builtin/cd/utils_cd.c
+			  builtin/cd/utils_cd.c builtin/test/reverse.c core/init_path_histo.c
 
 #
 # Build
@@ -92,7 +91,6 @@ $(OBJS_DIR)/%.o: %.c
 	@mkdir -p $(OBJS_DIR)/builtin/alias
 	@mkdir -p $(OBJS_DIR)/builtin/hash
 	@mkdir -p $(OBJS_DIR)/builtin/type
-	@mkdir -p $(OBJS_DIR)/builtin/fc
 	@mkdir -p $(OBJS_DIR)/builtin/set
 	@mkdir -p $(OBJS_DIR)/builtin/unset
 	@mkdir -p $(OBJS_DIR)/histo/ctrlr_action

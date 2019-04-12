@@ -1,39 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_l.c                                           :+:      :+:    :+:   */
+/*   reverse.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/12 08:28:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 08:28:35 by jolabour         ###   ########.fr       */
+/*   Created: 2019/04/12 08:40:37 by jolabour          #+#    #+#             */
+/*   Updated: 2019/04/12 08:44:36 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void		test_lt(t_42sh *sh, int *pos)
+int			check_reverse(t_42sh *sh, int *i)
 {
-	int		tmp;
-	int		tmp2;
-
-	tmp = ft_atoi(sh->argv->argv[*pos + 1]);
-	tmp2 = ft_atoi(sh->argv->argv[*pos + 3]);
-	if (tmp < tmp2)
-		sh->retval = 0;
-	else
-		sh->retval = 1;
+	if (sh->argv->size > 2)
+	{
+		if (ft_strequ(sh->argv->argv[*i + 1], "!") == 1)
+		{
+			sh->argv->size--;
+			*i = *i + 1;
+			return (1);
+		}
+	}
+	return (0);
 }
 
-void		test_le(t_42sh *sh, int *pos)
+void		check_reverse_end(int reverse, t_42sh *sh)
 {
-	int		tmp;
-	int		tmp2;
-
-	tmp = ft_atoi(sh->argv->argv[*pos + 1]);
-	tmp2 = ft_atoi(sh->argv->argv[*pos + 3]);
-	if (tmp <= tmp2)
+	if (reverse == 1)
+	{
+		sh->argv->size++;
+		if (sh->retval == 0)
+		{
+			sh->retval = 1;
+			return ;
+		}
 		sh->retval = 0;
-	else
-		sh->retval = 1;
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/19 00:40:38 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 03:01:44 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 07:29:54 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ int					check_input(t_42sh *sh, long buf)
 
 	i = -1;
 	while (++i < NB_INPUT)
-	{
 		if (input_tab[i] == buf)
 		{
 			action_tab[i](sh);
@@ -66,7 +65,6 @@ int					check_input(t_42sh *sh, long buf)
 				return (2);
 			return (1);
 		}
-	}
 	add_one(sh, buf);
 	return (0);
 }
