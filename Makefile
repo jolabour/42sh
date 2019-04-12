@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jolabour <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/12 09:19:56 by jolabour          #+#    #+#              #
-#    Updated: 2019/04/12 09:27:54 by jolabour         ###   ########.fr        #
+#    Updated: 2019/04/12 15:02:05 by geargenc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,22 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  ft_jobs/ft_jobs_remove.c ft_jobs/ft_jobs_report.c \
 			  ft_jobs/ft_jobs_signals.c ft_jobs/ft_jobs_status.c \
 			  ft_jobs/ft_jobs_tools.c \
-			  geff/ft_expanse.c \
+			  ft_exp/ft_backslash_quotes.c ft_exp/ft_cmdsub.c \
+			  ft_exp/ft_cmdsub_parse.c ft_exp/ft_cmdsub_read.c \
+			  ft_exp/ft_exp.c ft_exp/ft_exp_args.c ft_exp/ft_exp_brace.c \
+			  ft_exp/ft_exp_cmdsub.c ft_exp/ft_exp_others.c \
+			  ft_exp/ft_exp_parse.c ft_exp/ft_exp_parse_exp.c \
+			  ft_exp/ft_exp_parse_text.c ft_exp/ft_exp_parse_tools.c \
+			  ft_exp/ft_exp_spparam.c ft_exp/ft_exp_tilde.c \
+			  ft_exp/ft_expanse.c ft_exp/ft_expparam_equal.c \
+			  ft_exp/ft_expparam_minus.c ft_exp/ft_expparam_nofunc.c \
+			  ft_exp/ft_expparam_pcent.c ft_exp/ft_expparam_plus.c \
+			  ft_exp/ft_expparam_qmark.c ft_exp/ft_expparam_sharp.c \
+			  ft_exp/ft_expparam_tools.c ft_exp/ft_field_split.c \
+			  ft_exp/ft_gather_splits.c ft_exp/ft_getmatch.c \
+			  ft_exp/ft_getmatch_free.c ft_exp/ft_getmatch_hook.c \
+			  ft_exp/ft_getvar.c ft_exp/ft_match.c ft_exp/ft_match_hook.c \
+			  ft_exp/ft_revmatch.c ft_exp/ft_rmquotes.c ft_exp/ft_txt_join.c \
 			  histo/init_file_history.c histo/parser_history.c \
 			  edit_line/move_histo.c histo/substitute_history.c \
 			  builtin/test/test.c builtin/test/test_bcdef.c builtin/test/test_glprs.c \
@@ -114,6 +129,7 @@ $(OBJS_DIR)/%.o: %.c
 	@mkdir -p $(OBJS_DIR)/histo
 	@mkdir -p $(OBJS_DIR)/ft_ast
 	@mkdir -p $(OBJS_DIR)/ft_exe
+	@mkdir -p $(OBJS_DIR)/ft_exp
 	@mkdir -p $(OBJS_DIR)/ft_jobs
 	@mkdir -p $(OBJS_DIR)/ft_lexer
 	@mkdir -p $(OBJS_DIR)/hashtable

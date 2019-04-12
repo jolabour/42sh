@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 01:51:22 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 08:53:37 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 14:17:45 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,38 +15,6 @@
 # define FT_GLOBAL_H
 
 # include "sh.h"
-
-char					*g_tokstr[] =
-{
-	"NONE",
-	"WORD",
-	"ASSIGNMENT_WORD",
-	"NAME",
-	"NEWLINE",
-	"IO_NUMBER",
-	"OP",
-	"PIPE",
-	"AND",
-	"SEMI",
-	"GREAT",
-	"LESS",
-	"LPAR",
-	"RPAR",
-	"AND_IF",
-	"OR_IF",
-	"DLESS",
-	"DGREAT",
-	"LESSAND",
-	"LESSANDDASH",
-	"GREATAND",
-	"GREATANDDASH",
-	"LESSGREAT",
-	"DLESSDASH",
-	"CLOBBER",
-	"LBRACE",
-	"RBRACE",
-	"COMMAND"
-};
 
 t_toktab				g_toktab[] =
 {
@@ -190,18 +158,6 @@ int						(*g_txttab[])(char *word, size_t *index,
 	&ft_parse_backslash,
 	&ft_parse_quote,
 	&ft_parse_text
-};
-
-char					*g_txtstr[] =
-{
-	"TXT_NONE",
-	"TEXT",
-	"TILDE",
-	"VAR",
-	"BRACE_VAR",
-	"CMD_SUB",
-	"CMD_SUB_BQUOTE",
-	"ARTH_EXPR"
 };
 
 int						(*g_exptab[])(t_txtlist *txt, t_42sh *shell) =
@@ -351,16 +307,6 @@ t_getmatch			g_getmatchtab[] =
 	&ft_getmatch_text
 };
 
-char			*g_matchstr[] =
-{
-	"MATCH_NONE",
-	"MATCH_TEXT",
-	"MATCH_WCARD",
-	"MATCH_QMARK",
-	"MATCH_HOOK",
-	"MATCH_RHOOK"
-};
-
 t_match				g_matchtab[] =
 {
 	&ft_match_end,
@@ -369,6 +315,24 @@ t_match				g_matchtab[] =
 	&ft_match_qmark,
 	&ft_match_hook,
 	&ft_match_rhook
+};
+
+t_expparamfunc	g_expparamtab[] =
+{
+	{":-", &ft_expparam_cnminus},
+	{"-", &ft_expparam_minus},
+	{":=", &ft_expparam_cnequal},
+	{"=", &ft_expparam_equal},
+	{":?", &ft_expparam_cnqmark},
+	{"?", &ft_expparam_qmark},
+	{":+", &ft_expparam_cnplus},
+	{"+", &ft_expparam_plus},
+	{"%", &ft_expparam_pcent},
+	{"%%", &ft_expparam_dpcent},
+	{"#", &ft_expparam_sharp},
+	{"##", &ft_expparam_dsharp},
+	{"", &ft_expparam_nofunc},
+	{NULL, NULL}
 };
 
 #endif

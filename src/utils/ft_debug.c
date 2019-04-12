@@ -6,11 +6,12 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 05:25:58 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 11:44:13 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 14:18:53 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
+#include "ft_debug.h"
 
 /*
 **				lexer

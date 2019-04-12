@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 12:19:09 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 15:00:20 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # include "ast.h"
 # include "jobs.h"
 # include "exe.h"
+# include "exp.h"
 
 # define INITIAL_HASHTABLE_SIZE (1U << 9)
 # define BUCKET t_bucket
@@ -68,28 +69,6 @@
 # else
 #  define PROG_NAME "21sh"
 # endif
-
-typedef enum				e_txttype
-{
-	TXT_NONE = 0,
-	TEXT,
-	TILDE,
-	VAR,
-	BRACE_VAR,
-	CMD_SUB,
-	CMD_SUB_BQUOTE,
-	ARTH_EXPR
-}							t_txttype;
-
-typedef struct				s_txtlist
-{
-	t_txttype				token;
-	char					*data;
-	size_t					start;
-	size_t					len;
-	bool					dquote;
-	struct s_txtlist		*next;
-}							t_txtlist;
 
 typedef struct				s_list_ari
 {
@@ -264,51 +243,6 @@ typedef struct				s_42sh
 	bool					print_pwd;
 }							t_42sh;
 
-typedef struct				s_spparam
-{
-	char					c;
-	char					*(*f)(t_42sh *);
-}							t_spparam;
-
-typedef struct				s_expparam
-{
-	char					*param;
-	int						(*f)(t_txtlist *txt, t_42sh *shell,
-							struct s_expparam *expparam);
-	char					*word;
-}							t_expparam;
-
-typedef struct				s_expparamfunc
-{
-	char					*str;
-	int						(*f)(t_txtlist *txt, t_42sh *shell,
-							t_expparam *expparam);
-}							t_expparamfunc;
-
-typedef enum				e_matchtok
-{
-	MATCH_NONE = 0,
-	MATCH_TEXT,
-	MATCH_WCARD,
-	MATCH_QMARK,
-	MATCH_HOOK,
-	MATCH_RHOOK
-}							t_matchtok;
-
-typedef struct				s_matchlist
-{
-	t_matchtok				token;
-	bool					hparam[128];
-	char					tparam;
-	struct s_matchlist		*next;
-}							t_matchlist;
-
-typedef struct				s_class
-{
-	char					*name;
-	char					*chars;
-}							t_class;
-
 void						ft_init(t_42sh *shell);
 
 /*
@@ -345,6 +279,7 @@ char						*ft_strjoinfree(char *s1, char *s2,
 int							ft_str_isdigit(char *str);
 int							ft_str_isquote(char *str);
 int							ft_chars_in_int(int nbr);
+char						*ft_strrev(char *str);
 
 /*
 **-->						ft_get_opts.c
@@ -402,18 +337,6 @@ void						ft_rmquotes_word(char *word);
 /*
 **							globals
 */
-
-extern t_spparam			g_spparamtab[];
-extern int					(*g_txttab[])(char *word, size_t *index,
-		t_txtlist **current, bool *dquote);
-extern char					*g_txtstr[];
-extern int					(*g_exptab[])(t_txtlist *txt, t_42sh *shell);
-extern t_class				g_classestab[];
-typedef t_matchlist			*(*t_getmatch)(char *);
-extern t_getmatch			g_getmatchtab[];
-extern char					*g_matchstr[];
-typedef bool				(*t_match)(char *str, t_matchlist *match);
-extern t_match				g_matchtab[];
 
 typedef void				(*t_ak)(t_42sh *sh);
 typedef void				(*t_test_other)(t_42sh *sh, int *pos);

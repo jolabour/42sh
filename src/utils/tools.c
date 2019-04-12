@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:09:16 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 11:30:38 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 14:01:23 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,24 @@ int				ft_chars_in_int(int nbr)
 		nbr = nbr / 10;
 	}
 	return (count);
+}
+
+char			*ft_strrev(char *str)
+{
+	char		tmp;
+	int			len;
+	int			i;
+
+	len = 0;
+	while (str[len])
+		len++;
+	i = 0;
+	while (i < len - i - 1)
+	{
+		tmp = str[i];
+		str[i] = str[len - i - 1];
+		str[len - i - 1] = tmp;
+		i++;
+	}
+	return (str);
 }

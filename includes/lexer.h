@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:17:54 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 12:19:38 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 14:19:25 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ typedef struct				s_tokcond
 **							globals
 */
 
-extern char					*g_tokstr[];
 extern t_toktab				g_toktab[];
 extern t_tokcond			g_tokcond[];
 
