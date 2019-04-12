@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 00:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/10 11:33:04 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 03:09:56 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,23 @@ void			ctrlc_action(t_42sh *sh)
 void			ctrld_action(t_42sh *sh)
 {
 	(void)sh;
-	reset_term(sh);
+	if (ft_strlen(sh->stdin->input) > 0)
+	{
+		if (sh->stdin->line_pos != sh->stdin->len_line)
+		{
+			delete();
+			sh->stdin->line_pos++;
+			delete_char(sh);
+			sh->stdin->line_pos--;
+			sh->stdin->len_line--;
+			clean_print(sh);
+		}
+	}
+	else
+	{
+		reset_term(sh);
+		sh->ctrld = 1;
+	}
 }
 
 void			paste(t_42sh *sh)

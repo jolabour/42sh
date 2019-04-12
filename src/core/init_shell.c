@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 06:02:54 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 07:15:22 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 02:43:35 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void		init_shell(t_42sh *sh, char **env)
 	if (path)
 		sh->bin_dirs = ft_strsplit(path, ':');
 	sh->copy_env = list_to_tab(sh->env, sh->copy_env);
-	sh->path_history = ft_strdup(".42sh_history");
+	sh->path_history = ft_strdup("/Users/jolabour/.42sh_history");
 	init_builtin_tab(sh);
 	sh->line_to_replace = NULL;
 	sh->argv = NULL;

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 16:28:32 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 03:26:08 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,6 +304,7 @@ typedef struct				s_argv
 
 typedef struct				s_42sh
 {
+	int						ctrld;
 	char					**tokens;
 	char					**builtin;
 	char					**args;
@@ -347,7 +348,7 @@ typedef struct				s_42sh
 	char					**cd_path;
 	int						cd_err;
 	char					*pwd;
-	bool						print_pwd;
+	bool					print_pwd;
 }							t_42sh;
 
 typedef struct				s_lex
