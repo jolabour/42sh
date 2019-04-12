@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 09:15:35 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 09:24:21 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # include "libft.h"
 # include "histo.h"
 # include "lexer.h"
+# include "ast.h"
 
 # define INITIAL_HASHTABLE_SIZE (1U << 9)
 # define BUCKET t_bucket
@@ -67,16 +68,6 @@
 # else
 #  define PROG_NAME "21sh"
 # endif
-
-typedef struct				s_node
-{
-	t_tok					token;
-	char					*data;
-	struct s_node			*left;
-	struct s_node			*right;
-	struct s_node			*parent;
-	struct s_node			*redir;
-}							t_node;
 
 typedef enum				e_txttype
 {
@@ -304,13 +295,6 @@ typedef struct				s_42sh
 	bool					print_pwd;
 }							t_42sh;
 
-typedef struct				s_ast
-{
-	t_node					*begin;
-	t_node					*current;
-	t_node					*list;
-}							t_ast;
-
 typedef struct				s_bttab
 {
 	char					*name;
@@ -378,40 +362,6 @@ int							ft_continue_line_buffer(t_42sh *shell, char **line);
 int							ft_continue_line_stdin(t_42sh *shell, char **line);
 int							ft_continue_line(t_42sh *shell, char **line,
 		char *matching);
-
-/*
-**							ast
-*/
-
-int							ft_ast_word(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_newline(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_io_number(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_pipe(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_separator(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_redir(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_lpar(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_rpar(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_and_or(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_heredoc(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_closefd(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_lbrace(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-int							ft_ast_rbrace(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
-t_node						*ft_toklist_to_node(char *input, t_toklist *list);
-void						ft_ast_free(t_node *ast);
-int							ft_build_ast(t_ast *ast, t_42sh *shell);
 
 /*
 **							exe
@@ -522,8 +472,6 @@ void						builtin_bg(t_42sh *sh);
 **							globals
 */
 
-extern int					(*g_asttab[])(t_node **begin, t_node **current,
-		t_node **list, t_42sh *shell);
 extern int					(*g_exetab[])(t_node *current, t_42sh *shell);
 extern t_bttab				g_bttab[];
 extern t_spparam			g_spparamtab[];
@@ -911,9 +859,7 @@ int							ft_check_exp_ari(char *str);
 
 char						*ft_check_var(char *str, t_list_ari **list_var,
 		t_42sh *sh);
-
 char						*ft_exp_ary(char *str, t_42sh *sh);
-
 void						check_local_variable(t_42sh *sh, char *str);
 
 /*
