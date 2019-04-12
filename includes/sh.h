@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 15:00:20 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 15:08:09 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define BUCKET_CONTENT t_bucket_content
 # define OPTION_TEST 15
 # define NB_INPUT_SELECT 8
-# define NB_INPUT 17
+# define NB_INPUT 16
 # define RIGHT_KEY 4414235
 # define LEFT_KEY 4479771
 # define HOME 4741915

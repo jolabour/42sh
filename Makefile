@@ -6,7 +6,7 @@
 #    By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/12 09:19:56 by jolabour          #+#    #+#              #
-#    Updated: 2019/04/12 15:02:05 by geargenc         ###   ########.fr        #
+#    Updated: 2019/04/12 15:08:25 by geargenc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -79,10 +79,7 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  builtin/test/test_suwxz.c builtin/test/test_l.c builtin/echo/echo.c  \
 			  builtin/alias/alias.c  builtin/alias/list_alias.c \
 			  builtin/test/exec_other.c builtin/test/test_other.c builtin/alias/unalias.c builtin/alias/error_alias.c \
-			  builtin/hash/hash.c builtin/type/type.c builtin/type/print_type.c histo/ctrlr_action/utils_ctrlr.c \
-			  histo/ctrlr_action/get_line_ctrlr.c histo/ctrlr_action/place_curs_ctrlr.c \
-			  histo/ctrlr_action/prompt_ctrlr.c  histo/ctrlr_action/back_in_history.c \
-			  histo/ctrlr_action/ctrlr_action.c builtin/set/set.c builtin/unset/unset.c builtin/export/export.c armand/ft_check_exp_ari.c armand/ft_erase_space.c builtin/export/print_export.c \
+			  builtin/hash/hash.c builtin/type/type.c builtin/type/print_type.c builtin/set/set.c builtin/unset/unset.c builtin/export/export.c armand/ft_check_exp_ari.c armand/ft_erase_space.c builtin/export/print_export.c \
 			  armand/ft_logic_op.c armand/ft_true_op.c armand/ft_check_var.c armand/ft_itoa_exp_ari.c \
 			  armand/ft_math_op.c armand/exp_ari.c builtin/unset/list_unset.c \
 			  builtin/jobs/jobs.c builtin/jobs/fg.c builtin/jobs/bg.c \
@@ -145,7 +142,6 @@ $(OBJS_DIR)/%.o: %.c
 	@mkdir -p $(OBJS_DIR)/builtin/unset
 	@mkdir -p $(OBJS_DIR)/histo/ctrlr_action
 	@mkdir -p $(OBJS_DIR)/builtin/export
-	@mkdir -p $(OBJS_DIR)/geff
 	@mkdir -p $(OBJS_DIR)/armand
 	@mkdir -p $(OBJS_DIR)/builtin/jobs
 	@mkdir -p $(OBJS_DIR)/builtin/exit

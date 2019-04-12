@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/11 03:36:16 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/12 12:53:11 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int		ft_check_op(char *str, int i)
 		|| (str[i] == '|' && str[i + 1] == '|')
 		|| (str[i] == '<' && str[i + 1] == '=')
 		|| (str[i] == '>' && str[i + 1] == '=')
-		|| (str[i] == '=' && str[i + 1] == '=') 
+		|| (str[i] == '=' && str[i + 1] == '=')
 		|| (str[i] == '!' && str[i + 1] == '='))
 			return (i + 2);
 	}
@@ -60,16 +60,16 @@ static int		ft_check_num(char *str, int i)
 	return (-1);
 }
 
-int			ft_check_exp_ari(char *str)
+int				ft_check_exp_ari(char *str)
 {
 	int i;
-	
+
 	i = 0;
 	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'
 	|| str[i] == '(' || str[i] == ')')
 		i++;
 	if ((-1 == (i = ft_check_num(str, i))))
-		return (0);	
+		return (0);
 	while (str[i])
 	{
 		while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'

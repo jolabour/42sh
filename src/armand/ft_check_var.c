@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/12 04:42:42 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/12 12:48:14 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ size_t *i, t_42sh *sh)
 	free(nb);
 	nb = NULL;
 	nb = ft_strsub(str, 0, *i);
-	new = ft_strjoin(nb,tmp);
+	new = ft_strjoin(nb, tmp);
 	free(tmp);
 	tmp = NULL;
 	free(nb);
@@ -150,7 +150,7 @@ size_t *i, t_42sh *sh)
 	return (new);
 }
 
-char 			*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh)
+char			*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh)
 {
 	size_t i;
 
