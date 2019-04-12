@@ -6,13 +6,15 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:17:54 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 07:30:49 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 08:50:23 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
 
 # define LEXER_H
+
+# include "sh.h"
 
 typedef struct s_42sh		t_42sh;
 
@@ -99,6 +101,19 @@ extern t_toktab				g_toktab[];
 extern t_tokcond			g_tokcond[];
 
 /*
+**							ft_lexer.c
+*/
+
+int							ft_lexer(t_lex *lex, t_42sh *shell);
+
+/*
+**							ft_lex_bquote.c
+*/
+
+int							ft_lex_bquote_mode(t_lex *lex, t_42sh *shell);
+int							ft_lex_bquote(t_lex *lex, t_42sh *shell);
+
+/*
 **							ft_lex_delimiter.c
 */
 
@@ -108,15 +123,6 @@ void						ft_lex_assignment(t_lex *lex);
 int							ft_lex_delimiter(t_lex *lex, t_42sh *shell);
 
 /*
-**							ft_lex_quoting.c
-*/
-
-int							ft_lex_backslash(t_lex *lex, t_42sh *shell);
-int							ft_lex_quote(t_lex *lex, t_42sh *shell);
-int							ft_lex_dquote_mode(t_lex *lex, t_42sh *shell);
-int							ft_lex_dquote(t_lex *lex, t_42sh *shell);
-
-/*
 **							ft_lex_dollar.c
 */
 
@@ -124,13 +130,6 @@ int							ft_lex_sub_mode(t_lex *lex, t_42sh *shell);
 int							ft_lex_dollar_brace(t_lex *lex, t_42sh *shell);
 int							ft_lex_dollar_par(t_lex *lex, t_42sh *shell);
 int							ft_lex_dollar(t_lex *lex, t_42sh *shell);
-
-/*
-**							ft_lex_bquote.c
-*/
-
-int							ft_lex_bquote_mode(t_lex *lex, t_42sh *shell);
-int							ft_lex_bquote(t_lex *lex, t_42sh *shell);
 
 /*
 **							ft_lex_operator.c
@@ -150,6 +149,15 @@ int							ft_lex_sharp(t_lex *lex, t_42sh *shell);
 int							ft_lex_word(t_lex *lex, t_42sh *shell);
 
 /*
+**							ft_lex_quoting.c
+*/
+
+int							ft_lex_backslash(t_lex *lex, t_42sh *shell);
+int							ft_lex_quote(t_lex *lex, t_42sh *shell);
+int							ft_lex_dquote_mode(t_lex *lex, t_42sh *shell);
+int							ft_lex_dquote(t_lex *lex, t_42sh *shell);
+
+/*
 **							ft_lex_tools.c
 */
 
@@ -158,11 +166,5 @@ void						ft_add_toklist(t_lex *lex, t_tok token);
 int							ft_lex_continue_line(t_lex *lex, t_42sh *shell,
 		char *matching);
 void						ft_lex_free(t_lex *lex);
-
-/*
-**							ft_lexer.c
-*/
-
-int							ft_lexer(t_lex *lex, t_42sh *shell);
 
 #endif

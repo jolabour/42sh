@@ -27,7 +27,12 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  ft_lexer/ft_lex_dollar.c ft_lexer/ft_lex_operator.c \
 			  ft_lexer/ft_lex_other_rules.c ft_lexer/ft_lex_quoting.c \
 			  ft_lexer/ft_lex_tools.c ft_lexer/ft_lexer.c \
-			  geff/main.c geff/ft_ast.c geff/ft_expanse.c\
+			  ft_ast/ft_ast.c ft_ast/ft_ast_command.c \
+			  ft_ast/ft_ast_compound.c ft_ast/ft_ast_free.c \
+			  ft_ast/ft_ast_is.c ft_ast/ft_ast_push_one_back.c \
+			  ft_ast/ft_ast_redir.c ft_ast/ft_ast_separators.c \
+			  ft_ast/ft_ast_tools.c \
+			  geff/main.c geff/ft_expanse.c \
 			  histo/init_file_history.c histo/parser_history.c \
 			  edit_line/move_histo.c histo/substitute_history.c \
 			  builtin/test/test.c builtin/test/test_bcdef.c builtin/test/test_glprs.c \
@@ -83,6 +88,7 @@ $(OBJS_DIR)/%.o: %.c
 	@mkdir -p $(OBJS_DIR)/edit_line
 	@mkdir -p $(OBJS_DIR)/histo
 	@mkdir -p $(OBJS_DIR)/ft_lexer
+	@mkdir -p $(OBJS_DIR)/ft_ast
 	@mkdir -p $(OBJS_DIR)/hashtable
 	@mkdir -p $(OBJS_DIR)/utils
 	@mkdir -p $(OBJS_DIR)/parser
