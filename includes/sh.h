@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 11:53:31 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 12:19:09 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -808,5 +808,9 @@ void						lst_del_path(t_path **path, t_path *to_del,
 							t_path *prev);
 char						*getenv_cd(char **env, const char *name,
 		size_t len, t_var_mark *var);
+void						print_error_alias(char *str, t_42sh *sh, int mode);
+int							check_reverse(t_42sh *sh, int *i);
+void						check_reverse_end(int reverse, t_42sh *sh);
+void						init_path_histo(t_42sh *sh);
 
 #endif

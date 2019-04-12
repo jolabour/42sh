@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/11 02:46:10 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 05:41:00 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 09:02:22 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,16 @@ static	size_t	ft_word_count(const char *s, char c)
 	return (words);
 }
 
+static char		**split_null(void)
+{
+	char		**split;
+
+	split = ft_malloc_exit(sizeof(char*) * 2);
+	split[0] = ft_strdup("./");
+	split[1] = NULL;
+	return (split);
+}
+
 char			**ft_strsplit_path(char const *s, char c)
 {
 	char		**split;
@@ -62,8 +72,6 @@ char			**ft_strsplit_path(char const *s, char c)
 		split[j] = ft_strdup("./");
 		return (split);
 	}
-	split = ft_malloc_exit(sizeof(char*) * 2);
-	split[0] = ft_strdup("./");
-	split[1] = NULL;
+	split = split_null();
 	return (split);
 }

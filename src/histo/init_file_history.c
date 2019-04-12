@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 04:04:26 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 07:18:45 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 08:46:42 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,18 +69,13 @@ void	init_history(t_42sh *sh, char *path)
 		while (get_next_line(fd, &line) != 0)
 		{
 			if (check_line(line) == 1)
-			{
 				add_to_list(sh, line);
-				free(line);
-			}
+			free(line);
 		}
-		close(fd);
 	}
 	else
-	{
 		fd = open(path, O_CREAT);
-		close(fd);
-	}
+	close(fd);
 }
 
 void	add_history(t_42sh *sh, char *line, char *path)

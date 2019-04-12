@@ -1,39 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_l.c                                           :+:      :+:    :+:   */
+/*   error_alias.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/12 08:28:23 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 08:28:35 by jolabour         ###   ########.fr       */
+/*   Created: 2019/04/12 08:21:50 by jolabour          #+#    #+#             */
+/*   Updated: 2019/04/12 08:23:37 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void		test_lt(t_42sh *sh, int *pos)
+void		print_error_alias(char *str, t_42sh *sh, int mode)
 {
-	int		tmp;
-	int		tmp2;
-
-	tmp = ft_atoi(sh->argv->argv[*pos + 1]);
-	tmp2 = ft_atoi(sh->argv->argv[*pos + 3]);
-	if (tmp < tmp2)
-		sh->retval = 0;
-	else
+	if (mode == 1)
+	{
+		ft_putstr_fd("42sh: alias: ", 2);
+		ft_putstr_fd(str, 2);
+		ft_putendl_fd(": not found", 2);
 		sh->retval = 1;
-}
-
-void		test_le(t_42sh *sh, int *pos)
-{
-	int		tmp;
-	int		tmp2;
-
-	tmp = ft_atoi(sh->argv->argv[*pos + 1]);
-	tmp2 = ft_atoi(sh->argv->argv[*pos + 3]);
-	if (tmp <= tmp2)
-		sh->retval = 0;
+	}
 	else
+	{
+		ft_putstr_fd("42sh: alias: ", 2);
+		ft_putstr_fd(str, 2);
+		ft_putendl_fd(" : invalid alias name", 2);
 		sh->retval = 1;
+	}
 }
