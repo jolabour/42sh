@@ -23,7 +23,11 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  hashtable/init_hashtable.c utils/ft_joinpath.c utils/env.c \
 			  edit_line/select_mode.c edit_line/move_select_mode.c \
 			  edit_line/action_select_mode.c edit_line/move_line.c edit_line/utils_stdin.c \
-			  geff/main.c geff/ft_lexer.c geff/ft_ast.c geff/ft_expanse.c\
+			  ft_lexer/ft_lex_bquote.c ft_lexer/ft_lex_delimiter.c \
+			  ft_lexer/ft_lex_dollar.c ft_lexer/ft_lex_operator.c \
+			  ft_lexer/ft_lex_other_rules.c ft_lexer/ft_lex_quoting.c \
+			  ft_lexer/ft_lex_tools.c ft_lexer/ft_lexer.c \
+			  geff/main.c geff/ft_ast.c geff/ft_expanse.c\
 			  histo/init_file_history.c histo/parser_history.c \
 			  edit_line/move_histo.c histo/substitute_history.c \
 			  builtin/test/test.c builtin/test/test_bcdef.c builtin/test/test_glprs.c \
@@ -37,7 +41,8 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  histo/ctrlr_action/ctrlr_action.c builtin/set/set.c builtin/unset/unset.c builtin/export/export.c armand/ft_check_exp_ari.c armand/ft_erase_space.c builtin/export/print_export.c \
 			  armand/ft_logic_op.c armand/ft_true_op.c armand/ft_check_var.c armand/ft_itoa_exp_ari.c \
 			  armand/ft_math_op.c armand/exp_ari.c builtin/unset/list_unset.c \
-			  builtin/jobs/jobs.c builtin/exit/exit.c utils/var.c utils/check.c histo/list_history.c histo/search_history.c \
+			  builtin/jobs/jobs.c builtin/exit/exit.c utils/ft_continue_line.c \
+			  utils/tools.c utils/var.c utils/check.c histo/list_history.c histo/search_history.c \
 			  builtin/cd/builtin_cd.c builtin/cd/cd_exec.c builtin/cd/dot_cd.c builtin/cd/list_cd.c builtin/cd/opt_cd.c \
 			  builtin/cd/utils_cd.c
 
@@ -77,7 +82,7 @@ $(OBJS_DIR)/%.o: %.c
 	@mkdir -p $(OBJS_DIR)/core
 	@mkdir -p $(OBJS_DIR)/edit_line
 	@mkdir -p $(OBJS_DIR)/histo
-	@mkdir -p $(OBJS_DIR)/lexer
+	@mkdir -p $(OBJS_DIR)/ft_lexer
 	@mkdir -p $(OBJS_DIR)/hashtable
 	@mkdir -p $(OBJS_DIR)/utils
 	@mkdir -p $(OBJS_DIR)/parser

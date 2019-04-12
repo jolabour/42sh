@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:26:39 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 05:02:05 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/12 05:42:35 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,28 +317,6 @@ t_txtlist		*ft_parse_word(char *word)
 		}
 	}
 	return (ft_parse_check(list[0]));
-}
-
-void			ft_print_txtlist(char *input, t_txtlist *list)
-{
-	while (list)
-	{
-		ft_putstr("[");
-		ft_putstr(g_txtstr[list->token]);
-		ft_putchar('-');
-		ft_putnbr(list->start);
-		ft_putchar('-');
-		ft_putnbr(list->len);
-		ft_putchar('-');
-		if (list->dquote)
-			ft_putchar('\"');
-		write(1, input + list->start, list->len);
-		if (list->dquote)
-			ft_putchar('\"');
-		ft_putchar(']');
-		list = list->next;
-	}
-	ft_putchar('\n');
 }
 
 int			ft_exp_text(t_txtlist *txt, t_42sh *shell)
@@ -864,8 +842,6 @@ int					ft_getmatch_hooknormal(char *word, t_matchlist *match)
 	return (1);
 }
 
-t_matchlist			*ft_getmatch_text(char *word);
-
 int					ft_getmatch_hook_init(t_matchlist *match, char *word)
 {
 	int				i;
@@ -937,52 +913,6 @@ t_matchlist		*ft_getmatch_list(char *word)
 			i++;
 	}
 	return (new);
-}
-
-void			ft_getmatch_print(t_matchlist *list)
-{
-	int			i;
-
-	while (list)
-	{
-		ft_putstr("[");
-		ft_putstr(g_matchstr[list->token]);
-		if (list->token == MATCH_HOOK || list->token == MATCH_RHOOK)
-		{
-			ft_putstr("|");
-			i = 0;
-			while (i < 128)
-			{
-				if (list->hparam[i])
-				{
-					if (i >= ' ' && i <= '~')
-						ft_putchar((char)i);
-					else
-					{
-						ft_putstr("[");
-						ft_putnbr(i);
-						ft_putstr("]");
-					}
-				}
-				i++;
-			}
-		}
-		else if (list->token == MATCH_TEXT)
-		{
-			ft_putstr("|");
-			if (list->tparam >= ' ' && list->tparam <= '~')
-				ft_putchar(list->tparam);
-			else
-			{
-				ft_putstr("[");
-				ft_putnbr(list->tparam);
-				ft_putstr("]");
-			}
-		}
-		ft_putstr("]");
-		list = list->next;
-	}
-	ft_putstr("\n");
 }
 
 bool			ft_match_end(char *str, t_matchlist *match)
