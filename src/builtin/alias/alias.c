@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 00:57:29 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 03:42:37 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/12 05:43:00 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,22 @@ int			check_alias(t_alias_mark **alias, char **split)
 	return (-1);
 }
 
+int			check_name_alias(char *str, t_42sh *sh)
+{
+	int		i;
+
+	i = 0;
+	if (str[0] == '-' || str[0] == '=')
+		return ((sh->retval = 1));
+	while (str[i])
+	{
+		if (str[i] == '/')
+			return ((sh->retval = 1));
+		i++;
+	}
+	return (0);
+}
+
 void		add_alias(t_42sh *sh)
 {
 	char	**split;
@@ -68,21 +84,31 @@ void		add_alias(t_42sh *sh)
 	i = 1;
 	while (sh->argv->argv[i])
 	{
-		split = ft_strsplitset(sh->argv->argv[i], "=\n");
-		if (split[1] == NULL)
+		split = ft_strsplitsetone(sh->argv->argv[i], '=');
+		if (sh->argv->argv[i][0] != '=' && check_name_alias(sh->argv->argv[i], sh) == 0)
 		{
-			if (print_alias(sh, split[0]) != 0)
+			if (split[1] == NULL)
 			{
-				ft_putstr_fd("42sh: alias: ", 2);
-				ft_putstr_fd(split[0], 2);
-				ft_putendl_fd(": not found", 2);
-				sh->retval = 1;
+				if (print_alias(sh, split[0]) != 0)
+				{
+					ft_putstr_fd("42sh: alias: ", 2);
+					ft_putstr_fd(split[0], 2);
+					ft_putendl_fd(": not found", 2);
+					sh->retval = 1;
+				}
 			}
+			else
+				add_to_list_alias(sh, split);
 		}
 		else
-			add_to_list_alias(sh, split);
-		ft_free_split(split);
+		{
+			ft_putstr_fd("42sh: alias: ", 2);
+			ft_putstr_fd(split[0], 2);
+			ft_putendl_fd(" : invalid alias name", 2);
+			sh->retval = 1;
+		}
 		i++;
+		ft_free_split(split);
 	}
 }
 
