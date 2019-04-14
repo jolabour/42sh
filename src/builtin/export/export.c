@@ -12,7 +12,7 @@
 
 #include "sh.h"
 
-void			check_print(t_42sh *sh, int *i, int *print)
+int				check_print(t_42sh *sh, int *i, int *print)
 {
 	int			j;
 
@@ -25,7 +25,7 @@ void			check_print(t_42sh *sh, int *i, int *print)
 			while (sh->argv->argv[*i][j])
 			{
 				if (sh->argv->argv[*i][j] != 'p' && (*print = 0) == 0)
-					return ;
+					return (0);
 				*print = 1;
 				j++;
 			}
@@ -34,11 +34,10 @@ void			check_print(t_42sh *sh, int *i, int *print)
 		else
 		{
 			*print = 0;
-			return ;
+			return (1);
 		}
 	}
-	if (*print == 1)
-		return ;
+	return (1);
 }
 
 void			export_not_equal(t_42sh *sh, char *str)
@@ -74,6 +73,8 @@ void			export_equal(t_42sh *sh, char *str)
 
 	tmp = sh->var->begin;
 	j = 0;
+	if (check_tmp_env(sh, str) == 1)
+		return ;
 	while (j < sh->var->size)
 	{
 		if (ft_strequ(tmp->to_sub, str) == 1)
@@ -111,7 +112,11 @@ void			builtin_export(t_42sh *sh)
 	int			print;
 
 	i = 1;
-	check_print(sh, &i, &print);
+	if (check_print(sh, &i, &print) == 0)
+	{
+		print_error_export(sh, i);
+		return ;
+	}
 	if (print == 1)
 	{
 		print_export(sh);

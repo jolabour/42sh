@@ -55,8 +55,11 @@ int					ft_exe_command_ht(t_node *current, t_42sh *shell)
 		else
 			shell->valide_path = check_access(shell, 0);
 		if (shell->valide_path)
-			ht_insert(shell->valide_path, shell->argv->argv[0],
+		{
+			if (shell->valide_path[0] == '/')
+				ht_insert(shell->valide_path, shell->argv->argv[0],
 				&shell->hashtable);
+		}
 		else
 			shell->valide_path = ft_strdup(shell->argv->argv[0]);
 	}

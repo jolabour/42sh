@@ -21,7 +21,7 @@ char			*check_access(t_42sh *sh, int pos)
 
 	i = -1;
 	tmp2 = NULL;
-	if (access(sh->argv->argv[pos], F_OK) == 0)
+	if (access(sh->argv->argv[pos], F_OK) == 0 && sh->argv->argv[pos][0] == '/')
 		return (ft_strdup(sh->argv->argv[pos]));
 	else if (sh->bin_dirs)
 		while (sh->bin_dirs[++i])

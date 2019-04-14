@@ -24,3 +24,11 @@ void			print_export(t_42sh *sh)
 		i++;
 	}
 }
+
+void			print_error_export(t_42sh *sh, int i)
+{
+	ft_putstr_fd("42sh: export: ", 2);
+	ft_putstr_fd(sh->argv->argv[i], 2);
+	ft_putendl_fd(": invalid option", 2);
+	sh->retval = 1;
+}

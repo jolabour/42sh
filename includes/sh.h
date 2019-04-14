@@ -735,5 +735,7 @@ void						print_error_alias(char *str, t_42sh *sh, int mode);
 int							check_reverse(t_42sh *sh, int *i);
 void						check_reverse_end(int reverse, t_42sh *sh);
 void						init_path_histo(t_42sh *sh);
+int							check_tmp_env(t_42sh *sh, char *str);
+void						print_error_export(t_42sh *sh, int i);
 
 #endif
