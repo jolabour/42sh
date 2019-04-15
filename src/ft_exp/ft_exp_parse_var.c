@@ -6,23 +6,20 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 12:45:30 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 19:42:15 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/16 01:34:57 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-int			ft_parse_sub_mode(char *word, size_t *index, char *quote)
+void		ft_parse_sub_mode(char *word, size_t *index, char *quote)
 {
-	if (word[*index] == '\0')
-		return (-1);
-	else if (*quote != '\'' && word[*index] == '\\')
+	if (*quote != '\'' && word[*index] == '\\')
 		(*index)++;
 	else if (*quote != '\'' && word[*index] == '\"')
 		*quote = *quote ? 0 : '\"';
 	else if (*quote != '\"' && word[*index] == '\'')
 		*quote = *quote ? 0 : '\'';
-	return (0);
 }
 
 int			ft_parse_brace_var(char *word, size_t *index, t_txtlist **current)
@@ -36,9 +33,8 @@ int			ft_parse_brace_var(char *word, size_t *index, t_txtlist **current)
 	quote = 0;
 	while (braces)
 	{
-		if (ft_parse_sub_mode(word, index, &quote))
-			return (-1);
-		else if (!quote && word[*index] == '{')
+		ft_parse_sub_mode(word, index, &quote);
+		if (!quote && word[*index] == '{')
 			braces++;
 		else if (!quote && word[*index] == '}')
 			braces--;
@@ -58,9 +54,8 @@ int			ft_parse_par_var(char *word, size_t *index, t_txtlist **current)
 	quote = 0;
 	while (pars)
 	{
-		if (ft_parse_sub_mode(word, index, &quote))
-			return (-1);
-		else if (!quote && word[*index] == '(')
+		ft_parse_sub_mode(word, index, &quote);
+		if (!quote && word[*index] == '(')
 			pars++;
 		else if (!quote && word[*index] == ')' && word[(*index) + 1] == ')'
 			&& (*current)->token == ARTH_EXPR && pars == 2)
@@ -116,8 +111,7 @@ int			ft_parse_bquote(char *word, size_t *index,
 		(*index)++;
 		while (!quote && word[*index] != '`')
 		{
-			if (ft_parse_sub_mode(word, index, &quote))
-				return (-1);
+			ft_parse_sub_mode(word, index, &quote);
 			(*index)++;
 		}
 		(*index)++;

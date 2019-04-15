@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 12:34:36 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 19:49:38 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/16 01:35:36 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,7 +214,7 @@ t_txtlist					*ft_add_txtlist(char *data, t_txttype token,
 **							ft_exp_parse_var.c
 */
 
-int							ft_parse_sub_mode(char *word, size_t *index,
+void						ft_parse_sub_mode(char *word, size_t *index,
 		char *quote);
 int							ft_parse_brace_var(char *word, size_t *index,
 		t_txtlist **current);

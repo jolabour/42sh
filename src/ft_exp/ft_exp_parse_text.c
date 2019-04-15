@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 12:47:33 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 14:49:59 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/16 01:39:06 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,8 @@ int			ft_parse_backslash(char *word, size_t *index,
 	if (word[*index] == '\\')
 	{
 		ft_parse_text(word, index, current, dquote);
-		if (word[*index] == '\0')
-			return (-1);
-		(*index)++;
+		if (word[*index])
+			(*index)++;
 		(*current)->len = *index - (*current)->start;
 		return (0);
 	}
@@ -33,13 +32,10 @@ int			ft_parse_quote(char *word, size_t *index,
 	if (word[*index] == '\'' && !(*dquote))
 	{
 		ft_parse_text(word, index, current, dquote);
-		while (word[*index] != '\'')
-		{
-			if (word[*index] == '\0')
-				return (-1);
+		while (word[*index] && word[*index] != '\'')
 			(*index)++;
-		}
-		(*index)++;
+		if (word[*index])
+			(*index)++;
 		(*current)->len = *index - (*current)->start;
 		return (0);
 	}
