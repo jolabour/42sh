@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 15:08:09 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/16 04:20:38 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -520,7 +520,7 @@ int							ft_set_errno(int n);
 char						*ft_joinpath(const char *path, const char *name);
 
 void						print_env_array(char **env);
-int							check_is_builtin(t_42sh *sh, char *str);
+int							check_is_builtin(char *str);
 
 /*
 **							history

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   type.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 05:37:41 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/05 05:31:29 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/16 04:18:47 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,14 @@ char		*check_is_alias(t_42sh *sh, char *str)
 	return (NULL);
 }
 
-int			check_is_builtin(t_42sh *sh, char *str)
+int			check_is_builtin(char *str)
 {
 	int		i;
 
 	i = 0;
-	while (sh->builtin[i])
+	while (g_bttab[i].name)
 	{
-		if (ft_strequ(sh->builtin[i], str) == 1)
+		if (ft_strequ(g_bttab[i].name, str) == 1)
 			return (1);
 		i++;
 	}
@@ -63,7 +63,7 @@ void		get_type(t_42sh *sh)
 			print_type_alias(sh, i, to_print);
 			ft_strdel(&to_print);
 		}
-		else if (check_is_builtin(sh, sh->argv->argv[i]) == 1)
+		else if (check_is_builtin(sh->argv->argv[i]) == 1)
 			print_type_builtin(sh, i);
 		else if ((bucket_entry = ht_lookup(sh->argv->argv[i],
 					&sh->hashtable)) != NULL)

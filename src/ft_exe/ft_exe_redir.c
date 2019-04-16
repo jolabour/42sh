@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 09:19:25 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 09:30:56 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/16 04:17:52 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ int				ft_exe_great(t_node *current, t_42sh *shell)
 		ft_build_tmp_fd(dest, &(shell->tmp_fds));
 	if (!(path = ft_simple_expanse(current->right->data, shell)))
 		return (1);
-	if ((src = open(path, O_WRONLY)) == -1)
+	if ((src = open(path, O_WRONLY | O_TRUNC)) == -1)
 	{
-		if ((src = ft_open_error(path, O_WRONLY | O_CREAT,
+		if ((src = ft_open_error(path, O_WRONLY | O_CREAT | O_TRUNC,
 			current->right->data)) == -1)
 			return (1);
 		fchmod(src, 0644);
