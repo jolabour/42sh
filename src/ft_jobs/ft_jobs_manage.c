@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 10:57:16 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 11:35:55 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/16 07:36:09 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int				ft_manage_job(t_joblist *job, t_42sh *shell)
 	if (!shell->pgid && shell->foreground)
 	{
 		tcsetpgrp(STDIN_FILENO, shell->pid);
-		tcsetattr(STDIN_FILENO, TCSADRAIN, &(shell->term));
+		tcsetattr(STDIN_FILENO, TCSADRAIN, &(shell->reset_term));
 	}
 	if (!shell->pgid)
 	{
