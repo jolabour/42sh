@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/20 02:45:35 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/20 03:39:06 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ static void			ft_end_replace_exp(char *str, size_t *i, int j
 	tabb[2] = ft_strsub(str, 0, *i);
 	tabb[1] = ft_strjoin(tabb[2], tabb[0]);
 	ft_strdel(&tabb[0]);
+	j = ft_strlen(tabb[1]);
 	free(tabb[2]);
 	free(str);
 	str = NULL;
@@ -119,7 +120,6 @@ char				*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh)
 		if ((ft_isalpha(str[i])) || (str[i] == '_'))
 		{
 			str = ft_replace_var(str, list_var, &i, sh);
-			i = 0;
 		}
 		else
 			i++;
