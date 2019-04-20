@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/20 03:39:06 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/20 03:46:56 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,9 @@ static void			ft_end_replace_exp(char *str, size_t *i, int j
 	tabb[2] = ft_strsub(str, 0, *i);
 	tabb[1] = ft_strjoin(tabb[2], tabb[0]);
 	ft_strdel(&tabb[0]);
-	j = ft_strlen(tabb[1]);
 	free(tabb[2]);
 	free(str);
 	str = NULL;
-	*i = *i + j;
 }
 
 static char			*ft_replace_var(char *str, t_list_ari **list_var,
@@ -90,12 +88,14 @@ size_t *i, t_42sh *sh)
 	t_list_ari	*l_tmp;
 	char		*tabb[4];
 	int			j;
+	int			t;
 
 	j = 1;
 	while (ft_isalnum(str[j + *i]) || str[j + *i] == '_')
 		j++;
 	tabb[3] = ft_strsub(str, *i, j);
 	tabb[2] = my_get_var(sh, tabb[3]);
+	t = ft_strlen(tabb[2]);
 	ft_strdel(&tabb[3]);
 	l_tmp = *list_var;
 	if (l_tmp)
@@ -107,6 +107,7 @@ size_t *i, t_42sh *sh)
 	else
 		*list_var = ft_add_var_exp(str, i, j, &tabb[2]);
 	ft_end_replace_exp(str, i, j, tabb);
+	*i = *i + t;
 	return (tabb[1]);
 }
 
@@ -118,9 +119,7 @@ char				*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh)
 	while (i < ft_strlen(str))
 	{
 		if ((ft_isalpha(str[i])) || (str[i] == '_'))
-		{
 			str = ft_replace_var(str, list_var, &i, sh);
-		}
 		else
 			i++;
 	}
