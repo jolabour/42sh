@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 03:54:56 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/09 00:19:04 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/20 02:03:44 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,36 +72,50 @@ void			export_equal(t_42sh *sh, char *str)
 	char		*tmp3;
 
 	tmp = sh->var->begin;
-	j = 0;
+	j = -1;
 	if (check_tmp_env(sh, str) == 1)
 		return ;
-	while (j < sh->var->size)
+	while (++j < sh->var->size)
 	{
 		if (ft_strequ(tmp->to_sub, str) == 1)
 		{
 			tmp2 = ft_strjoin(str, "=");
-			tmp3 = ft_strjoin(tmp2, tmp->sub);
+			tmp3 = ft_strjoinfree(tmp2, tmp->sub, 1);
 			new = create_node(tmp3);
 			lst_push(&sh->env, new);
-			free(tmp2);
 			free(tmp3);
 			if (search_var(sh->var, &sh->var->begin, str) == 1)
 				sh->var->size--;
 			break ;
 		}
-		j++;
 		tmp = tmp->next;
 	}
 }
 
 void			check_export(t_42sh *sh, int *i)
 {
+	char		**split;
+
 	while (sh->argv->argv[*i])
 	{
-		if (check_equal(sh->argv->argv[*i]) != 1)
+		split = ft_strsplitsetone(sh->argv->argv[*i], '=');
+		if (check_name(split[0]) == 0)
+		{
+			ft_putendl_fd("invalid variable name.", 2);
+			if (sh->retval != 2)
+				sh->retval = 1;
+		}
+		else if (check_equal(sh->argv->argv[*i]) != 1)
+		{
 			export_equal(sh, sh->argv->argv[*i]);
+			sh->retval = 2;
+		}
 		else
+		{
 			export_not_equal(sh, sh->argv->argv[*i]);
+			sh->retval = 2;
+		}
+		ft_free_split(split);
 		*i = *i + 1;
 	}
 }
@@ -123,5 +137,6 @@ void			builtin_export(t_42sh *sh)
 		return ;
 	}
 	check_export(sh, &i);
-	sh->retval = 0;
+	if (sh->retval == 2)
+		sh->retval = 0;
 }
