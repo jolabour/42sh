@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   init_path_histo.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 09:04:57 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 09:26:26 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/20 01:48:50 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void		init_path_histo(t_42sh *sh)
+void				init_path_histo(t_42sh *sh)
 {
-	char	*name;
-	char	*tmp;
+	struct passwd	*pw;
 
-	name = getlogin();
-	tmp = ft_strjoin("/Users/", name);
-	sh->path_history = ft_strjoin(tmp, "/.42sh_history");
-	free(tmp);
-	free(name);
+	pw = getpwnam(getlogin());
+	if (pw)
+		sh->path_history = pw->pw_dir;
+	else
+		sh->path_history = "/tmp";
+	sh->path_history = ft_strjoin(sh->path_history, "/.42sh_history");
 }

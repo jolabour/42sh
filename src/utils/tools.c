@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:09:16 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 14:01:23 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/20 01:06:16 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ char		*ft_strjoinfree(char *s1, char *s2, unsigned int which)
 	return (join);
 }
 
-int				ft_str_isdigit(char *str)
+int			ft_str_isdigit(char *str)
 {
-	int			i;
+	int		i;
 
 	i = 0;
 	while (str[i])
@@ -53,9 +53,9 @@ int				ft_str_isdigit(char *str)
 	return (1);
 }
 
-int				ft_str_isquote(char *str)
+int			ft_str_isquote(char *str)
 {
-	int			i;
+	int		i;
 
 	i = 0;
 	while (str[i])
@@ -67,9 +67,9 @@ int				ft_str_isquote(char *str)
 	return (0);
 }
 
-int				ft_chars_in_int(int nbr)
+int			ft_chars_in_int(int nbr)
 {
-	int			count;
+	int		count;
 
 	count = (nbr < 0) ? 2 : 1;
 	while (nbr > 9 || nbr < -9)
@@ -80,11 +80,11 @@ int				ft_chars_in_int(int nbr)
 	return (count);
 }
 
-char			*ft_strrev(char *str)
+char		*ft_strrev(char *str)
 {
-	char		tmp;
-	int			len;
-	int			i;
+	char	tmp;
+	int		len;
+	int		i;
 
 	len = 0;
 	while (str[len])
