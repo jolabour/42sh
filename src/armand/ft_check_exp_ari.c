@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/20 02:17:51 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/20 02:52:56 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ static int		ft_check_op(char *str, int i)
 		if (((str[i] == '/') || (str[i] == '%'))
 		&& (0 == ft_atoi(&str[i + 1])))
 		{
-			ft_putendl_fd("42sh: stop division or modulo by zero: ", 2);
+			ft_putstr_fd("42sh: stop division or modulo by zero: ", 2);
+			ft_putendl_fd(&str[i], 2);
 			return (-1);
 		}
 		if ((str[i] == '+') || (str[i] == '-') || (str[i] == '*')
@@ -42,7 +43,8 @@ static int		ft_check_op(char *str, int i)
 		|| (str[i] == '!' && str[i + 1] == '='))
 			return (i + 2);
 	}
-	ft_putendl_fd("42sh: operator error or missing : ", 2);
+	ft_putstr_fd("42sh: operator error or missing : ", 2);
+	ft_putendl_fd(&str[i], 2);
 	return (-1);
 }
 
@@ -56,7 +58,8 @@ static int		ft_check_num(char *str, int i)
 		if (ft_isdigit(str[i]))
 			return (ft_check_digit(str, i + 1));
 	}
-	ft_putendl_fd("42sh: operande error or missing : ", 2);
+	ft_putstr_fd("42sh: operande error or missing : ", 2);
+	ft_putendl_fd(&str[i], 2);
 	return (-1);
 }
 
