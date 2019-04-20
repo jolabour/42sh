@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 14:09:56 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 14:10:04 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/20 05:48:19 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int				ft_expparam_pcent(t_txtlist *txt, t_42sh *shell,
 {
 	char		*tmp;
 
-	if (!expparam->param || !(tmp = ft_expanse_word(expparam->word, shell)))
+	if (!expparam->param || !(tmp = ft_simple_expanse(expparam->word, shell)))
 	{
 		ft_expparam_free(expparam);
 		return (ft_exp_brace_error(txt));
@@ -83,7 +83,7 @@ int				ft_expparam_dpcent(t_txtlist *txt, t_42sh *shell,
 {
 	char		*tmp;
 
-	if (!expparam->param || !(tmp = ft_expanse_word(expparam->word, shell)))
+	if (!expparam->param || !(tmp = ft_simple_expanse(expparam->word, shell)))
 	{
 		ft_expparam_free(expparam);
 		return (ft_exp_brace_error(txt));

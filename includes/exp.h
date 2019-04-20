@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 12:34:36 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/16 01:35:36 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/20 05:12:08 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,7 @@ int							ft_exp_bquote(t_txtlist *txt, t_42sh *shell);
 
 int							ft_exp_text(t_txtlist *txt, t_42sh *shell);
 int							ft_exp_var(t_txtlist *txt, t_42sh *shell);
+char						*ft_del_ending_spaces(char *str);
 int							ft_exp_expr(t_txtlist *txt, t_42sh *shell);
 
 /*

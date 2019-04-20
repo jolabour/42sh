@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 08:59:44 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 10:32:35 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/20 05:12:33 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ int							ft_exe_builtin(t_node *current, t_42sh *shell,
 */
 
 char						*ft_exe_command_get_path(t_42sh *shell);
+void						get_path_ht(t_42sh *shell);
 int							ft_exe_command_ht(t_node *current, t_42sh *shell);
 int							ft_exe_command(t_node *current, t_42sh *shell);
 
