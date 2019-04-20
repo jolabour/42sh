@@ -6,13 +6,13 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:09:16 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/20 01:06:16 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/20 02:55:07 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-char		*ft_strjoinfree(char *s1, char *s2, unsigned int which)
+char			*ft_strjoinfree(char *s1, char *s2, unsigned int which)
 {
 	char	*join;
 	int		i;

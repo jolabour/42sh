@@ -6,7 +6,7 @@
 #    By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/12 09:19:56 by jolabour          #+#    #+#              #
-#    Updated: 2019/04/20 01:39:29 by geargenc         ###   ########.fr        #
+#    Updated: 2019/04/20 02:55:01 by geargenc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -83,7 +83,8 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 			  builtin/test/exec_other.c builtin/test/test_other.c builtin/alias/unalias.c builtin/alias/error_alias.c \
 			  builtin/hash/hash.c builtin/type/type.c builtin/type/print_type.c builtin/set/set.c builtin/unset/unset.c builtin/export/export.c armand/ft_check_exp_ari.c armand/ft_erase_space.c builtin/export/print_export.c builtin/export/check_tmp_env.c \
 			  armand/ft_logic_op.c armand/ft_true_op.c armand/ft_check_var.c armand/ft_itoa_exp_ari.c \
-			  armand/ft_math_op.c armand/exp_ari.c builtin/unset/list_unset.c \
+			  armand/ft_math_op.c armand/exp_ari.c armand/ft_utils_exp_ari.c \
+			  builtin/unset/list_unset.c \
 			  builtin/jobs/jobs.c builtin/jobs/fg.c builtin/jobs/bg.c \
 			  builtin/exit/exit.c utils/ft_continue_line.c utils/ft_get_opts.c \
 			  utils/tools.c utils/var.c utils/check.c histo/list_history.c histo/search_history.c \

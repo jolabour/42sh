@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/16 17:13:55 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/11 03:16:33 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/20 00:13:46 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,20 @@
 static void		ft_calc(char *str, int i, int j, int n)
 {
 	if (str[i] == '*')
-		ft_itoa_exp_ari(&str[j], ft_atoi(&str[j]) * ft_atoi(&str[i + 1]), i - j + n);
+		ft_itoa_exp_ari(&str[j], ft_atoi(&str[j]) * ft_atoi(&str[i + 1])
+		, i - j + n);
 	if (str[i] == '/')
-		ft_itoa_exp_ari(&str[j], ft_atoi(&str[j]) / ft_atoi(&str[i + 1]), i - j + n);
+		ft_itoa_exp_ari(&str[j], ft_atoi(&str[j]) / ft_atoi(&str[i + 1])
+		, i - j + n);
 	if (str[i] == '%')
-		ft_itoa_exp_ari(&str[j], ft_atoi(&str[j]) % ft_atoi(&str[i + 1]), i - j + n);
+		ft_itoa_exp_ari(&str[j], ft_atoi(&str[j]) % ft_atoi(&str[i + 1])
+		, i - j + n);
 	if (str[i] == '-')
-		ft_itoa_exp_ari(&str[j], ft_atoi(&str[j]) - ft_atoi(&str[i + 1]), i - j + n);
+		ft_itoa_exp_ari(&str[j], ft_atoi(&str[j]) - ft_atoi(&str[i + 1])
+		, i - j + n);
 	if (str[i] == '+')
-		ft_itoa_exp_ari(&str[j], ft_atoi(&str[j]) + ft_atoi(&str[i + 1]), i - j + n);
+		ft_itoa_exp_ari(&str[j], ft_atoi(&str[j]) + ft_atoi(&str[i + 1])
+		, i - j + n);
 }
 
 int				ft_count_next_num(char *str)
@@ -70,7 +75,7 @@ static char		*ft_calc_less_prio(char *str, int n)
 	return (ft_true_op(str, n));
 }
 
-char		*ft_math_op(char *str, int n)
+char			*ft_math_op(char *str, int n)
 {
 	int i;
 

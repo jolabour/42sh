@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 09:49:16 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/20 01:46:18 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/20 02:55:17 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,26 +40,36 @@ char				*ft_exe_command_get_path(t_42sh *shell)
 	return (path);
 }
 
-int					ft_exe_command_ht(t_node *current, t_42sh *shell)
+void				get_path_ht(t_42sh *shell)
 {
 	BUCKET_CONTENT	*bucket_entry;
+
+	if ((bucket_entry = ht_lookup(shell->argv->argv[0],
+		&shell->hashtable)) != NULL)
+	{
+		shell->valide_path = ft_strdup(bucket_entry->path);
+		if (access(shell->valide_path, F_OK) != 0
+				|| access(shell->valide_path, X_OK) != 0)
+			reset_hashtable(&shell->hashtable);
+		ft_strdel(&shell->valide_path);
+		shell->valide_path = check_access(shell, 0);
+	}
+	else
+		shell->valide_path = check_access(shell, 0);
+}
+
+int					ft_exe_command_ht(t_node *current, t_42sh *shell)
+{
 	char			*path;
 
 	path = NULL;
 	if (shell->argv->argv[0] && shell->argv->argv[0][0])
 	{
 		path = ft_exe_command_get_path(shell);
-		if ((bucket_entry = ht_lookup(shell->argv->argv[0],
-			&shell->hashtable)) != NULL)
-			shell->valide_path = ft_strdup(bucket_entry->path);
-		else
-			shell->valide_path = check_access(shell, 0);
+		get_path_ht(shell);
 		if (shell->valide_path)
-		{
-			if (shell->valide_path[0] == '/')
-				ht_insert(shell->valide_path, shell->argv->argv[0],
-				&shell->hashtable);
-		}
+			ht_insert(shell->valide_path, shell->argv->argv[0],
+					&shell->hashtable);
 		else
 			shell->valide_path = ft_strdup(shell->argv->argv[0]);
 	}

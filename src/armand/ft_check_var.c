@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/12 12:48:14 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/20 02:45:35 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,141 +16,100 @@
 ** 1=++* 2=--* 3=*++ 4=*--
 */
 
-static int			ft_var_modif(char *str, int i, int j, t_list_ari *new)
+static int			ft_check_before_inc(char *str, int i, t_list_ari *new)
 {
+	if (str[i - 1] == '+' && str[i - 2] == '+')
+	{
+		str[i - 1] = ' ';
+		str[i - 2] = ' ';
+		new->nbr = new->nbr + 1;
+		free(new->var);
+		new->var = NULL;
+		new->var = ft_itoa(new->nbr);
+		return (1);
+	}
+	if (str[i - 1] == '-' && str[i - 2] == '-')
+	{
+		str[i - 1] = ' ';
+		str[i - 2] = ' ';
+		new->nbr = new->nbr - 1;
+		free(new->var);
+		new->var = NULL;
+		new->var = ft_itoa(new->nbr);
+		return (2);
+	}
+	return (0);
+}
+
+int					ft_var_modif(char *str, int i, int j, t_list_ari *new)
+{
+	int		ret;
 	int		len;
 
 	len = ft_strlen(str);
+	ret = 0;
 	if (i > 1)
+		if ((ret = ft_check_before_inc(str, i, new)))
+			return (ret);
+	if (i + j + 1 <= len)
 	{
-		if (str[i - 1] == '+' && str[i - 2] == '+')
+		if (str[i + j] == '+' && str[i + j + 1] == '+')
 		{
-			str[i - 1] = ' ';
-			str[i - 2] = ' ';
-			new->nbr = new->nbr + 1;
-			free(new->var);
-			new->var = NULL;
-			new->var = ft_itoa(new->nbr);
-			return (1);
-		}
-		if (str[i - 1] == '-' && str[i - 2] == '-')
-		{
-			str[i - 1] = ' ';
-			str[i - 2] = ' ';
-			new->nbr = new->nbr - 1;
-			free(new->var);
-			new->var = NULL;
-			new->var = ft_itoa(new->nbr);
-			return (2);
-		}
-	}
-	if (j + 1 <= len)
-	{
-		if (str[j] == '+' && str[j + 1] == '+')
-		{
-			str[j] = ' ';
-			str[j + 1] = ' ';
+			str[i + j] = ' ';
+			str[i + j + 1] = ' ';
 			return (3);
 		}
-		if (str[j] == '-' && str[j + 1] == '-')
+		if (str[i + j] == '-' && str[i + j + 1] == '-')
 		{
-			str[j] = ' ';
-			str[j + 1] = ' ';
+			str[i + j] = ' ';
+			str[i + j + 1] = ' ';
 			return (4);
 		}
 	}
 	return (0);
 }
 
-static char		*my_get_var(t_42sh *sh, char *name)
+static void			ft_end_replace_exp(char *str, size_t *i, int j
+, char **tabb)
 {
-	char	*str;
-	int		i;
-	char	*ret;
-
-	i = 0;
-	ret = NULL;
-	str = ft_strjoin(name, "=");
-	if ((ret = ft_getenv(sh->env, str, ft_strlen(str), sh->var)))
-	{
-		free(str);
-		return (ft_strdup(ret));
-	}
+	tabb[0] = ft_strjoin(tabb[2], &str[j + *i]);
+	ft_strdel(&tabb[2]);
+	tabb[2] = ft_strsub(str, 0, *i);
+	tabb[1] = ft_strjoin(tabb[2], tabb[0]);
+	ft_strdel(&tabb[0]);
+	free(tabb[2]);
 	free(str);
-	return (ft_strdup("0"));
+	str = NULL;
+	*i = *i + j;
 }
 
-static char		*ft_replace_var(char *str, t_list_ari **list_var,
+static char			*ft_replace_var(char *str, t_list_ari **list_var,
 size_t *i, t_42sh *sh)
 {
 	t_list_ari	*l_tmp;
-	char		*tmp;
-	char		*new;
-	char		*nb;
+	char		*tabb[4];
 	int			j;
-	char		*name;
 
 	j = 1;
-	nb = NULL;
-	new = NULL;
-	tmp = NULL;
-	name = NULL;
-	l_tmp = NULL;
 	while (ft_isalnum(str[j + *i]) || str[j + *i] == '_')
 		j++;
-	name = ft_strsub(str, *i, j);
-	nb = my_get_var(sh, name);
-	free(name);
-	name = NULL;
+	tabb[3] = ft_strsub(str, *i, j);
+	tabb[2] = my_get_var(sh, tabb[3]);
+	ft_strdel(&tabb[3]);
 	l_tmp = *list_var;
 	if (l_tmp)
 	{
 		while (l_tmp->next)
 			l_tmp = l_tmp->next;
-		l_tmp->next = (t_list_ari*)malloc(sizeof(t_list_ari));
-		l_tmp->next->var = ft_strdup(nb);
-		l_tmp->next->name = ft_strsub(str, *i, j);
-		l_tmp->next->next = NULL;
-		l_tmp->next->nbr = ft_atoi(nb);
-		l_tmp->next->opt = ft_var_modif(str, *i, j, l_tmp);
-		if (l_tmp->next->opt == 1 || l_tmp->next->opt == 2)
-		{
-			free(nb);
-			nb = NULL;
-			nb = ft_strdup(l_tmp->next->var);
-		}
+		l_tmp->next = ft_add_var_exp(str, i, j, &tabb[2]);
 	}
 	else
-	{
-		*list_var = (t_list_ari*)malloc(sizeof(t_list_ari));
-		(*list_var)->var = ft_strdup(nb);
-		(*list_var)->name = ft_strsub(str, *i, j);
-		(*list_var)->next = NULL;
-		(*list_var)->nbr = ft_atoi(nb);
-		(*list_var)->opt = ft_var_modif(str, *i, j, *list_var);
-		if ((*list_var)->opt == 1 || (*list_var)->opt == 2)
-		{
-			free(nb);
-			nb = NULL;
-			nb = ft_strdup((*list_var)->var);
-		}
-	}
-	tmp = ft_strjoin(nb, &str[j + *i]);
-	free(nb);
-	nb = NULL;
-	nb = ft_strsub(str, 0, *i);
-	new = ft_strjoin(nb, tmp);
-	free(tmp);
-	tmp = NULL;
-	free(nb);
-	nb = NULL;
-	free(str);
-	str = NULL;
-	*i = *i + j;
-	return (new);
+		*list_var = ft_add_var_exp(str, i, j, &tabb[2]);
+	ft_end_replace_exp(str, i, j, tabb);
+	return (tabb[1]);
 }
 
-char			*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh)
+char				*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh)
 {
 	size_t i;
 
@@ -158,7 +117,10 @@ char			*ft_check_var(char *str, t_list_ari **list_var, t_42sh *sh)
 	while (i < ft_strlen(str))
 	{
 		if ((ft_isalpha(str[i])) || (str[i] == '_'))
+		{
 			str = ft_replace_var(str, list_var, &i, sh);
+			i = 0;
+		}
 		else
 			i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/16 04:20:38 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/20 02:47:53 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -710,6 +710,18 @@ char						*ft_check_var(char *str, t_list_ari **list_var,
 		t_42sh *sh);
 char						*ft_exp_ary(char *str, t_42sh *sh);
 void						check_local_variable(t_42sh *sh, char *str);
+int							ft_var_modif(char *str, int i, int j,
+		t_list_ari *new);
+
+/*
+** 							ft_utils_exp_ari.c
+*/
+
+char						*my_get_var(t_42sh *sh, char *name);
+t_list_ari					*ft_add_var_exp(char *str, size_t *i
+							, int j, char **nb);
+void						ft_replace_vari(t_list_ari *tmp, t_42sh *sh);
+void						ft_free_ari(t_list_ari *list, char *str);
 
 /*
 **							builtin_cd
@@ -737,5 +749,6 @@ void						check_reverse_end(int reverse, t_42sh *sh);
 void						init_path_histo(t_42sh *sh);
 int							check_tmp_env(t_42sh *sh, char *str);
 void						print_error_export(t_42sh *sh, int i);
+int							check_name(char *str);
 
 #endif
