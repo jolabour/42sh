@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 06:49:50 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 21:39:50 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/20 04:04:27 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ int				ft_lex_delimiter(t_lex *lex, t_42sh *shell)
 {
 	char		*alias;
 
-	if (!lex->current || lex->current->token != WORD || lex->index !=
-		lex->current->start + lex->current->len)
+	if (!lex->current || lex->current->token != WORD || lex->index
+			!= lex->current->start + lex->current->len)
 		return (0);
 	if (lex->redir_op)
 	{

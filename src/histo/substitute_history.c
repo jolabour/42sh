@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 04:18:59 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/03 04:27:03 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/20 04:02:57 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ char		*search_str_input(t_42sh *sh, int start, int *nb_del)
 	str_to_find = NULL;
 	sub = NULL;
 	i = 0;
-	str_to_find = (char*)ft_malloc_exit(sizeof(char) *
-		(sh->stdin->len_line + 1));
+	str_to_find = (char*)ft_malloc_exit(sizeof(char)
+			* (sh->stdin->len_line + 1));
 	while (sh->stdin->input[start]
 			&& (sh->stdin->input[start] != ' '
 				&& sh->stdin->input[start] != '\t')

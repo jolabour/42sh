@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/12 21:15:18 by ttresori          #+#    #+#             */
-/*   Updated: 2019/04/05 07:00:20 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/20 04:01:23 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,10 @@ char	*get_substitute_histo(t_42sh *sh, int *i, int *nb_del)
 	{
 		substitute = search_history_begin(sh, get_nb_history(sh, *i, nb_del));
 	}
-	else if (ft_isprint(sh->stdin->input[*i + 1]) == 1 &&
-		sh->stdin->input[*i + 1] != '=' &&
-		sh->stdin->input[*i + 1] != '}' && sh->stdin->input[*i + 1] != ' ')
+	else if (ft_isprint(sh->stdin->input[*i + 1]) == 1
+			&& sh->stdin->input[*i + 1] != '='
+			&& sh->stdin->input[*i + 1] != '}'
+			&& sh->stdin->input[*i + 1] != ' ')
 		substitute = search_str_input(sh, *i + 1, nb_del);
 	else
 		substitute = ft_strdup("\0");

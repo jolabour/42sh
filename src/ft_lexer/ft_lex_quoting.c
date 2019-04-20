@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 06:51:08 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 06:52:49 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/20 04:04:41 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ int			ft_lex_dquote_mode(t_lex *lex, t_42sh *shell)
 		else
 		{
 			i = 0;
-			while (g_tokcond[i].dquote_mode == 0 ||
-				(ret = g_tokcond[i].cond(lex, shell)) > 0)
+			while (g_tokcond[i].dquote_mode == 0
+					|| (ret = g_tokcond[i].cond(lex, shell)) > 0)
 				i++;
 			if (ret == -1)
 				return (-1);

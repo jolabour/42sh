@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 08:10:19 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 08:22:56 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/20 04:03:19 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,7 @@ int				ft_ast_readheredoc(t_node *heredoc, char *delim, t_42sh *shell)
 		}
 		if (!ft_strnequ(input, delim, ft_strlen(delim)))
 		{
-			if (!(heredoc->data =
-				ft_strjoinfree(heredoc->data, input, 3)))
+			if (!(heredoc->data = ft_strjoinfree(heredoc->data, input, 3)))
 				return (-1);
 			input = NULL;
 		}

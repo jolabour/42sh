@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 14:03:25 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 14:55:17 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/20 04:04:03 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ bool			ft_match_text(char *str, t_matchlist *match)
 
 bool			ft_match_wcard(char *str, t_matchlist *match)
 {
-	return ((*str && g_matchtab[match->token](str + 1, match)) ||
-		g_matchtab[match->next->token](str, match->next));
+	return ((*str && g_matchtab[match->token](str + 1, match))
+			|| g_matchtab[match->next->token](str, match->next));
 }
 
 bool			ft_match_qmark(char *str, t_matchlist *match)
