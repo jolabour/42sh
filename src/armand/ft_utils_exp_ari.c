@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/20 02:19:40 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/20 02:28:24 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/20 02:40:35 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ t_list_ari		*ft_add_var_exp(char *str, size_t *i, int j, char **nb)
 	return (new);
 }
 
-void			ft_replace_var(t_list_ari *tmp, t_42sh *sh)
+void			ft_replace_vari(t_list_ari *tmp, t_42sh *sh)
 {
 	char	*tmp_str;
 	char	*str;

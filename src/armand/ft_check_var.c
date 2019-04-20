@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/20 02:25:06 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/20 02:42:19 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int			ft_check_before_inc(char *str, int i, t_list_ari *new)
 	return (0);
 }
 
-static int			ft_var_modif(char *str, int i, int j, t_list_ari *new)
+int			ft_var_modif(char *str, int i, int j, t_list_ari *new)
 {
 	int		ret;
 	int		len;

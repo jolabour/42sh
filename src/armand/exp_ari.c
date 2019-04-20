@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/20 02:28:43 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/20 02:42:38 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void			ft_modif_var(t_list_ari *list_var, t_42sh *sh)
 			tmp->var = NULL;
 			tmp->var = ft_itoa(tmp->nbr);
 		}
-		ft_replace_var(tmp, sh);
+		ft_replace_vari(tmp, sh);
 		free(tmp->name);
 		free(tmp->var);
 		list_var = tmp;
