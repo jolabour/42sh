@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 05:02:51 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 08:44:34 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/22 23:39:56 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ int			execute_test(t_42sh *sh, char c, int *pos)
 
 int			check_option(t_42sh *sh, int *i)
 {
-	if (sh->argv->argv[*i + 1][0] == '-' && sh->argv->size > 3 && ft_isdigit(sh->argv->argv[*i + 1][1]) != 1)
+	if (sh->argv->argv[*i + 1][0] == '-' && sh->argv->size > 3
+		&& ft_isdigit(sh->argv->argv[*i + 1][1]) != 1)
 	{
 		ft_putendl_fd("test: too many arguments", 2);
 		return ((sh->retval = 2) - 1);
@@ -63,8 +64,7 @@ int			check_option(t_42sh *sh, int *i)
 	{
 		ft_putstr_fd("42sh: parse error: condition expected: ", 2);
 		ft_putendl_fd(sh->argv->argv[*i + 1], 2);
-		sh->retval = 2;
-		return (1);
+		return ((sh->retval = 2) - 1);
 	}
 	if (sh->argv->argv[*i + 1][0] == '-' && sh->argv->size == 3)
 	{
