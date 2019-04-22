@@ -85,6 +85,7 @@ void		builtin_cd(t_42sh *sh)
 	char	*curpath;
 
 	i = 1;
+	sh->retval = 0;
 	sh->cd_err = 0;
 	opt = check_opt_cd(sh, &i);
 	if ((curpath = cd_exec(sh, i)) == NULL)

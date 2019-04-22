@@ -110,6 +110,7 @@ void		check_hash(t_42sh *sh)
 
 void		builtin_hash(t_42sh *sh)
 {
+	sh->retval = 0;
 	if (sh->argv->size == 1)
 		print_hashtable(sh->hashtable);
 	else

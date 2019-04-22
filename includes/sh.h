@@ -594,6 +594,7 @@ void						test_ge(t_42sh *sh, int *pos);
 void						test_lt(t_42sh *sh, int *pos);
 void						test_le(t_42sh *sh, int *pos);
 int							execute_other_opt(t_42sh *sh, char *str, int *j);
+void						test_gt(t_42sh *sh, int *pos);
 
 /*
 **							echo

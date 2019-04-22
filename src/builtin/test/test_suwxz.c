@@ -15,9 +15,9 @@
 void		test_s(t_42sh *sh, struct stat info)
 {
 	if ((int)info.st_size == 0)
-		sh->retval = 0;
-	else
 		sh->retval = 1;
+	else
+		sh->retval = 0;
 }
 
 void		test_u(t_42sh *sh, struct stat info)

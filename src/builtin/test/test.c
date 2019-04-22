@@ -54,7 +54,7 @@ int			execute_test(t_42sh *sh, char c, int *pos)
 
 int			check_option(t_42sh *sh, int *i)
 {
-	if (sh->argv->argv[*i + 1][0] == '-' && sh->argv->size > 3)
+	if (sh->argv->argv[*i + 1][0] == '-' && sh->argv->size > 3 && ft_isdigit(sh->argv->argv[*i + 1][1]) != 1)
 	{
 		ft_putendl_fd("test: too many arguments", 2);
 		return ((sh->retval = 2) - 1);

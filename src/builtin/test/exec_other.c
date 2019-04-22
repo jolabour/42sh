@@ -43,15 +43,15 @@ int			check_nbr(t_42sh *sh, int *pos)
 
 int			execute_other_opt(t_42sh *sh, char *str, int *j)
 {
-	const char			*option_tab_other[7] = {"=", "!=",
-		"-eq", "-ne", "-ge", "-lt", "-le"};
-	const t_test_other	action_option_other[7] = {test_equal,
-		test_diff, test_eq, test_ne, test_ge, test_lt, test_le};
+	const char			*option_tab_other[8] = {"=", "!=",
+		"-eq", "-ne", "-ge", "-lt", "-le", "-gt"};
+	const t_test_other	action_option_other[8] = {test_equal,
+		test_diff, test_eq, test_ne, test_ge, test_lt, test_le, test_gt};
 	int					i;
 	int					pos;
 
 	i = -1;
-	while (++i < 7)
+	while (++i < 8)
 	{
 		if (ft_strequ(str, option_tab_other[i]) != 0)
 		{

@@ -46,6 +46,7 @@ void		print_env(t_42sh *sh)
 
 void		builtin_set(t_42sh *sh)
 {
+	sh->retval = 0;
 	list_var(sh);
 	print_env(sh);
 	sh->retval = 0;

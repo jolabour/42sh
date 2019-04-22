@@ -80,6 +80,7 @@ void		get_type(t_42sh *sh)
 
 void		builtin_type(t_42sh *sh)
 {
+	sh->retval = 0;
 	if (sh->argv->size == 1)
 		sh->retval = 0;
 	else

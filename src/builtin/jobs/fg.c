@@ -37,6 +37,7 @@ void			builtin_fg(t_42sh *sh)
 {
 	t_joblist	*job;
 
+	sh->retval = 0;
 	if (sh->pgid)
 	{
 		ft_putstr_fd("42sh: fg: no job control\n", STDERR_FILENO);

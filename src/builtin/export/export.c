@@ -126,6 +126,7 @@ void			builtin_export(t_42sh *sh)
 	int			print;
 
 	i = 1;
+	sh->retval = 0;
 	if (check_print(sh, &i, &print) == 0)
 	{
 		print_error_export(sh, i);

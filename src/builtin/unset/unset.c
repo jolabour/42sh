@@ -76,6 +76,7 @@ void		del_var(t_42sh *sh)
 
 void		builtin_unset(t_42sh *sh)
 {
+	sh->retval = 0;
 	if (sh->argv->size == 1)
 	{
 		ft_putstr_fd("unset: usage: unset [name ...]\n", 2);

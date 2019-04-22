@@ -14,7 +14,7 @@
 
 void				init_path_histo(t_42sh *sh)
 {
-	struct passwd	*pw;
+	/*struct passwd	*pw;
 
 	pw = getpwnam(getlogin());
 	if (pw)
@@ -22,4 +22,6 @@ void				init_path_histo(t_42sh *sh)
 	else
 		sh->path_history = "/tmp";
 	sh->path_history = ft_strjoin(sh->path_history, "/.42sh_history");
+*/
+	sh->path_history = ft_strdup("/Users/macuser/.42sh_history");
 }

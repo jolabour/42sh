@@ -37,3 +37,16 @@ void		test_le(t_42sh *sh, int *pos)
 	else
 		sh->retval = 1;
 }
+
+void		test_gt(t_42sh *sh, int *pos)
+{
+	int		tmp;
+	int		tmp2;
+
+	tmp = ft_atoi(sh->argv->argv[*pos + 1]);
+	tmp2 = ft_atoi(sh->argv->argv[*pos + 3]);
+	if (tmp > tmp2)
+		sh->retval = 0;
+	else
+		sh->retval = 1;
+}

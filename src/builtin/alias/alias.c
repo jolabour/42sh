@@ -88,7 +88,7 @@ void		add_alias(t_42sh *sh)
 		if (sh->argv->argv[i][0] != '=' &&
 				check_name_alias(sh->argv->argv[i], sh) == 0)
 		{
-			if (split[1] == NULL)
+			if (split[1][0] == '\0')
 			{
 				if (print_alias(sh, split[0]) != 0)
 					print_error_alias(split[0], sh, 1);
@@ -105,6 +105,7 @@ void		add_alias(t_42sh *sh)
 
 void		builtin_alias(t_42sh *sh)
 {
+	sh->retval = 0;
 	if (sh->argv->size == 1)
 		list_alias(sh);
 	else
