@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   control_action.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 00:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 03:09:56 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/23 03:26:45 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 void			ctrlc_action(t_42sh *sh)
 {
 	reset_term(sh);
-	ft_putchar('\n');
+	while (sh->stdin->line_pos < sh->stdin->len_line)
+		move_to_right(sh);
+	ft_putstr_fd("\n", 0);
 	sh->stdin->input[0] = '\0';
 	sh->stdin->ctrlc = 1;
 }

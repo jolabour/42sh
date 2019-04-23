@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 07:29:55 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/23 07:03:47 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,45 @@ void			clean_print(t_42sh *sh)
 	i = 0;
 	pos_line = get_curent_line(sh);
 	sh->stdin->nb_line = (sh->prompt_len + sh->stdin->len_line) / (sh->winsize);
-	tputs(tgoto(tgetstr("sc", NULL), 0, 0), 0, putchar_custom);
-	while (i < pos_line)
+	//tputs(tgoto(tgetstr("sc", NULL), 0, 0), 0, putchar_custom);
+	// while (i < pos_line)
+	// {
+	// 	tputs(tgoto(tgetstr("up", NULL), 0, 0), 0, putchar_custom);
+	// 	i++;
+	// }
+	i = sh->stdin->cursor_pos;
+	while (i > sh->prompt_len)
 	{
-		tputs(tgoto(tgetstr("up", NULL), 0, 0), 0, putchar_custom);
-		i++;
+		if (i % sh->winsize == 0)
+		{
+			tputs(tgoto(tgetstr("up", NULL), 1, 0), 1, putchar_custom);
+			tputs(tgoto(tgetstr("ch", NULL), sh->winsize - 1, sh->winsize - 1),
+					1, putchar_custom);
+		}
+		else
+			tputs(tgoto(tgetstr("le", NULL), 1, 0), 1, putchar_custom);
+		i--;
 	}
-	tputs(tgoto(tgetstr("ch", NULL), sh->prompt_len,
-		sh->prompt_len), 0, putchar_custom);
+	// tputs(tgoto(tgetstr("ch", NULL), sh->prompt_len,
+	// 	sh->prompt_len), 0, putchar_custom);
 	tputs(tgetstr("cd", NULL), 0, putchar_custom);
 	ft_putstr_fd(sh->stdin->input, 0);
-	tputs(tgoto(tgetstr("rc", NULL), 0, 0), 0, putchar_custom);
+	if ((sh->stdin->len_line + sh->prompt_len) % sh->winsize == 0)
+		ft_putstr_fd("\n", 0);
+	//tputs(tgoto(tgetstr("rc", NULL), 0, 0), 0, putchar_custom);
+	i = sh->stdin->len_line + sh->prompt_len;
+	while (i > sh->stdin->cursor_pos)
+	{
+		if (i % sh->winsize == 0)
+		{
+			tputs(tgoto(tgetstr("up", NULL), 1, 0), 1, putchar_custom);
+			tputs(tgoto(tgetstr("ch", NULL), sh->winsize - 1, sh->winsize - 1),
+					1, putchar_custom);
+		}
+		else
+			tputs(tgoto(tgetstr("le", NULL), 1, 0), 1, putchar_custom);
+		i--;
+	}
 }
 
 static void		get_pos_cursor_begin(t_42sh *sh)

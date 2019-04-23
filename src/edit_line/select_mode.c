@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   select_mode.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/19 01:20:30 by jolabour          #+#    #+#             */
-/*   Updated: 2019/02/19 01:32:53 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/23 08:03:41 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,6 @@ void				select_mode(t_42sh *sh)
 				if (i == -1)
 					return ;
 				clean_print(sh);
-				while (sh->stdin->line_pos > sh->stdin->len_line)
-					move_to_left(sh);
 				return ;
 			}
 		}

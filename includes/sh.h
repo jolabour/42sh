@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/20 02:47:53 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/23 05:31:19 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,8 @@ typedef struct				s_stdin
 	int						save_pos;
 	int						size_of_input;
 	char					*input;
+	// int						go_up;
+	// int						max_nb_line;
 }							t_stdin;
 
 typedef struct				s_alias

@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 22:49:28 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 07:30:16 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/23 08:07:44 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,9 @@ void				del_select(t_42sh *sh)
 		sh->stdin->start_und = sh->stdin->end_und;
 		sh->stdin->end_und = tmp2;
 	}
+	else
+		while (sh->stdin->start_und + tmp2++ < sh->stdin->end_und)
+			move_to_left(sh);
 	if ((sh->stdin->end_und - sh->stdin->start_und) == sh->stdin->len_line)
 		sh->stdin->input[0] = '\0';
 	else
