@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/23 08:11:49 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/23 10:27:59 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,8 +155,6 @@ typedef struct				s_stdin
 	int						save_pos;
 	int						size_of_input;
 	char					*input;
-	// int						go_up;
-	// int						max_nb_line;
 }							t_stdin;
 
 typedef struct				s_alias
@@ -384,6 +382,7 @@ void						cut_select(t_42sh *sh);
 
 int							get_line(t_42sh *sh);
 int							get_winsize(void);
+void						ft_move_cursor_left(int start, int end);
 void						ft_paste(t_42sh *sh);
 void						clean_print(t_42sh *sh);
 int							get_curent_line(t_42sh *sh);

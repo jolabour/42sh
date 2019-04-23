@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   manip_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/04 00:26:26 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 03:08:10 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/23 09:48:39 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 
 void		add_char(long input, t_42sh *sh)
 {
-	char	tmp[256];
+	char	*tmp;
 
 	if (sh->stdin->line_pos != sh->stdin->len_line)
 	{
-		ft_strcpy(tmp, &sh->stdin->input[sh->stdin->line_pos]);
+		tmp = ft_strdup(&sh->stdin->input[sh->stdin->line_pos]);
 		sh->stdin->input[sh->stdin->line_pos] = (char)input;
 		ft_strcpy(sh->stdin->input + sh->stdin->line_pos + 1, tmp);
+		free(tmp);
 		sh->stdin->input[sh->stdin->len_line + 1] = '\0';
 	}
 	else
@@ -32,12 +33,13 @@ void		add_char(long input, t_42sh *sh)
 
 void		delete_char(t_42sh *sh)
 {
-	char tmp[256];
+	char	*tmp;
 
 	if (sh->stdin->line_pos != sh->stdin->len_line)
 	{
-		ft_strcpy(tmp, &sh->stdin->input[sh->stdin->line_pos]);
+		tmp = ft_strdup(&sh->stdin->input[sh->stdin->line_pos]);
 		ft_strcpy(sh->stdin->input + sh->stdin->line_pos - 1, tmp);
+		free(tmp);
 		sh->stdin->input[sh->stdin->len_line - 1] = '\0';
 	}
 	else

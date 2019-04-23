@@ -6,11 +6,10 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 09:09:06 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/23 07:03:47 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/23 10:33:08 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "sh.h"
 
 void			clean_print(t_42sh *sh)
@@ -21,45 +20,13 @@ void			clean_print(t_42sh *sh)
 	i = 0;
 	pos_line = get_curent_line(sh);
 	sh->stdin->nb_line = (sh->prompt_len + sh->stdin->len_line) / (sh->winsize);
-	//tputs(tgoto(tgetstr("sc", NULL), 0, 0), 0, putchar_custom);
-	// while (i < pos_line)
-	// {
-	// 	tputs(tgoto(tgetstr("up", NULL), 0, 0), 0, putchar_custom);
-	// 	i++;
-	// }
-	i = sh->stdin->cursor_pos;
-	while (i > sh->prompt_len)
-	{
-		if (i % sh->winsize == 0)
-		{
-			tputs(tgoto(tgetstr("up", NULL), 1, 0), 1, putchar_custom);
-			tputs(tgoto(tgetstr("ch", NULL), sh->winsize - 1, sh->winsize - 1),
-					1, putchar_custom);
-		}
-		else
-			tputs(tgoto(tgetstr("le", NULL), 1, 0), 1, putchar_custom);
-		i--;
-	}
-	// tputs(tgoto(tgetstr("ch", NULL), sh->prompt_len,
-	// 	sh->prompt_len), 0, putchar_custom);
+	ft_move_cursor_left(sh->stdin->cursor_pos, sh->prompt_len);
 	tputs(tgetstr("cd", NULL), 0, putchar_custom);
 	ft_putstr_fd(sh->stdin->input, 0);
 	if ((sh->stdin->len_line + sh->prompt_len) % sh->winsize == 0)
 		ft_putstr_fd("\n", 0);
-	//tputs(tgoto(tgetstr("rc", NULL), 0, 0), 0, putchar_custom);
-	i = sh->stdin->len_line + sh->prompt_len;
-	while (i > sh->stdin->cursor_pos)
-	{
-		if (i % sh->winsize == 0)
-		{
-			tputs(tgoto(tgetstr("up", NULL), 1, 0), 1, putchar_custom);
-			tputs(tgoto(tgetstr("ch", NULL), sh->winsize - 1, sh->winsize - 1),
-					1, putchar_custom);
-		}
-		else
-			tputs(tgoto(tgetstr("le", NULL), 1, 0), 1, putchar_custom);
-		i--;
-	}
+	ft_move_cursor_left(sh->stdin->len_line + sh->prompt_len,
+		sh->stdin->cursor_pos);
 }
 
 static void		get_pos_cursor_begin(t_42sh *sh)
@@ -67,20 +34,27 @@ static void		get_pos_cursor_begin(t_42sh *sh)
 	char		*tmp;
 	int			fl;
 	char		buf[1024];
+	int			ret;
 
-	if (isatty(STDIN_FILENO))
+	fl = fcntl(STDIN_FILENO, F_GETFL);
+	fcntl(STDIN_FILENO, F_SETFL, fl | O_NONBLOCK);
+	while (read(STDIN_FILENO, buf, 1024) > 0)
+		continue;
+	fcntl(STDIN_FILENO, F_SETFL, fl);
+	ft_putstr("\033[6n");
+	if ((ret = read(STDOUT_FILENO, buf, 1023)) > 0)
 	{
-		fl = fcntl(STDIN_FILENO, F_GETFL);
-		fcntl(STDIN_FILENO, F_SETFL, fl | O_NONBLOCK);
-		while (read(STDIN_FILENO, buf, 1024) > 0)
-			continue ;
-		fcntl(STDIN_FILENO, F_SETFL, fl);
-		ft_putstr("\033[6n");
-		buf[read(STDOUT_FILENO, buf, 1023)] = '\0';
-		tmp = ft_strchr(buf, ';');
-		sh->prompt_len = tmp ? ft_atoi(tmp + 1) - 1 : sh->prompt_len;
+		buf[ret] = '\0';
+		tmp = ft_strchr(buf, '\033');
+		if (tmp && tmp[1] == '[')
+		{
+			tmp = tmp + 2;
+			while (*tmp >= '0' && *tmp <= '9')
+				tmp++;
+			if (*tmp == ';' && tmp[1] >= '0' && tmp[1] <= '9')
+				sh->prompt_len = ft_atoi(tmp + 1) - 1;
+		}
 	}
-	sh->stdin->cursor_pos = sh->prompt_len;
 }
 
 static void		init_stdin(t_42sh *sh)
@@ -105,7 +79,9 @@ static void		init_stdin(t_42sh *sh)
 		ft_putendl("tcsetattr: Error.");
 		exit(0);
 	}
-	get_pos_cursor_begin(sh);
+	if (isatty(STDIN_FILENO))
+		get_pos_cursor_begin(sh);
+	sh->stdin->cursor_pos = sh->prompt_len;
 }
 
 void			finish_read(t_42sh *sh)
