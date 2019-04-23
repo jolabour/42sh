@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/21 00:18:14 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/20 02:42:38 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/23 03:26:35 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static char		*ft_exp_ari(char *str, int size)
 	return (str);
 }
 
-void			ft_modif_var(t_list_ari *list_var, t_42sh *sh)
+static char		*ft_modif_var(t_list_ari *list_var, t_42sh *sh, char *str)
 {
 	t_list_ari *tmp;
 
@@ -93,14 +93,18 @@ void			ft_modif_var(t_list_ari *list_var, t_42sh *sh)
 		tmp = tmp->next;
 		free(list_var);
 	}
+	return (str);
 }
 
 char			*ft_exp_ary(char *str, t_42sh *sh)
 {
 	t_list_ari	*list_var;
 
-	if (!str)
+	if (!str || ft_exp_null(str))
+	{
+		ft_strdel(&str);
 		return (ft_itoa(0));
+	}
 	list_var = NULL;
 	if (!(str = ft_check_var(str, &list_var, sh)))
 	{
@@ -118,6 +122,5 @@ char			*ft_exp_ary(char *str, t_42sh *sh)
 		ft_free_ari(list_var, str);
 		return (NULL);
 	}
-	ft_modif_var(list_var, sh);
-	return (str);
+	return (ft_modif_var(list_var, sh, str));
 }
