@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/20 02:47:53 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/23 03:21:33 by achavy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -669,6 +669,7 @@ void						builtin_cd(t_42sh *sh);
 **							ft_erase_space.c
 */
 
+int							ft_exp_null(char *str);
 char						*ft_erase_space(char *str);
 
 /*
