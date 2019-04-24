@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_file_history.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 04:04:26 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 08:46:42 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/24 10:33:54 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	init_history(t_42sh *sh, char *path)
 	if (access(path, F_OK) == 0)
 	{
 		fd = open(path, O_RDWR);
-		while (get_next_line(fd, &line) != 0)
+		while (get_next_line(fd, &line) == 1)
 		{
 			if (check_line(line) == 1)
 				add_to_list(sh, line);

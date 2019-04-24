@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_malloc_exit.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 00:05:27 by jolabour          #+#    #+#             */
-/*   Updated: 2019/03/27 00:06:23 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/24 08:02:53 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void			*ft_malloc_exit(size_t size)
 
 	if ((addr = malloc(size)))
 		return (addr);
-	ft_putstr_fd("42sh: malloc: cannot allocate ", 2);
-	ft_putulglg_fd(size, 2);
-	ft_putstr_fd(" bytes\n", 2);
+	ft_putstr_fd("42sh: malloc: cannot allocate ", STDERR_FILENO);
+	ft_putulglg_fd(size, STDERR_FILENO);
+	ft_putstr_fd(" bytes\n", STDERR_FILENO);
 	exit(2);
 }

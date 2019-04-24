@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 07:06:58 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 20:59:08 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/24 07:53:02 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ int				ft_lex_continue_line(t_lex *lex, t_42sh *shell, char *matching)
 	int			ret;
 
 	ret = ft_continue_line(shell, &line, matching);
+	if (ret == 0)
+		shell->retval = 2;
 	if (line)
 		lex->input = ft_strjoinfree(lex->input, line, 3);
 	return (ret);
