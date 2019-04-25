@@ -6,11 +6,9 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/10 02:27:48 by jolabour          #+#    #+#             */
-/*   Updated: 2017/11/20 01:43:18 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 03:38:31 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "libft.h"
 
 int		ft_atoi(char const *str)
 {

@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/11 07:38:09 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 08:48:43 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 03:35:10 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ void			ft_dot_dot(t_42sh *sh, t_path **path)
 	i = -1;
 	while (++i + 1 < sh->path->size)
 	{
-		if (ft_strequ(tmp->next->str, "/..") == 1 &&
-				ft_strequ(tmp->str, "/..") == 0)
+		if (ft_strequ(tmp->next->str, "/..") == 1
+				&& ft_strequ(tmp->str, "/..") == 0)
 		{
 			lst_del_path_dotdot(path, tmp, prev);
 			sh->path->size = sh->path->size - 2;

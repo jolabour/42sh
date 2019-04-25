@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 00:57:29 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/20 01:12:03 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 03:40:11 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,8 @@ void		add_alias(t_42sh *sh)
 	while (sh->argv->argv[i])
 	{
 		split = ft_strsplitsetone(sh->argv->argv[i], '=');
-		if (sh->argv->argv[i][0] != '=' &&
-				check_name_alias(sh->argv->argv[i], sh) == 0)
+		if (sh->argv->argv[i][0] != '='
+				&& check_name_alias(sh->argv->argv[i], sh) == 0)
 		{
 			if (split[1][0] == '\0')
 			{

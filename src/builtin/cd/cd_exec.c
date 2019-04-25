@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/11 07:39:46 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/20 03:57:19 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 03:34:54 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ char			*check_cd_path(t_42sh *sh, char *curpath, int j)
 
 	if (sh->cd_path[j + 1] == NULL)
 		sh->cd_err = 1;
-	if (ft_strequ(".", sh->cd_path[j]) == 1 ||
-			ft_strequ("./", sh->cd_path[j]) == 1)
+	if (ft_strequ(".", sh->cd_path[j]) == 1
+			|| ft_strequ("./", sh->cd_path[j]) == 1)
 	{
 		ft_strdel(&sh->cd_path[j]);
 		sh->cd_path[j] = ft_strdup(sh->pwd);

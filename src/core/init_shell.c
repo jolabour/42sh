@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 06:02:54 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 09:26:24 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 03:56:03 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void		get_term(t_42sh *sh)
 {
 	if (tgetent(NULL, getenv("TERM")) == -1)
 	{
-		ft_putendl("Set term or a valide term.");
+		ft_putendl("Set term or a valid term.");
 		exit(0);
 	}
 	if (tcgetattr(0, &sh->reset_term) == -1)

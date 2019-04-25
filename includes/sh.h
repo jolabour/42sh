@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/23 10:27:59 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/25 03:16:14 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -734,7 +734,7 @@ int							check_path_opt(char *str, t_42sh *sh, int i);
 void						get_list(char *str, t_42sh *sh);
 void						ft_dot_dot(t_42sh *sh, t_path **path);
 void						join_all(t_42sh *sh);
-void						print_error_cd(char *curpath);
+void						print_error_cd(char *curpath, t_42sh *sh);
 int							check_opt_cd(t_42sh *sh, int *i);
 char						*cd_exec(t_42sh *sh, int i);
 void						exec_cd_path(char *curpath, t_42sh *sh, int opt,

@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/11 07:34:56 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/11 10:22:01 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 03:35:27 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ int			check_opt_cd(t_42sh *sh, int *i)
 		return (2);
 	while (sh->argv->argv[*i])
 	{
-		if (sh->argv->argv[*i][0] != '-' ||
-				ft_strequ(sh->argv->argv[*i], "-") == 1)
+		if (sh->argv->argv[*i][0] != '-'
+				|| ft_strequ(sh->argv->argv[*i], "-") == 1)
 			return (opt);
 		opt = check_str_opt(sh->argv->argv[*i], sh);
 		if (opt == 0)

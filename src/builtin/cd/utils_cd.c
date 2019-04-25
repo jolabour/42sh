@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/11 07:35:59 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/12 07:35:32 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 03:20:37 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,19 @@ int				check_path_opt(char *str, t_42sh *sh, int i)
 
 	if ((dir = opendir(str)) == NULL)
 	{
-		if (sh->cd_err == 1 || sh->argv->argv[i][0] == '/')
+		if (sh->argv->argv[i] && sh->cd_err == 1)
 		{
-			ft_putstr_fd("42sh: cd: ", 2);
-			ft_putstr_fd(sh->argv->argv[i], 2);
+			if ((sh->argv->argv[i][0] == '/' || sh->cd_err == 1)
+				&& sh->argv->argv[i])
+			{
+				ft_putstr_fd("42sh: cd: ", 2);
+				ft_putstr_fd(sh->argv->argv[i], 2);
+			}
+			else
+			{
+				ft_putstr_fd("42sh: cd: ", 2);
+				ft_putstr_fd(getenv_cd(sh->copy_env, "HOME=", 5, sh->var), 2);
+			}
 			ft_putendl_fd(": No such file or directory", 2);
 			sh->retval = 1;
 			sh->cd_err = 2;
@@ -97,9 +106,12 @@ void			join_all(t_42sh *sh)
 	}
 }
 
-void			print_error_cd(char *curpath)
+void			print_error_cd(char *curpath, t_42sh *sh)
 {
 	ft_putstr_fd("cd: ", 2);
-	ft_putstr_fd(curpath, 2);
+	if (curpath == NULL)
+		ft_putstr_fd(getenv_cd(sh->copy_env, "HOME=", 5, sh->var), 2);
+	else
+		ft_putstr_fd(curpath, 2);
 	ft_putstr_fd(": No such file or directory\n", 2);
 }

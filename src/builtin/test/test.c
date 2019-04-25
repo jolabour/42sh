@@ -6,7 +6,7 @@
 /*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 05:02:51 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/22 23:39:56 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 02:23:47 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,22 @@ int			return_test(t_42sh *sh)
 		ft_putendl_fd("test: too many arguments", 2);
 		sh->retval = 2;
 		return (1);
+	}
+	return (0);
+}
+
+int			choose_stat(t_42sh *sh, struct stat *info, int pos, char c)
+{
+	if (c == 'L')
+	{
+		if (lstat(sh->argv->argv[pos + 2], info) != 0)
+			return ((sh->retval = 1));
+	}
+	else
+	{
+		if (stat(sh->argv->argv[pos + 2], info) != 0
+			&& sh->argv->argv[pos + 1][2] != 'z')
+			return ((sh->retval = 1));
 	}
 	return (0);
 }
@@ -38,9 +54,8 @@ int			execute_test(t_42sh *sh, char c, int *pos)
 	{
 		if (option_tab[i] == c)
 		{
-			if (lstat(sh->argv->argv[*pos + 2], &info) != 0 &&
-				sh->argv->argv[*pos + 1][2] != 'z')
-				return (sh->retval = 1);
+			if (choose_stat(sh, &info, *pos, c) != 0)
+				return (1);
 			if (return_test(sh) > 0)
 				return (0);
 			action_option[i](sh, info);
@@ -49,7 +64,7 @@ int			execute_test(t_42sh *sh, char c, int *pos)
 	}
 	ft_putstr_fd("test: Unknown condition: ", 2);
 	ft_putendl_fd(sh->argv->argv[*pos + 1], 2);
-	return (sh->retval = 2);
+	return ((sh->retval = 2));
 }
 
 int			check_option(t_42sh *sh, int *i)

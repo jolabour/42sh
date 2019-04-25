@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 04:10:56 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/20 01:51:29 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 03:36:00 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,8 @@ void		check_hash(t_42sh *sh)
 		if (check_hash_opt(sh, sh->argv->argv[i + 1], &i) == 0)
 			return ;
 	while (sh->argv->argv[++i])
-		if (check_slash(sh->argv->argv[i]) == 1 ||
-			check_is_builtin(sh->argv->argv[i]) == 1)
+		if (check_slash(sh->argv->argv[i]) == 1
+				|| check_is_builtin(sh->argv->argv[i]) == 1)
 			continue ;
 		else if (ht_lookup(sh->argv->argv[i], &sh->hashtable) == NULL)
 		{

@@ -6,7 +6,7 @@
 /*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/20 02:19:40 by achavy            #+#    #+#             */
-/*   Updated: 2019/04/20 02:40:35 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/25 03:53:23 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_list_ari		*ft_add_var_exp(char *str, size_t *i, int j, char **nb)
 	t_list_ari	*new;
 
 	new = NULL;
-	new = (t_list_ari*)malloc(sizeof(t_list_ari));
+	new = (t_list_ari*)ft_malloc_exit(sizeof(t_list_ari));
 	new->var = ft_strdup(*nb);
 	new->name = ft_strsub(str, *i, j);
 	new->next = NULL;

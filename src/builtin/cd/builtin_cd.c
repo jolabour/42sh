@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/18 00:37:39 by abeauvoi          #+#    #+#             */
-/*   Updated: 2019/04/20 03:49:49 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 03:35:29 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ void		get_dir_cd(char *curpath, t_42sh *sh, int opt, int i)
 	char	cwd[4096];
 
 	if (curpath == NULL)
-		print_error_cd(sh->argv->argv[i]);
-	if (chdir(curpath) == -1)
-		print_error_cd(sh->argv->argv[i]);
+		print_error_cd(sh->argv->argv[i], sh);
+	else if (chdir(curpath) == -1)
+		print_error_cd(sh->argv->argv[i], sh);
 	else
 	{
 		if (sh->pwd)
@@ -72,10 +72,11 @@ void		get_dir_cd(char *curpath, t_42sh *sh, int opt, int i)
 		free(sh->pwd);
 		sh->pwd = ft_strdup(str + 4);
 		free(str);
+		if (sh->print_pwd)
+			ft_putendl(sh->pwd);
 	}
-	if (sh->print_pwd)
-		ft_putendl(sh->pwd);
-	ft_strdel(&sh->path_cd);
+	if (sh->cd_path != NULL)
+		ft_strdel(&sh->path_cd);
 }
 
 void		builtin_cd(t_42sh *sh)
@@ -85,6 +86,7 @@ void		builtin_cd(t_42sh *sh)
 	char	*curpath;
 
 	i = 1;
+	sh->path_cd = NULL;
 	sh->retval = 0;
 	sh->cd_err = 0;
 	opt = check_opt_cd(sh, &i);
