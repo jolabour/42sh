@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   init_shell.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jolabour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 06:02:54 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/25 03:56:03 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 05:05:39 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
-#include <curses.h>
-#include <term.h>
 
 void		init_builtin_tab(t_42sh *sh)
 {

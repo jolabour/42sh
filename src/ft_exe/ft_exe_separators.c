@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 10:04:27 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 10:26:21 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/25 04:48:22 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ int				ft_exe_and(t_node *current, t_42sh *shell)
 	t_joblist	*job;
 	int			foreground;
 
+	if (shell->pgid)
+		return (ft_exe_semi(current, shell));
 	shell->forked = 0;
 	job = ft_get_job(current->left, shell);
 	foreground = shell->foreground;

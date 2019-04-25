@@ -6,12 +6,11 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/25 04:30:08 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/20 01:49:49 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 05:07:05 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
-#include <dirent.h>
 
 void		hash_current_dir(t_ht *ht, DIR *dirp, char *bin_path)
 {

@@ -3,14 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa_exp_ari.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achavy <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/16 17:29:24 by achavy            #+#    #+#             */
-/*   Updated: 2019/01/21 03:28:11 by achavy           ###   ########.fr       */
+/*   Updated: 2019/04/25 05:03:03 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "sh.h"
 
 void	ft_put_spaces(char *str, int i, int n)
 {

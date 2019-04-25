@@ -3,14 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/18 00:37:39 by abeauvoi          #+#    #+#             */
-/*   Updated: 2019/04/25 03:35:29 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 05:03:33 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <dirent.h>
 #include "sh.h"
 
 void		get_path(char *path, t_42sh *sh, int i)

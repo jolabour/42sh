@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 04:26:44 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/25 03:16:14 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 05:42:19 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # include <pwd.h>
 # include <termios.h>
 # include <sys/ioctl.h>
-# include <stdio.h>
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdbool.h>

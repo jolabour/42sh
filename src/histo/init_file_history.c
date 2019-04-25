@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 04:04:26 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/24 10:33:54 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/25 02:17:05 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	init_history(t_42sh *sh, char *path)
 		}
 	}
 	else
-		fd = open(path, O_CREAT);
+		fd = open(path, O_CREAT, 0644);
 	close(fd);
 }
 

@@ -6,11 +6,10 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/29 07:47:49 by jolabour          #+#    #+#             */
-/*   Updated: 2019/04/20 01:57:39 by jolabour         ###   ########.fr       */
+/*   Updated: 2019/04/25 05:06:29 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "sh.h"
 
 char			*check_access(t_42sh *sh, int pos)
