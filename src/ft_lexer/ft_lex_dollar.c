@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 06:54:33 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/20 02:55:13 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/05/06 20:02:51 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,8 @@ int			ft_lex_sub_mode(t_lex *lex, t_42sh *shell, char *quote)
 		*quote = *quote ? 0 : '\'';
 	else if (*quote != '\'' && lex->input[lex->index] == '\"')
 		*quote = *quote ? 0 : '\"';
-	if (lex->input[lex->index] == '\\' && (lex->input[lex->index] == '\n'
-		|| lex->input[lex->index] == '\0'))
+	if (lex->input[lex->index] == '\\')
 		ret = ft_lex_backslash(lex, shell);
-	else if (*quote != '\'' && lex->input[lex->index] == '\\')
-		lex->index += 2;
 	else
 		ft_lex_word(lex, shell);
 	return (ret);
