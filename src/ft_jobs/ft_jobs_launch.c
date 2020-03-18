@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 10:53:45 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/25 04:13:06 by geargenc         ###   ########.fr       */
+/*   Updated: 2020/03/18 19:13:00 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,11 @@ void			ft_launch_process(t_proclist *proc, t_42sh *shell,
 	if (!shell->pgid)
 		ft_reset_signals();
 	shell->pgid = pgid;
-	if (pipefd[2] != -1 && pipefd[2] != 0 && ft_dup2_exit(pipefd[2], 0))
+	if (pipefd[2] != -1 && pipefd[2] != STDIN_FILENO
+		&& ft_dup2_exit(pipefd[2], STDIN_FILENO))
 		close(pipefd[2]);
-	if (pipefd[1] != -1 && pipefd[1] != 0 && ft_dup2_exit(pipefd[1], 1))
+	if (pipefd[1] != -1 && pipefd[1] != STDOUT_FILENO
+		&& ft_dup2_exit(pipefd[1], STDOUT_FILENO))
 		close(pipefd[1]);
 	close(pipefd[0]);
 	shell->forked = 1;
