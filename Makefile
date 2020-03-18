@@ -6,7 +6,7 @@
 #    By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/12 09:19:56 by jolabour          #+#    #+#              #
-#    Updated: 2019/04/25 03:51:35 by jolabour         ###   ########.fr        #
+#    Updated: 2019/04/25 14:22:21 by geargenc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -97,7 +97,7 @@ SRCS		= core/main.c edit_line/list.c core/process.c utils/getenv.c \
 
 CC 			= gcc
 OBJS		= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
-CFLAGS		= -Wall -Wextra -Werror $(addprefix -I, $(INC_DIRS)) -g3
+CFLAGS		= -Wall -Wextra -Werror -fsanitize=address $(addprefix -I, $(INC_DIRS)) -g3
 LFLAGS		= -L$(LIB_DIR) -lft -ltermcap
 LIB			= libft.a
 COMP		= $(CC) $(CFLAGS) -o $@ -c $<

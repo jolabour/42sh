@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 11:22:58 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/12 11:23:09 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/26 05:52:47 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,18 +72,20 @@ void			ft_report_job(t_opt *opt, t_joblist *job, t_42sh *sh)
 		ft_report_job_pgid(job, sh, STDOUT_FILENO);
 	else
 		ft_report_job_def(job, sh, STDOUT_FILENO);
-	if (!(ft_any_running(job) || ft_any_stopped(job)))
-		ft_remove_job(job, sh);
 }
 
 void			ft_report_all_jobs(t_opt *opt, t_42sh *sh)
 {
 	t_joblist	*jobs;
+	t_joblist	*next;
 
 	jobs = sh->jobs;
 	while (jobs)
 	{
+		next = jobs->next;
 		ft_report_job(opt, jobs, sh);
-		jobs = jobs->next;
+		if (!(ft_any_running(jobs) || ft_any_stopped(jobs)))
+			ft_remove_job(jobs, sh);
+		jobs = next;
 	}
 }

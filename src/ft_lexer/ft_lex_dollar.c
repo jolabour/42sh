@@ -6,7 +6,7 @@
 /*   By: geargenc <geargenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 06:54:33 by geargenc          #+#    #+#             */
-/*   Updated: 2019/04/20 02:55:13 by geargenc         ###   ########.fr       */
+/*   Updated: 2019/04/26 06:24:25 by geargenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,14 @@
 
 int			ft_lex_sub_mode(t_lex *lex, t_42sh *shell, char *quote)
 {
-	int		ret;
-
-	ret = 0;
 	if (*quote != '\"' && lex->input[lex->index] == '\'')
 		*quote = *quote ? 0 : '\'';
 	else if (*quote != '\'' && lex->input[lex->index] == '\"')
 		*quote = *quote ? 0 : '\"';
-	if (lex->input[lex->index] == '\\' && (lex->input[lex->index] == '\n'
-		|| lex->input[lex->index] == '\0'))
-		ret = ft_lex_backslash(lex, shell);
-	else if (*quote != '\'' && lex->input[lex->index] == '\\')
-		lex->index += 2;
+	if (*quote != '\'' && lex->input[lex->index] == '\\')
+		return (ft_lex_backslash(lex, shell));
 	else
-		ft_lex_word(lex, shell);
-	return (ret);
+		return (ft_lex_word(lex, shell));
 }
 
 int			ft_lex_dollar_brace(t_lex *lex, t_42sh *shell)
